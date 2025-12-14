@@ -20,7 +20,7 @@
 param(
    
     [Parameter(Mandatory = $false)]
-    [string]$SiteUrl = ""   
+    [string]$SiteUrl = "https://caje77sharepoint.sharepoint.com/sites/TestingComm298"   
 )
 
 
