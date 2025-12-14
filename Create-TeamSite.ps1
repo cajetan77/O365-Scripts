@@ -8,7 +8,7 @@ param(
     [string]$OwnerUpn,
     [Parameter(Mandatory = $true)]
     [string]$OwnerDisplayName,
-    [Parameter(Mandatory = $_)]
+    [Parameter(Mandatory = $true)]
     [string]$SvcAccountName
 )
 # Load configuration from JSON file
