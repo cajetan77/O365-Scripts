@@ -1,0 +1,34 @@
+config.json
+
+# Windows
+Thumbs.db
+Desktop.ini
+
+# PowerShell / VS Code
+.vscode/
+*.code-workspace
+
+# Logs / transcripts
+*.log
+*.tmp
+*.bak
+*.old
+*.transcript
+
+# Local config / secrets
+.env
+.env.*
+secrets.*
+*.pfx
+*.pem
+*.key
+
+# Output folders
+out/
+dist/
+build/
+bin/
+obj/
+
+# Modules downloaded locally (if you ever do this)
+Modules/
