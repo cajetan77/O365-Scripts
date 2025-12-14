@@ -1,13 +1,15 @@
  
 param(
-    [Parameter(Mandatory = $false)]
+    [Parameter(Mandatory = $true)]
     [string]$DisplayName,
-    [Parameter(Mandatory = $false)]
+    [Parameter(Mandatory = $true)]
     [string]$Alias,
-    [Parameter(Mandatory = $false)]
+    [Parameter(Mandatory = $true)]
     [string]$OwnerUpn,
-    [Parameter(Mandatory = $false)]
-    [string]$OwnerDisplayName
+    [Parameter(Mandatory = $true)]
+    [string]$OwnerDisplayName,
+    [Parameter(Mandatory = $_)]
+    [string]$SvcAccountName
 )
 # Load configuration from JSON file
 # Load configuration from JSON file
@@ -21,6 +23,7 @@ $clientSecret = $config.ClientSecret
 
 # SharePoint URLs
 $AdminUrl = "https://$tenantname-admin.sharepoint.com"   # e.g. https://contoso-admin.sharepoint.com
+
    
 # ===========================
 # BEGIN SCRIPT
@@ -30,18 +33,35 @@ $ShortTitle = $Alias.Trim()
  
 Import-Module Microsoft.Graph.Authentication 
  
-Connect-MgGraph -ClientId $ClientId -TenantId $tenantId -CertificateThumbprint $Thumbprint  -NoWelcome
-$context = Get-MgContext
- 
-$user = Get-MgUser -Filter "DisplayName eq '$OwnerDisplayName'"
-$userId = $user.Id
+try {
+    Connect-MgGraph -ClientId $ClientId -TenantId $tenantId -CertificateThumbprint $Thumbprint  -NoWelcome
+    $context = Get-MgContext
+}
+catch {
+    Write-Host "Error connecting to Microsoft Graph: $_"
+    exit
+}
+
+
+try {
+    $user = Get-MgUser -Filter "DisplayName eq '$OwnerDisplayName'"
+    $userId = $user.Id
+}
+catch {
+    Write-Host "Error retrieving user information from Microsoft Graph: $_"
+    
+    $user = Get-MgUser -Filter "DisplayName eq '$SvcAccountName'"
+    $userId = $user.Id
+    
+}
+
 
  
 
 $existinggroup = Get-MgGroup -Filter " mailnickname eq '$ShortTitle'"
 if ($existinggroup) {
     Write-Warning "A group with the alias '$ShortTitle' already exists. Exiting script."
-    
+    exit
 }
 
 
