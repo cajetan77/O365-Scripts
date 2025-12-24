@@ -1,4 +1,4 @@
-Write-Host "Loading configuration from config.json..." -ForegroundColor Yellow
+Write-Host "Loading configuration from config.json...." -ForegroundColor Yellow
 $configPath = ".\config.json"
 if (-not (Test-Path $configPath)) {
     Write-Host "ERROR: config.json not found at $configPath" -ForegroundColor Red
