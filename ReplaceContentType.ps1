@@ -25,7 +25,7 @@ param(
     [string]$newContentTypeName = "",
     [string]$ReportPath = ".\Report.csv",
     [string]$ReportWithItemsPath = ".\ReportWithItems.csv",
-    [string]$ExcludedLists = "Site Assets,Site Pages,Form Templates,Style Library",
+    [string]$ExcludedLists = @("Site Assets", "Site Pages", "Form Templates", "Style Library"),
     [string]$Reprtwithcontenttype= ".\Reportwithcontenttype.csv",
     [bool]$reportOnly = $false
 )
