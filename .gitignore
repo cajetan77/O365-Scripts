@@ -32,3 +32,6 @@ obj/
 
 # Modules downloaded locally (if you ever do this)
 Modules/
+
+#Report
+*.csv
