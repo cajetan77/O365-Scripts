@@ -21,8 +21,8 @@
 #>
 param(
  
-    [string]$OldContentTypeName = "RBNZ Word Document",
-    [string]$newContentTypeName = "Project Document",
+    [string]$OldContentTypeName = "",
+    [string]$newContentTypeName = "",
     [string]$ReportPath = ".\Report.csv",
     [string]$ReportWithItemsPath = ".\ReportWithItems.csv",
     [string]$ExcludedLists = "Site Assets,Site Pages,Form Templates,Style Library",
