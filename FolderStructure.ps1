@@ -1,5 +1,15 @@
-# Requires: PnP.PowerShell
-# Install-Module PnP.PowerShell -Scope CurrentUser
+<#
+.SYNOPSIS
+    Gets the folder structure of all libraries in all sites and exports the results to a CSV file.
+.DESCRIPTION
+    This script gets the folder structure of all libraries in all sites and exports the results to a CSV file.
+.PARAMETER OutputCsv
+    The path to the output CSV file.
+.PARAMETER ExcludedLists
+    The lists to exclude from the folder structure.
+#>
+
+
 param(
     [string]$OutputCsv = ".\FolderStructure.csv",
     [string[]]$ExcludedLists = @("Site Assets", "Site Pages", "SitePages", "Form Templates", "Style Library")
