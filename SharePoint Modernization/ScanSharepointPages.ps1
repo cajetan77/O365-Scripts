@@ -1,7 +1,10 @@
-param(
-    [string]$SiteUrl = ""
-)
+<#
+.SYNOPSIS
+    Scans all sites and subsites for classic pages and exports the results to a CSV file.
+.DESCRIPTION
+    This script scans all sites and subsites for classic pages and exports the results to a CSV file.
 
+#>
 
 $configPath = ".\config.json"
 
