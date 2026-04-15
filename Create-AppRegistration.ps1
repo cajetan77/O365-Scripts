@@ -22,18 +22,18 @@
 
 
 # ====== CONFIG ======
-$displayName = "My Automation App"
+$displayName = "SharePoint Reporting"
 $createClientSecret = $true
 $secretDisplayName  = "runbook-secret"
 $secretValidDays    = 365
+
+#https://learn.microsoft.com/en-us/graph/permissions-reference for the permissions
 $GraphAppPermissions = @(
-  "Sites.Selected",
-  "Sites.FullControl.All"
+"Sites.Read.All"
 )
 
 $SharePointAppPermissions = @(
-  "Sites.Selected"          # SharePoint API permission
-  "Sites.FullControl.All" # tenant-wide SPO access
+  "Sites.Read.All" # tenant-wide SPO access
 )
 
 # ====================
@@ -210,4 +210,14 @@ $result = [PSCustomObject]@{
 
 $result | Format-List
 
-Disconnect-MgGraph
+
+
+
+
+
+
+
+
+
+
+
