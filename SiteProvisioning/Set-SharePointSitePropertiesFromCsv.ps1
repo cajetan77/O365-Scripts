@@ -27,6 +27,7 @@ $tenantId = $config.TenantId
 $clientId = if ($config.AppId) { $config.AppId } else { $config.AppId }
 $tenantName = $config.TenantName
 $thumbprint = $config.ThumbPrint
+$clientSecret = $config.ClientSecret
 
 if ([string]::IsNullOrWhiteSpace($tenantId) -or
     [string]::IsNullOrWhiteSpace($clientId) -or
@@ -189,7 +190,8 @@ function Get-ContentTypeHub {
     $contentTypeHubUrl = Get-PnPContentTypePublishingHubUrl
     Write-Host "Content Type Hub URL: $contentTypeHubUrl" -ForegroundColor Green
     try {
-        $ctconnection = Connect-PnPOnline -Url $contentTypeHubUrl -ClientId $ClientId -Tenant $TenantId -Thumbprint $Thumbprint
+        #$ctconnection = Connect-PnPOnline -Url $contentTypeHubUrl -ClientId $ClientId -Tenant $TenantId -Thumbprint $Thumbprint
+        $ctconnection = Connect-PnPOnline -Url $contentTypeHubUrl -ClientId $ClientId -ClientSecret $ClientSecret -WarningAction SilentlyContinue
         $ctHub = Get-PnPContentType -Connection $ctconnection
         Disconnect-PnPOnline
         Write-Host "Disconnected from content type hub" -ForegroundColor Green
@@ -294,6 +296,8 @@ function Add-SiteToHubAssociation {
     }
 }
 
+
+
 function Install-App {
     param(
         [string]$SiteUrl
@@ -367,17 +371,16 @@ try {
         }
 
         try {
-            Write-Host "[$index/$total] Associating site to hub: $siteUrl" -ForegroundColor Cyan
+        
             Connect-PnPOnline -Url $siteUrl -ClientId $clientId -Tenant $tenantId -Thumbprint $thumbprint -ErrorAction Stop
-            #Add-SiteToHubAssociation -SiteUrl $siteUrl -TargetHubSiteUrl $HubSiteUrl
-            #Set-SiteRegionalSettings -SiteUrl $siteUrl
-            #Set-SearchSettings -SiteUrl $siteUrl
-            #Set-DocLibraryPermissions -SiteUrl $siteUrl
+            Set-SiteRegionalSettings -SiteUrl $siteUrl
+            Set-SearchSettings -SiteUrl $siteUrl
+            Set-DocLibraryPermissions -SiteUrl $siteUrl
             
-            #Add-GroupstoSharePointGroups -SiteUrl $siteUrl
-            #Set-Branding -SiteUrl $siteUrl
-            #Install-App -SiteUrl $SiteUrl
-            #Set-SearchSettings -SiteUrl $SiteUrl
+            Add-GroupstoSharePointGroups -SiteUrl $siteUrl
+            Set-Branding -SiteUrl $siteUrl
+            Install-App -SiteUrl $SiteUrl
+            Set-SearchSettings -SiteUrl $SiteUrl
             #Add-PageTemplates -SiteUrl $SiteUrl
             Add-ContentTypes -SiteUrl $SiteUrl
             
