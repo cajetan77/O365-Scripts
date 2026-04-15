@@ -26,8 +26,8 @@ param(
     [string]$ReportPath = ".\Report.csv",
     [string]$ReportWithItemsPath = ".\ReportWithItems.csv",
     [string]$ExcludedLists = @("Site Assets", "Site Pages", "Form Templates", "Style Library"),
-    [string]$Reprtwithcontenttype= ".\Reportwithcontenttype.csv",
-    [bool]$reportOnly = $false
+    [string]$Reprtwithcontenttype = ".\Reportwithcontenttype.csv",
+    [bool]$reportOnly = $true
 )
 Write-Host "Loading configuration from config.json..." -ForegroundColor Yellow
 $configPath = ".\config.json"
@@ -123,7 +123,6 @@ Connect-Site -Url "https://$TenantName-admin.sharepoint.com"
 # Get sites
 Write-Host "Retrieving sites matching pattern..." -ForegroundColor Yellow
 
-#$sites = Get-PnPTenantSite | Where-Object { $_.Url -like "https://caje77sharepoint.sharepoint.com/sites/testqaproject661223322222222222ddssssssssssssssaaWWWDWWW1SQAQ*" }
 $sites = Import-Csv -Path ".\sites.csv"
 $siteCount = ($sites | Measure-Object).Count
 Write-Host "Found $siteCount site(s) to process." -ForegroundColor Green
@@ -138,7 +137,7 @@ foreach ($site in $sites) {
     
     try {
         Connect-Site -Url $site.Url
-        $ctx=Get-PnPContext
+        $ctx = Get-PnPContext
     }
     catch {
         Write-Host "ERROR: Failed to connect to site $($site.Url): $_" -ForegroundColor Red
@@ -150,8 +149,8 @@ foreach ($site in $sites) {
     $newsiteCT = Get-PnPContentType  | Where-Object { $_.Id.StringValue -contains $newct }
     if ($null -eq $newsiteCT) {
         if (!$ReportOnly) {
-        Add-PnPContentTypesFromContentTypeHub -ContentTypes $newct -Site $site.Url
-        Write-Host "Content Type '$newcontentTypeName' added to the site $($site.Url)"
+            Add-PnPContentTypesFromContentTypeHub -ContentTypes $newct -Site $site.Url
+            Write-Host "Content Type '$newcontentTypeName' added to the site $($site.Url)"
         }
     }
     $oldsiteCT = Get-PnPContentType  | Where-Object { $_.Id.StringValue -contains $oldct }
@@ -166,10 +165,10 @@ foreach ($site in $sites) {
             else {
                 $libraryCT = Get-PnPContentType -List $library.Title 
                 $ctReportwithcontenttype.Add([pscustomobject]@{
-                    SiteUrl          = $site.Url
-                    ContentTypeName  = $library.Title
-                    ContentTypeId    = $libraryCT.Name -join ","
-                })
+                        SiteUrl         = $site.Url
+                        ContentTypeName = $library.Title
+                        ContentTypeId   = $libraryCT.Name -join ","
+                    })
             }
            
             $oldctItems = Get-PnpListItem -List $library.Title -IncludeContentType | Where-Object { $_.FieldValues.ContentTypeId.StringValue.Contains($oldContentTypeId) }
@@ -202,20 +201,20 @@ foreach ($site in $sites) {
                 Write-Host "Content Type '$oldcontentTypeName' still exists in the library $($library.Title). in $($site.Url)"
                 IF ($ReporOnly) {
                     foreach ($item in $oldctItems) {
-                      $ctx.Load($item)
+                        $ctx.Load($item)
                         $ctx.ExecuteQuery()
                         $ctReportwithItems.Add([pscustomobject]@{
-                                SiteUrl          = $site.Url
-                                ContentTypeName  = $item.ContentType.Name
-                                library          = $library.Title
-                                Title            = $item.FieldValues.Title
-                                ItemUrl          = $item.FieldValues.FileRef
-                                ItemId           = $item.Id
-                                ContentTypeId    = $item.ContentType.Id.StringValue
-                                CreatedBy        = $item.FieldValues.Author.LookupValue
-                                ModifiedBy       = $item.FieldValues.Editor.LookupValue
-                                Modified         = $item.FieldValues.Modified.DateTime
-                                Created          = $item.FieldValues.Created.DateTime
+                                SiteUrl         = $site.Url
+                                ContentTypeName = $item.ContentType.Name
+                                library         = $library.Title
+                                Title           = $item.FieldValues.Title
+                                ItemUrl         = $item.FieldValues.FileRef
+                                ItemId          = $item.Id
+                                ContentTypeId   = $item.ContentType.Id.StringValue
+                                CreatedBy       = $item.FieldValues.Author.LookupValue
+                                ModifiedBy      = $item.FieldValues.Editor.LookupValue
+                                Modified        = $item.FieldValues.Modified.DateTime
+                                Created         = $item.FieldValues.Created.DateTime
                     
 
                             })

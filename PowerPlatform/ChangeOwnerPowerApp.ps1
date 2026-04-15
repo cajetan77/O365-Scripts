@@ -12,7 +12,7 @@ $apps = Get-AdminPowerApp
 #$newUser = "Bapty@cajesharepoint.onmicrosoft.com"
 #$user = Get-AdminPowerAppsUserDetails -UserPrincipalName $newUser
 
-$app = $apps | Where-Object { $_.DisplayName -eq "IOI Register" }
+$app = $apps | Where-Object { $_.DisplayName -eq "TestCaje" }
 
 # 4) Promote the co-owner (set them as the new Owner)
 $EnvironmentName = $app.EnvironmentName

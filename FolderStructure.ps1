@@ -15,106 +15,164 @@ param(
     [string[]]$ExcludedLists = @("Site Assets", "Site Pages", "SitePages", "Form Templates", "Style Library")
 )
 
+# Import PnP PowerShell module
+Import-Module PnP.PowerShell -Force
 
-$configPath = ".\config.json"
-$config = Get-Content -Raw -Path $configPath | ConvertFrom-Json
-$TenantId = $config.TenantId
-$clientId = $config.SharePointReportingAppId
-$Thumbprint = $config.ThumbPrint
-
-$sites=Import-Csv -Path ".\sites.csv"
-foreach ($site in $sites) {
-   
-    # Connect (interactive)
 try {
-    Connect-PnPOnline -Url $Site.Url -ClientId $ClientId -Tenant $TenantId -Thumbprint $Thumbprint
+    $configPath = ".\config.json"
+    $config = Get-Content -Raw -Path $configPath | ConvertFrom-Json
+    $TenantId = $config.TenantId
+    $ClientId = $config.SharePointReportingAppId
+    $Thumbprint = $config.ThumbPrint
+    Write-Host "Configuration loaded successfully" -ForegroundColor Green
 }
 catch {
-    Write-Host "Error connecting to SharePoint: $_"
-    continue
+    Write-Host "Error loading configuration from config.json: $_" -ForegroundColor Red
+    exit 1
 }
 
-# Get site's server-relative URL to remove from paths
-$web = Get-PnPWeb
-$siteServerRelativeUrl = $web.ServerRelativeUrl
+try {
+    $sites = Import-Csv -Path ".\sites.csv"
+    Write-Host "Found $($sites.Count) site(s) to process" -ForegroundColor Cyan
+}
+catch {
+    Write-Host "Error loading sites from sites.csv: $_" -ForegroundColor Red
+    exit 1
+}
 
-# Get library root folder server-relative URL
-$Lists   = Get-PnPList | Where-Object { $_.BaseType -eq "DocumentLibrary" -and -not $_.Hidden -and $ExcludedLists -notcontains $_.Title }
-foreach ($List in $Lists) {
-$rootFolderUrl = $List.RootFolder.ServerRelativeUrl
+$allResults = @()
 
-Write-Host "Library root: $($List.RootFolder.ServerRelativeUrl)"
-
-# Get ONLY folders in the library (FSObjType = 1)
-# Using list items is typically faster/reliable for large libraries
-$caml = @"
-<View Scope='RecursiveAll'>
-  <Query>
-    <Where>
-      <Eq>
-        <FieldRef Name='FSObjType' />
-        <Value Type='Integer'>1</Value>
-      </Eq>
-    </Where>
-  </Query>
-  <ViewFields>
-    <FieldRef Name='FileRef' />
-    <FieldRef Name='FileLeafRef' />
-    <FieldRef Name='FileDirRef' />
-  </ViewFields>
-  <RowLimit>5000</RowLimit>
-</View>
-"@
-
-$folderItems = Get-PnPListItem -List $List.Title -Query $caml -PageSize 5000
-
-# Build output
-$results = foreach ($item in $folderItems) {
-    $path = [string]$item["FileRef"]       # server-relative full folder path
-    $name = [string]$item["FileLeafRef"]   # folder name
-    $parent = [string]$item["FileDirRef"]  # parent folder path
-
-    # Remove site server-relative URL from paths
-    $pathRelative = $path
-    $parentRelative = $parent
-    if ($pathRelative.StartsWith($siteServerRelativeUrl)) {
-        $pathRelative = $pathRelative.Substring($siteServerRelativeUrl.Length).TrimStart("/")
+foreach ($site in $sites) {
+    Write-Host "`nProcessing site: $($site.Url)" -ForegroundColor Green
+    
+    # Connect to site
+    try {
+        Connect-PnPOnline -Url $site.Url -ClientId $ClientId -Tenant $TenantId -Thumbprint $Thumbprint
+        Write-Host "Connected successfully" -ForegroundColor Green
     }
-    if ($parentRelative.StartsWith($siteServerRelativeUrl)) {
-        $parentRelative = $parentRelative.Substring($siteServerRelativeUrl.Length).TrimStart("/")
+    catch {
+        Write-Host "Error connecting to SharePoint: $_" -ForegroundColor Red
+        continue
     }
 
-    # Compute "level" relative to library root
-    $relative = $path.Replace($rootFolderUrl, "").Trim("/")
-    $level = if ([string]::IsNullOrWhiteSpace($relative)) { 0 } else { ($relative -split "/").Count }
-
-    $obj = [pscustomobject]@{
-      SiteUrl      = $Site.Url
-        Library      = $List.Title
-        FolderName   = $name
-        FolderPath   = $pathRelative
-        ParentPath   = $parentRelative
-        Level        = $level
+    # Get site's server-relative URL to remove from paths
+    try {
+        $web = Get-PnPWeb
+        $siteServerRelativeUrl = $web.ServerRelativeUrl
+        Write-Host "Retrieved site information successfully" -ForegroundColor Green
+    }
+    catch {
+        Write-Host "Error getting site information: $_" -ForegroundColor Red
+        continue
     }
 
-    if ($IncludeItemCount) {
+    # Get library root folder server-relative URL
+    try {
+        $Lists = Get-PnPList | Where-Object { $_.BaseType -eq "DocumentLibrary" -and -not $_.Hidden -and $ExcludedLists -notcontains $_.Title }
+        Write-Host "Found $($Lists.Count) document libraries" -ForegroundColor Cyan
+    }
+    catch {
+        Write-Host "Error getting document libraries: $_" -ForegroundColor Red
+        continue
+    }
+    
+    foreach ($List in $Lists) {
+        Write-Host "  Processing library: $($List.Title)" -ForegroundColor Yellow
+        
         try {
-            $folder = Get-PnPFolder -Url $path -Includes ItemCount
-            $obj | Add-Member -NotePropertyName ItemCount -NotePropertyValue $folder.ItemCount
-        } catch {
-            $obj | Add-Member -NotePropertyName ItemCount -NotePropertyValue $null
+            $rootFolderUrl = $List.RootFolder.ServerRelativeUrl
+            Write-Host "Library root: $($List.RootFolder.ServerRelativeUrl)"
+
+            # Get all list items and then filter for folders only
+            Write-Host "Getting all list items..."
+            $allItems = Get-PnPListItem -List $List.Title -PageSize 5000
+            
+            # Filter to get only folders (FSObjType = 1)
+            $folderItems = $allItems | Where-Object { $_["FSObjType"] -eq 1 }
+            
+            Write-Host "Total items: $($allItems.Count), Folders: $($folderItems.Count)"
         }
+        catch {
+            Write-Host "  Error processing library '$($List.Title)': $_" -ForegroundColor Red
+            Write-Host "  Skipping this library and continuing..." -ForegroundColor Yellow
+            continue
+        }
+
+        # Build output for this library
+        $results = @()
+        foreach ($item in $folderItems) {
+            try {
+                $path = [string]$item["FileRef"]       # server-relative full folder path
+                $name = [string]$item["FileLeafRef"]   # folder name
+                $parent = [string]$item["FileDirRef"]  # parent folder path
+
+                # Remove library root path to get folder path relative to library
+                $folderPathRelativeToLibrary = $path.Replace($rootFolderUrl, "").TrimStart("/")
+                $parentPathRelativeToLibrary = $parent.Replace($rootFolderUrl, "").TrimStart("/")
+        
+                # If path is empty, it means this is the library root
+                if ([string]::IsNullOrWhiteSpace($folderPathRelativeToLibrary)) {
+                    $folderPathRelativeToLibrary = "/"
+                }
+                if ([string]::IsNullOrWhiteSpace($parentPathRelativeToLibrary)) {
+                    $parentPathRelativeToLibrary = "/"
+                }
+
+                # Compute "level" relative to library root
+                $level = if ($folderPathRelativeToLibrary -eq "/") { 0 } else { ($folderPathRelativeToLibrary -split "/").Count }
+
+                $obj = [pscustomobject]@{
+                    SiteUrl    = $site.Url
+                    Library    = $List.Title
+                    FolderName = $name
+                    FolderPath = $folderPathRelativeToLibrary
+                    #ParentPath = $parentPathRelativeToLibrary
+                    #Level      = $level
+                }
+
+                if ($IncludeItemCount) {
+                    try {
+                        $folder = Get-PnPFolder -Url $path -Includes ItemCount
+                        $obj | Add-Member -NotePropertyName ItemCount -NotePropertyValue $folder.ItemCount
+                    }
+                    catch {
+                        Write-Host "    Warning: Could not get item count for folder '$name': $_" -ForegroundColor Yellow
+                        $obj | Add-Member -NotePropertyName ItemCount -NotePropertyValue $null
+                    }
+                }
+
+                $results += $obj
+            }
+            catch {
+                Write-Host "    Error processing folder item: $_" -ForegroundColor Red
+                continue
+            }
+        }
+        
+        # Add results from this library to the overall collection
+        $allResults += $results
+        Write-Host "    Added $($results.Count) folder(s) to results" -ForegroundColor Gray
     }
-
-    $obj
+    
+    try {
+        Write-Host "Disconnecting from site" -ForegroundColor Green
+        Disconnect-PnPOnline
+    }
+    catch {
+        Write-Host "Warning: Error disconnecting from site: $_" -ForegroundColor Yellow
+    }
 }
-}
 
-    # Sort by path for a clean hierarchy-like listing
-    $resultsSorted = $results | Sort-Object FolderPath
+# Sort all results by site and path for a clean hierarchy-like listing
+try {
+    Write-Host "`nTotal folders found: $($allResults.Count)" -ForegroundColor Cyan
+    $resultsSorted = $allResults | Sort-Object SiteUrl, Library, FolderPath
 
-    # Export
+    # Export all results
     $resultsSorted | Export-Csv -NoTypeInformation -Encoding UTF8 -Path $OutputCsv
-
-    Write-Host "Done. Exported folder structure to: $OutputCsv"
+    Write-Host "Done. Exported folder structure to: $OutputCsv" -ForegroundColor Green
+}
+catch {
+    Write-Host "Error exporting results to CSV: $_" -ForegroundColor Red
+    Write-Host "Results count: $($allResults.Count)" -ForegroundColor Yellow
 }
