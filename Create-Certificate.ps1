@@ -1,8 +1,8 @@
 Import-Module PSPKI -ErrorAction Stop
 
-$subject = "Caj4" 
+$subject = "SiteProvisioningCert"  # Common Name (CN) for the certificate
 $yearsGood = 5  # How many years the cert will be good for.
-$friendlyName = "Caj Cert"
+$friendlyName = "Site Provisioning Certificate"  # Friendly name for the certificate in the store
 #$pfxPass = (Get-Credential).Password
 $exportTo = ".\$subject.pfx"
 $cerPath = ".\$subject.cer"
@@ -10,7 +10,7 @@ $cerPath = ".\$subject.cer"
 Write-Host "Creating self-signed certificate..." -ForegroundColor Cyan
 
 # Create the certificate and export to PFX
-if(Test-Path $exportTo) {
+if (Test-Path $exportTo) {
     Write-Host "Certificate already exists. Skipping creation." -ForegroundColor Yellow
     
 }
@@ -55,8 +55,14 @@ if ($storeCert) {
         Write-Host ""
        
     }
-} else {
+}
+else {
     Write-Warning "Could not find certificate in store with thumbprint: $thumbprint"
+    $certPath = "D:\Powershell\O365 Scripts\SiteProvisioning\$subject.cer"
+
+    $certBytes = $cert.Export([System.Security.Cryptography.X509Certificates.X509ContentType]::Cert)
+
+    [System.IO.File]::WriteAllBytes($certPath, $certBytes)
     Write-Host "PFX file created at: $exportTo" -ForegroundColor Yellow
     Write-Host ""
     
