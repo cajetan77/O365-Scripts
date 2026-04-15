@@ -43,7 +43,7 @@ if ($storeCert) {
         Export-Certificate -Cert $storeCert -FilePath $cerPath -Type CERT -ErrorAction Stop
         
         Write-Host ""
-        Write-Host "Certificate files created successfully:" -ForegroundColor Green
+        Write-Host "Certificate files created successfully :" -ForegroundColor Green
         Write-Host "  PFX (with private key): $((Resolve-Path $exportTo).Path)" -ForegroundColor Cyan
         Write-Host "  CER (public key only): $((Resolve-Path $cerPath).Path)" -ForegroundColor Cyan
         Write-Host "  Thumbprint: $thumbprint" -ForegroundColor Cyan
