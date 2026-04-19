@@ -1,5 +1,6 @@
 param(
     [string]$CsvPath = ".\Sites.csv",
+    [string]$LogDirectory = ".\logs",
     [string]$ConfigPath = ".\config.json",
     [string]$SiteLogoPath = "D:\Downloads\pexels-padrinan-255379.jpg",
     [string]$SiteThumbnailPath = "D:\Downloads\pexels-padrinan-255379.jpg",
@@ -47,9 +48,54 @@ $HubSiteUrl = $HubSiteUrl.ToString().Trim()
 
 
 
+function Write-LogMessage {
+    param(
+        [Parameter(Mandatory = $true)]
+        [string]$Message,
+        [ValidateSet("Info", "Warning", "Error", "Success")]
+        [string]$Level = "Info",
+        [Parameter()]
+        [ValidateNotNullOrEmpty()]
+        [string]$LogFilePath = ".\logs",
+        [string]$siteName
+
+    )
+    # Create the log directory if it doesn't exist
+    if (!(Test-Path $LogFilePath)) {
+        New-Item -Path $LogFilePath -ItemType Directory -Force | Out-Null
+    }
+    $timestamp = Get-Date -Format "yyyy-MM-dd HH:mm:ss"
+    $siteName = $siteName.ToString().Trim()
+    $logFile = Join-Path $LogFilePath "log-$($siteName).txt"
+    $logLine = "[{0}] [{1}] {2}" -f $timestamp, $Level, $Message
+
+    switch ($Level) {
+        "Error" {
+            Add-Content -Path $logFile -Value $logLine
+            Write-Error $logLine
+        }
+        "Warning" {
+            Add-Content -Path $logFile -Value $logLine
+            Write-Warning $logLine
+        }
+        "Success" {
+            Add-Content -Path $logFile -Value $logLine
+            Write-Host $logLine -ForegroundColor Green
+            
+        }
+        default {
+            # Info: visible in console and captured by Start-Transcript
+            Add-Content -Path $logFile -Value $logLine
+            Write-Host $logLine -ForegroundColor Gray
+        }
+    }
+}
+
+
 function Set-SiteRegionalSettings {
     param(
-        [string]$SiteUrl
+        [string]$SiteUrl,
+        [string]$siteName 
     )
  
     try {
@@ -58,10 +104,10 @@ function Set-SiteRegionalSettings {
         $web.RegionalSettings.LocaleId = $localeId
         $web.Update()
         Invoke-PnPQuery
-        Write-Host  "Updated Site Regional Settings to have NZ Time Zone and NZ Locale  $($web.Url)" "Info"
+        Write-LogMessage -Message "Updated Site Regional Settings to have NZ Time Zone and NZ Locale  $($web.Url)" -Level Info -siteName $siteName
     }
     catch {
-        Write-Host "Error connecting to site $SiteUrl :$($_.Exception.Message)"
+        Write-LogMessage -Message "Error connecting to site $SiteUrl :$($_.Exception.Message)" -Level Error -siteName  $siteName 
     
     }
     
@@ -73,7 +119,8 @@ function Set-SiteRegionalSettings {
 
 function Add-GroupstoSharePointGroups {
     param (
-        [string]$SiteUrl
+        [string]$SiteUrl,
+        [string]$siteName
     )
 
     try {
@@ -84,17 +131,17 @@ function Add-GroupstoSharePointGroups {
             -Group $ownersGroup.Title `
             -LoginName $groupLoginName `
             -ErrorAction Stop
-        Write-Host "Added Entra group with Object ID $EntraGroupObjectId to Owners group on $($SiteUrl)" -ForegroundColor Green    
+        Write-LogMessage -Message "Added Entra group with Object ID $EntraGroupObjectId to Owners group on $($SiteUrl)" -Level Success -siteName $siteName
         $membersGroup = Get-PnPGroup -AssociatedMemberGroup -ErrorAction Stop
         Add-PnPGroupMember `
             -Group $membersGroup.Title `
             -LoginName $groupLoginName `
             -ErrorAction Stop
-        Write-Host "Added Entra group with Object ID $EntraGroupObjectId to Members group on $($SiteUrl)" -ForegroundColor Green
+        Write-LogMessage -Message "Added Entra group with Object ID $EntraGroupObjectId to Members group on $($SiteUrl)" -Level Success -siteName $siteName
     
     }
     catch {
-        Write-Host "ERROR: Failed to add group to SharePoint group on $($SiteUrl): $($_.Exception.Message)" -ForegroundColor Red 
+        Write-LogMessage -Message "ERROR: Failed to add group to SharePoint group on $($SiteUrl): $($_.Exception.Message)" -Level Error -siteName $siteName
     }
     
 }
@@ -102,7 +149,8 @@ function Add-GroupstoSharePointGroups {
 
 function Set-Branding {
     param (
-        [string]$SiteUrl
+        [string]$SiteUrl,
+        [string]$siteName
     )
     try {
         Set-PnPWebHeader -HeaderLayout "Extended"
@@ -115,10 +163,10 @@ function Set-Branding {
         $file = Add-PnpFile -Path $backgroundImagePath -Folder "SiteAssets"
         $bgUrl = "https://$((Get-PnPWeb).Url.Split('/')[2])$($file.ServerRelativeUrl)"
         Set-PnPWebHeader -HeaderLayout "Extended" -HeaderBackgroundImageUrl $bgUrl -ErrorAction Stop
-        Write-Host "Header and Footer Extended  on $($SiteUrl)" -ForegroundColor Green
+        Write-LogMessage -Message "Header and Footer Extended  on $($SiteUrl)" -Level Success -siteName $siteName
     }
     catch {
-        Write-Host "ERROR: Failed to set branding on $($SiteUrl): $($_.Exception.Message)" -ForegroundColor Red
+        Write-LogMessage -Message "ERROR: Failed to set branding on $($SiteUrl): $($_.Exception.Message)" -Level Error -siteName $siteName
         
     }
 }
@@ -126,7 +174,8 @@ function Set-Branding {
 
 function Set-SearchSettings {
     param (
-        [string]$SiteUrl
+        [string]$SiteUrl,
+        [string]$siteName
     )
     try {
 
@@ -135,7 +184,7 @@ function Set-SearchSettings {
             $list.NoCrawl = $true
             $list.Update()
             Invoke-PnPQuery
-            Write-Host "Site Assets list no crawled on $($SiteUrl)" -ForegroundColor Green
+            Write-LogMessage -Message "Site Assets list no crawled on $($SiteUrl)" -Level Success -siteName $siteName
         }
         else {
             $web = Get-PnPWeb 
@@ -144,13 +193,13 @@ function Set-SearchSettings {
             $list = Get-PnPList -Identity "Site Assets" 
             Set-PnPList -Identity $list -NoCrawl:$true
             Invoke-PnPQuery
-            Write-Host "Site Assets list no crawled on $($SiteUrl)" -ForegroundColor Green
-     
+            Write-LogMessage -Message "Site Assets list no crawled on $($SiteUrl)" -Level Success -siteName $siteName
+
         }
 
     }
     catch {
-        Write-Host "ERROR: Failed to set search settings on $($SiteUrl): $($_.Exception.Message)" -ForegroundColor Red
+        Write-LogMessage -Message "ERROR: Failed to set search settings on $($SiteUrl): $($_.Exception.Message)" -Level Error -siteName $siteName
        
     }
 }
@@ -158,13 +207,14 @@ function Set-SearchSettings {
 
 Function Set-DocLibraryPermissions {
     param(
-        [string]$SiteUrl
+        [string]$SiteUrl,
+        [string]$siteName
     )
     try {
         Write-Host "Setting DocLibraryPermissions on $SiteUrl" -ForegroundColor Yellow
         $library = Get-PnPList -Identity "Documents" -ErrorAction Stop
         if (-not $library) {
-            Write-Host "ERROR: $($library.Title) not found on $SiteUrl" -ForegroundColor Red
+            Write-LogMessage -Message "ERROR: $($library.Title) not found on $SiteUrl" -Level Error -siteName $siteName
            
         }
 
@@ -174,7 +224,7 @@ Function Set-DocLibraryPermissions {
         $membersGroup = Get-PnPGroup -AssociatedMemberGroup -ErrorAction Stop
 
         if (-not $ownersGroup -or -not $membersGroup) {
-            throw "Could not resolve Owners or Members group for $SiteUrl."
+            Write-LogMessage -Message "ERROR: Could not resolve Owners or Members group for $SiteUrl." -Level Error -siteName $siteName
         }
 
         # Ensure both site groups have Contribute on Documents.
@@ -190,10 +240,10 @@ Function Set-DocLibraryPermissions {
             -RemoveRole "Edit" `
             -AddRole "Contribute" `
             
-        Write-Host "Permissions updated: Owners and Members have Contribute on Documents." -ForegroundColor Green
+        Write-LogMessage -Message "Permissions updated: Owners and Members have Contribute on Documents." -Level Success -siteName $siteName
     }
     catch {
-        Write-Host "ERROR: Failed to set DocLibraryPermissions: $($_.Exception.Message)" -ForegroundColor Red
+        Write-LogMessage -Message "ERROR: Failed to set DocLibraryPermissions: $($_.Exception.Message)" -Level Error -siteName $siteName
        
     }
 
@@ -202,22 +252,23 @@ Function Set-DocLibraryPermissions {
 
 function Get-ContentTypeHub {
     param(
-        [string]$ct
+        [string]$ct,
+        [string]$siteName
     )
-    Write-Host "Adding Content Type from the Content Type Hub" -ForegroundColor Green
+    Write-LogMessage -Message "Adding Content Type from the Content Type Hub" -Level Info -siteName $siteName
     $contentTypesArray = $ct.Split(",") | ForEach-Object { $_.Trim() }  
     $contentTypeHubUrl = Get-PnPContentTypePublishingHubUrl
-    Write-Host "Content Type Hub URL: $contentTypeHubUrl" -ForegroundColor Green
+    Write-LogMessage -Message "Content Type Hub URL: $contentTypeHubUrl" -Level Info -siteName $siteName
     try {
         $ctconnection = Connect-PnPOnline -Url $contentTypeHubUrl -ClientId $ClientId -Tenant $TenantId -Thumbprint $Thumbprint
      
         $ctHub = Get-PnPContentType -Connection $ctconnection
         Disconnect-PnPOnline
-        Write-Host "Disconnected from content type hub" -ForegroundColor Green
+        Write-LogMessage -Message "Disconnected from content type hub" -Level Success -siteName $siteName
     }
     
     catch {
-        Write-Host "Error connecting to Content Type Hub: $($_.Exception.Message)" -ForegroundColor Red
+        Write-LogMessage -Message "Error connecting to Content Type Hub: $($_.Exception.Message)" -Level Error -siteName $siteName
     }
  
     try {
@@ -227,13 +278,13 @@ function Get-ContentTypeHub {
         foreach ($cts in $ctHub) {
             if ($contentTypesArray -contains $cts.Name) {
                 Add-PnPContentTypesFromContentTypeHub -ContentTypes $cts.Id -Site $SiteUrl -Connection $siteconnection
-                Write-Host "Added content type '$($cts.Name)' to site: $SiteUrl" -ForegroundColor Green
+                Write-LogMessage -Message "Added content type '$($cts.Name)' to site: $SiteUrl" -Level Success -siteName $siteName
             }
         }
      
     }
     catch {
-        Write-Host "Error adding Content Types from Hub: $($_.Exception.Message)" -ForegroundColor Red
+        Write-LogMessage -Message "Error adding Content Types from Hub: $($_.Exception.Message)" -Level Error -siteName $siteName
     }
     
 }
@@ -241,22 +292,23 @@ function Get-ContentTypeHub {
 
 function Add-ContentTypes {
     param(
-        [string]$SiteUrl
+        [string]$SiteUrl,
+        [string]$siteName
     )
     try {
 
         $library = Get-PnPList -Identity "Documents" -ErrorAction Stop
         if (-not $library) {
-            Write-Host "ERROR: DocLibrary not found on $SiteUrl" -ForegroundColor Red
-            throw "Document library 'Documents' was not found."
+            Write-LogMessage -Message "ERROR: DocLibrary not found on $SiteUrl" -Level Error -siteName $siteName
+            
             
         }
         else {
             $library.ContentTypesEnabled = $true
             $library.Update()
             Invoke-PnPQuery
-            Write-Host "Content types enabled on $($library.Title)" -ForegroundColor Green
-            Get-ContentTypeHub -ct $contentTypeName
+            Write-LogMessage -Message "Content types enabled on $($library.Title)" -Level Success -siteName $siteName
+            Get-ContentTypeHub -ct $contentTypeName  -siteName $siteName
             #Get the content type
             $ContentType = Get-PnPContentType -Identity $contentTypeName
             If ($ContentType) {
@@ -264,15 +316,15 @@ function Add-ContentTypes {
                 foreach ($listName in $contentTypeList) {  
                     Add-PnPContentTypeToList -List $listName -ContentType $ContentType
                    
-                    Write-Host "Added content type '$($ContentType.Name)' to list '$($listName)'" -ForegroundColor Green
-                    Set-DefaultContentType -SiteUrl $SiteUrl -ListName $listName -ContentTypeName $contentTypeName
+                    Write-LogMessage -Message "Added content type '$($ContentType.Name)' to list '$($listName)'" -Level Success -siteName $siteName
+                    Set-DefaultContentType -SiteUrl $SiteUrl -ListName $listName -ContentTypeName $contentTypeName -siteName $siteName
                 }
             }
         }
     }
     catch {
-        Write-Host "ERROR: Failed to add content type: $($_.Exception.Message)" -ForegroundColor Red
-        throw
+        Write-LogMessage -Message "ERROR: Failed to add content type: $($_.Exception.Message)" -Level Error -siteName $siteName
+        
     }
 }
 
@@ -280,32 +332,34 @@ function Set-DefaultContentType {
     param(
         [string]$SiteUrl,
         [string]$ListName,
-        [string]$ContentTypeName
+        [string]$ContentTypeName,
+        [string]$siteName
     )
 
     try {
         Set-PnPDefaultContentTypeToList -List $ListName -ContentType $ContentTypeName -ErrorAction Stop
-        Write-Host "Default content type set to '$ContentTypeName' on list '$ListName' ($SiteUrl)" -ForegroundColor Green
+        Write-LogMessage -Message "Default content type set to '$ContentTypeName' on list '$ListName' ($SiteUrl)" -Level Success -siteName $siteName
     }
     catch {
-        Write-Host "ERROR: Failed to set default content type '$ContentTypeName' on list '$ListName' ($SiteUrl): $($_.Exception.Message)" -ForegroundColor Red
-        throw
+        Write-LogMessage -Message "ERROR: Failed to set default content type '$ContentTypeName' on list '$ListName' ($SiteUrl): $($_.Exception.Message)" -Level Error -siteName $siteName
+        
     }
 }
 
 function Add-SiteToHubAssociation {
     param(
         [string]$SiteUrl,
-        [string]$TargetHubSiteUrl
+        [string]$TargetHubSiteUrl,
+        [string]$SiteName
     )
 
     try {
        
         Add-PnPHubSiteAssociation -Site $SiteUrl -HubSite $TargetHubSiteUrl -ErrorAction Stop
-        Write-Host "Site $SiteUrl added to hub $TargetHubSiteUrl" -ForegroundColor Green
+        Write-LogMessage -Message "Site $SiteUrl added to hub $TargetHubSiteUrl" -Level Success -siteName $SiteName
     }
     catch {
-        Write-Host "ERROR: Failed to add site to hub association: $($_.Exception.Message)" -ForegroundColor Red
+        Write-LogMessage -Message "ERROR: Failed to add site to hub association: $($_.Exception.Message)" -Level Error -siteName $SiteName
     }
 }
 
@@ -313,7 +367,8 @@ function Add-SiteToHubAssociation {
 
 function Install-App {
     param(
-        [string]$SiteUrl
+        [string]$SiteUrl,
+        [string]$siteName
     )
     try {
       
@@ -321,31 +376,30 @@ function Install-App {
             $app = Get-PnPApp -Identity $appId  -ErrorAction Stop
             if ($null -eq $app.InstalledVersion) {
                 Install-PnPApp -Identity $app  -ErrorAction Stop
-                Write-Host "App installed: $($app.Title)" -ForegroundColor Green
+                Write-LogMessage -Message "App installed: $($app.Title)" -Level Success  -siteName $siteName    
             }
             else {
-                Write-Host "App already installed: $($app.Title)" -ForegroundColor Yellow
+                Write-LogMessage -Message "App already installed: $($app.Title)" -Level Warning -siteName $siteName
             }
            
         }
     }
     catch {
-        Write-Host "ERROR: Failed to install app on $($SiteUrl): $($_.Exception.Message)" -ForegroundColor Red
+        Write-LogMessage -Message "ERROR: Failed to install app on $($SiteUrl): $($_.Exception.Message)" -Level Error -siteName $siteName
     }
 }
 
 
 function Add-PageTemplates {
     param (
-        [string] $siteUrl
+        [string] $siteUrl,
+        [string] $siteName
     )
     
     foreach ($pageTempalte in $pageTempaltes) {
         try {
-           
-
             if (Get-PnPPage -Identity $pageTempalte -ErrorAction SilentlyContinue) {
-                Write-Host "Page template already exists: $($pageTempalte). Skipping creation." -ForegroundColor Yellow
+                Write-LogMessage -Message "Page template already exists: $($pageTempalte). Skipping creation." -Level Warning -siteName $siteName
             }
             else {
               
@@ -369,12 +423,12 @@ function Add-PageTemplates {
                 else {
                     $page = Add-PnpPage -Name $pageTempalte -PromoteAs Template -Publish
                 }
-                Write-Host "Page template added: $($pageTempalte)" -ForegroundColor Green
+                Write-LogMessage -Message "Page template added: $($pageTempalte)" -Level Success  -siteName $siteName  
             }
             
         }
         catch {
-            Write-Host "ERROR: Failed to add page template: $($pageTempalte): $($_.Exception.Message)" -ForegroundColor Red
+            Write-LogMessage -Message "ERROR: Failed to add page template: $($pageTempalte): $($_.Exception.Message)" -Level Error -siteName $siteName
         }
 
     }
@@ -392,7 +446,7 @@ function Add-SiteColumns {
             $existingColumn = Get-PnPField -Identity $ColumnName -ErrorAction SilentlyContinue
             if ($existingColumn) {
 
-                Write-Host "Site column '$ColumnName'  exists on $($siteUrl). Skipping creation." -ForegroundColor Yellow        
+                Write-LogMessage -Message "Site column '$ColumnName'  exists on $($siteUrl). Skipping creation." -Level Warning -siteName $siteName
                 switch ($columnName) {
                     "Main Category" { 
                         #Write-Host "Site column '$ColumnName' already exists on $($siteUrl). Skipping adding to list." -ForegroundColor Yellow
@@ -407,36 +461,36 @@ function Add-SiteColumns {
                 }
                 $fieldInList = Get-PnPField -List $list -Identity $ColumnName -ErrorAction SilentlyContinue
                 if ($fieldInList) {
-                    Write-Host "Site column '$ColumnName' already exists in Documents library on $($siteUrl). Skipping." -ForegroundColor Yellow
+                    Write-LogMessage -Message "Site column '$ColumnName' already exists in Documents library on $($siteUrl). Skipping." -Level Warning -siteName $siteName
                 }
                 else {
                     switch ($columnName) {
                         "Main Category" { 
                             Add-PnPFieldFromXml -List $list -FieldXml $existingColumn.SchemaXml -ErrorAction Stop
-                            Write-Host "Added site column '$columnName' to '$list'"
+                            Write-LogMessage -Message "Added site column '$columnName' to '$list'" -Level Success -siteName $siteName
                         }
                         "Sub Category" { 
                             Add-PnPFieldFromXml -List $list -FieldXml $existingColumn.SchemaXml -ErrorAction Stop
-                            Write-Host "Added site column '$columnName' to '$list'"
+                            Write-LogMessage -Message "Added site column '$columnName' to '$list'" -Level Success -siteName $siteName
                         }
                         Default {
                             Add-PnPField -List $list -Field $existingColumn
-                            Write-Host "Added site column '$columnName' to '$list'"
+                            Write-LogMessage -Message "Added site column '$columnName' to '$list'" -Level Success -siteName $siteName
                         }
                     }
                     
-                    Write-Host "Added existing site column '$ColumnName' to Documents library on $($siteUrl)." -ForegroundColor Green
+                    Write-LogMessage -Message "Added existing site column '$ColumnName' to Documents library on $($siteUrl)." -Level Success -siteName $siteName
                 }
             } 
             else {
-                Write-Host "Site column '$ColumnName' already exists in Documents library on $($siteUrl). Skipping." -ForegroundColor Yellow
+                Write-LogMessage -Message "Site column '$ColumnName' already exists in Documents library on $($siteUrl). Skipping." -Level Warning -siteName $siteName
             }
 
         }
 
     }
     catch {
-        Write-Host "ERROR: Failed to add site column on $($siteUrl): $($_.Exception.Message)" -ForegroundColor Red
+        Write-LogMessage -Message "ERROR: Failed to add site column on $($siteUrl): $($_.Exception.Message)" -Level Error -siteName $siteName
     }
     
 }
@@ -453,7 +507,7 @@ function Set-Views {
         
             $library = Get-PnPList -Identity $list -ErrorAction Stop
             if (-not $library) {
-                Write-Host "ERROR: DocLibrary not found on $SiteUrl" -ForegroundColor Red
+                Write-LogMessage -Message "ERROR: DocLibrary not found on $SiteUrl" -Level Error -siteName $siteName
            
                 
             }
@@ -461,12 +515,12 @@ function Set-Views {
             
                 $view = Get-PnPView -List $library  | Where-Object { $_.DefaultView -eq $true }
                 Set-PnPView -List $library -Identity $view.Id -Fields "DocIcon", "Title", "Modified", "Editor", "ReviewDate1", "DoogleWFMainCategory", "MSDNotificationSent", "DoogleWFRestrictedApproval", "DoogleWFSubCategory" -ErrorAction Stop
-                Write-Host "Custom view created and set as default on $($library.Title)" -ForegroundColor Green
+                Write-LogMessage -Message "Custom view created and set as default on $($library.Title)" -Level Success -siteName $siteName
             }
         }
     }
     catch {
-        Write-Host "ERROR: Failed to set views on $($SiteUrl): $($_.Exception.Message)" -ForegroundColor Red
+        Write-LogMessage -Message "ERROR: Failed to set views on $($SiteUrl): $($_.Exception.Message)" -Level Error -siteName $siteName
         
     }
 
@@ -477,51 +531,45 @@ function Set-Views {
 
 try {
     $rows = Import-Csv -Path $CsvPath -Encoding UTF8
-    if ($null -eq $rows -or $rows.Count -eq 0) {
-        Write-Host "ERROR: CSV has no rows." -ForegroundColor Red
-        Disconnect-PnPOnline -ErrorAction SilentlyContinue
-        exit 1
-    }
+ 
 
-    if ($rows[0].PSObject.Properties.Name -notcontains "SiteUrl") {
-        Write-Host "ERROR: CSV must contain the required 'SiteUrl' column header." -ForegroundColor Red
-        Write-Host "Example header: SiteUrl" -ForegroundColor Yellow
-        Disconnect-PnPOnline -ErrorAction SilentlyContinue
-        exit 1
-    }
-
-
+    
+    $index = 0
+    $total = $rows.Count
+    $failed = 0
 
     foreach ($row in $rows) {
         $index++
         $siteUrl = if ($row.SiteUrl) { $row.SiteUrl.ToString().Trim() } else { "" }
-
-        if ([string]::IsNullOrWhiteSpace($siteUrl)) {
-            Write-Host "[$index/$total] Skipping row because required 'SiteUrl' is empty." -ForegroundColor Yellow
-            continue
-        }
-
-        try {
+        $siteName = if ($row.Title) { $row.Title.ToString().Trim() } else { "" }
         
-            Connect-PnPOnline -Url $siteUrl -ClientId $clientId -Tenant $tenantId -Thumbprint $thumbprint -ErrorAction Stop    
 
-            Add-PageTemplates -SiteUrl $SiteUrl  
-            Add-SiteToHubAssociation -SiteUrl $siteUrl -TargetHubSiteUrl $HubSiteUrl
-            Set-SiteRegionalSettings -SiteUrl $siteUrl
-            Set-SearchSettings -SiteUrl $siteUrl
-            Set-DocLibraryPermissions -SiteUrl $siteUrl
-            Add-GroupstoSharePointGroups -SiteUrl $siteUrl
-            Set-Branding -SiteUrl $siteUrl
-            Install-App -SiteUrl $SiteUrl
-            Add-ContentTypes -SiteUrl $SiteUrl
-            Add-SiteColumns -SiteUrl $siteUrl
-           
-            Set-Views -SiteUrl $siteUrl    
-            
+     
+        try {
+
+            #Write-Host "[$index/$total] Site '$siteNameForLog' — transcript: $logPath" -ForegroundColor Cyan
+
+            Write-LogMessage -Message "[$index/$total] Site '$siteUrl'" -Level Info -siteName $siteName
+            Connect-PnPOnline -Url $siteUrl -ClientId $clientId -Tenant $tenantId -Thumbprint $thumbprint -ErrorAction Stop
+
+            Add-SiteToHubAssociation -SiteUrl $siteUrl -TargetHubSiteUrl $HubSiteUrl -SiteName $siteName
+            Set-SiteRegionalSettings -SiteUrl $siteUrl -siteName $siteName
+            Set-SearchSettings -SiteUrl $siteUrl -siteName $siteName
+            Set-DocLibraryPermissions -SiteUrl $siteUrl -siteName $siteName
+            Add-GroupstoSharePointGroups -SiteUrl $siteUrl -siteName $siteName
+            Set-Branding -SiteUrl $siteUrl  -siteName $siteName
+            Install-App -SiteUrl $SiteUrl -siteName $siteName
+            Add-ContentTypes -SiteUrl $SiteUrl  -siteName $siteName
+            Add-SiteColumns -SiteUrl $siteUrl   -siteName $siteName
+            Add-PageTemplates -SiteUrl $SiteUrl -siteName $siteName
+            Set-Views -SiteUrl $siteUrl     -siteName $siteName
         }
         catch {
             $failed++
-            Write-Host "[$index/$total] ERROR: Failed to associate '$siteUrl' to hub '$HubSiteUrl'. $($_.Exception.Message)" -ForegroundColor Red
+            Write-LogMessage -Message "[$index/$total] ERROR: Failed   $($_.Exception.Message)" -Level Error -siteName $siteName
+        }
+        finally {
+            Write-LogMessage -Message "[$index/$total] Site '$siteUrl' processed successfully" -Level Success -siteName $siteName
         }
     }
 
