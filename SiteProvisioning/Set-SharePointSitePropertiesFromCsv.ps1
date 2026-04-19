@@ -3,11 +3,13 @@ param(
     [string]$ConfigPath = ".\config.json",
     [string]$SiteLogoPath = "D:\Downloads\pexels-padrinan-255379.jpg",
     [string]$SiteThumbnailPath = "D:\Downloads\pexels-padrinan-255379.jpg",
+    [string]$backgroundImagePath = "D:\Downloads\pexels-padrinan-255379.jpg",
     [string]$HubSiteUrl = "https://caje77sharepoint.sharepoint.com/sites/AIALIntranet",
     $appIds = @("59903278-DD5D-4E9E-BEF6-562AAE716B8B", "00406271-0276-406F-9666-512623EB6709"),
     $pageTempaltes = @("Landing-Page", "Page-Template-1", "Page-Template-2"),
-    $contentTypeName = "DocTestPublishing",
-    $contentTypeList = @("Documents", "Site Pages")
+    $contentTypeName = "Doogle content category page",
+    $contentTypeList = @("Site Pages"),
+    $viewsList = @("Documents", "Site Pages")
 )
 
 Write-Host "Starting SharePoint site property update from CSV..." -ForegroundColor Green
@@ -27,7 +29,6 @@ $tenantId = $config.TenantId
 $clientId = if ($config.AppId) { $config.AppId } else { $config.AppId }
 $tenantName = $config.TenantName
 $thumbprint = $config.ThumbPrint
-$clientSecret = $config.ClientSecret
 
 if ([string]::IsNullOrWhiteSpace($tenantId) -or
     [string]::IsNullOrWhiteSpace($clientId) -or
@@ -38,7 +39,7 @@ if ([string]::IsNullOrWhiteSpace($tenantId) -or
 }
 
 if ([string]::IsNullOrWhiteSpace($HubSiteUrl)) {
-    Write-Host "ERROR: HubSiteUrl is required. Example: -HubSiteUrl 'https://contoso.sharepoint.com/sites/hub'" -ForegroundColor Red
+    Write-Host "ERROR: HubSiteUrl is required. Example: -HubSiteUrl 'https://tenantname.sharepoint.com/sites/hub'" -ForegroundColor Red
     exit 1
 }
 
@@ -111,11 +112,14 @@ function Set-Branding {
         Set-PnPWeb -SiteLogoUrl $file.ServerRelativeUrl
         $file = Add-PnpFile -Path $SiteThumbnailPath -Folder "SiteAssets"
         Set-PnPWebHeader -SiteThumbnailUrl $file.ServerRelativeUrl
+        $file = Add-PnpFile -Path $backgroundImagePath -Folder "SiteAssets"
+        $bgUrl = "https://$((Get-PnPWeb).Url.Split('/')[2])$($file.ServerRelativeUrl)"
+        Set-PnPWebHeader -HeaderLayout "Extended" -HeaderBackgroundImageUrl $bgUrl -ErrorAction Stop
         Write-Host "Header and Footer Extended  on $($SiteUrl)" -ForegroundColor Green
     }
     catch {
         Write-Host "ERROR: Failed to set branding on $($SiteUrl): $($_.Exception.Message)" -ForegroundColor Red
-        throw
+        
     }
 }
 
@@ -125,17 +129,32 @@ function Set-SearchSettings {
         [string]$SiteUrl
     )
     try {
-        Set-PnPList -Identity "Site Assets" -NoCrawl:$true
-        Write-Host "Search settings updated on $($SiteUrl)" -ForegroundColor Green
+
+        $list = Get-PnPList -Identity "Site Assets" -ErrorAction SilentlyContinue
+        if ($list) {
+            $list.NoCrawl = $true
+            $list.Update()
+            Invoke-PnPQuery
+            Write-Host "Site Assets list no crawled on $($SiteUrl)" -ForegroundColor Green
+        }
+        else {
+            $web = Get-PnPWeb 
+            $web.Lists.EnsureSiteAssetsLibrary()
+            Invoke-PnPQuery
+            $list = Get-PnPList -Identity "Site Assets" 
+            Set-PnPList -Identity $list -NoCrawl:$true
+            Invoke-PnPQuery
+            Write-Host "Site Assets list no crawled on $($SiteUrl)" -ForegroundColor Green
+     
+        }
+
     }
     catch {
- 
         Write-Host "ERROR: Failed to set search settings on $($SiteUrl): $($_.Exception.Message)" -ForegroundColor Red
-        throw
+       
     }
-
-    
 }
+
 
 Function Set-DocLibraryPermissions {
     param(
@@ -168,14 +187,14 @@ Function Set-DocLibraryPermissions {
         Set-PnPListPermission `
             -Identity $library `
             -Group $membersGroup.Title `
-            -RemoveRole "Edit"
-        -AddRole "Contribute" `
+            -RemoveRole "Edit" `
+            -AddRole "Contribute" `
             
         Write-Host "Permissions updated: Owners and Members have Contribute on Documents." -ForegroundColor Green
     }
     catch {
         Write-Host "ERROR: Failed to set DocLibraryPermissions: $($_.Exception.Message)" -ForegroundColor Red
-        throw
+       
     }
 
 }
@@ -190,8 +209,8 @@ function Get-ContentTypeHub {
     $contentTypeHubUrl = Get-PnPContentTypePublishingHubUrl
     Write-Host "Content Type Hub URL: $contentTypeHubUrl" -ForegroundColor Green
     try {
-        #$ctconnection = Connect-PnPOnline -Url $contentTypeHubUrl -ClientId $ClientId -Tenant $TenantId -Thumbprint $Thumbprint
-        $ctconnection = Connect-PnPOnline -Url $contentTypeHubUrl -ClientId $ClientId -ClientSecret $ClientSecret -WarningAction SilentlyContinue
+        $ctconnection = Connect-PnPOnline -Url $contentTypeHubUrl -ClientId $ClientId -Tenant $TenantId -Thumbprint $Thumbprint
+     
         $ctHub = Get-PnPContentType -Connection $ctconnection
         Disconnect-PnPOnline
         Write-Host "Disconnected from content type hub" -ForegroundColor Green
@@ -203,7 +222,7 @@ function Get-ContentTypeHub {
  
     try {
         Connect-PnPOnline -Url $SiteUrl -ClientId $ClientId -Tenant $TenantId -Thumbprint $Thumbprint
-        #Enable-PnPFeature -Identity "73ef14b1-13a9-416b-a9b5-ececa2b0604c" -Scope Site -Force -ErrorAction SilentlyContinue
+       
         
         foreach ($cts in $ctHub) {
             if ($contentTypesArray -contains $cts.Name) {
@@ -250,16 +269,10 @@ function Add-ContentTypes {
                 }
             }
         }
-        finally {
-            Disconnect-PnPOnline -ErrorAction SilentlyContinue
-        }
     }
     catch {
         Write-Host "ERROR: Failed to add content type: $($_.Exception.Message)" -ForegroundColor Red
         throw
-    }
-    finally {
-        Disconnect-PnPOnline -ErrorAction SilentlyContinue
     }
 }
 
@@ -329,8 +342,36 @@ function Add-PageTemplates {
     
     foreach ($pageTempalte in $pageTempaltes) {
         try {
-            Add-PnpPage -Name $pageTempalte  -PromoteAs Template -Publish
-            Write-Host "Page template added: $($pageTempalte)" -ForegroundColor Green
+           
+
+            if (Get-PnPPage -Identity $pageTempalte -ErrorAction SilentlyContinue) {
+                Write-Host "Page template already exists: $($pageTempalte). Skipping creation." -ForegroundColor Yellow
+            }
+            else {
+              
+
+
+                if ($pageTempalte -eq "Landing-Page") {
+
+                    $page = Add-PnpPage -Name $pageTempalte 
+
+                    $component = Get-PnPPageComponent -Page $page.Name -ListAvailable | Where-Object { $_.Name -eq "PnP - Search Results" }
+                   
+                    $sections = Get-PnPPage -Identity $page.Name | Select-Object -ExpandProperty Sections -ErrorAction SilentlyContinue
+                    if (-not $sections -or $sections.Count -eq 0) {
+                        Add-PnPPageSection -Page $page.Name -SectionTemplate OneColumn -ErrorAction Stop
+                    }
+                    $config = Get-Content -Raw -Path "webpartproperties.json"
+                    Add-PnPPageWebPart -Page $page.Name  -Component $component -Section 1 -Column 1 -WebPartProperties $config -ErrorAction Stop
+                    Set-PnPPage -Identity $page.Name -PromoteAs Template -Publish -ErrorAction Stop
+                }
+
+                else {
+                    $page = Add-PnpPage -Name $pageTempalte -PromoteAs Template -Publish
+                }
+                Write-Host "Page template added: $($pageTempalte)" -ForegroundColor Green
+            }
+            
         }
         catch {
             Write-Host "ERROR: Failed to add page template: $($pageTempalte): $($_.Exception.Message)" -ForegroundColor Red
@@ -339,6 +380,99 @@ function Add-PageTemplates {
     }
 }
 
+
+function Add-SiteColumns {
+    param (
+        [string] $siteUrl
+    )
+    try {
+        $list = Get-PnPList -Identity "Documents"
+        $columnNames = @("Main Category", "Review Date", "Notification Sent", "Sub Category", "Restricted Approval")
+        foreach ($ColumnName in $columnNames) {
+            $existingColumn = Get-PnPField -Identity $ColumnName -ErrorAction SilentlyContinue
+            if ($existingColumn) {
+
+                Write-Host "Site column '$ColumnName'  exists on $($siteUrl). Skipping creation." -ForegroundColor Yellow        
+                switch ($columnName) {
+                    "Main Category" { 
+                        #Write-Host "Site column '$ColumnName' already exists on $($siteUrl). Skipping adding to list." -ForegroundColor Yellow
+                        #Add-PnPFieldFromXml -List $list -FieldXml $existingColumn.SchemaXml -ErrorAction Stop
+                        #Write-Host "Added site column '$columnName' to '$listTitle'"
+                    }
+                    "Review Date" {
+                        $existingColumn.DefaultFormula = "=TODAY()+365"
+                        $existingColumn.UpdateAndPushChanges($true)
+                        Invoke-PnPQuery
+                    }
+                }
+                $fieldInList = Get-PnPField -List $list -Identity $ColumnName -ErrorAction SilentlyContinue
+                if ($fieldInList) {
+                    Write-Host "Site column '$ColumnName' already exists in Documents library on $($siteUrl). Skipping." -ForegroundColor Yellow
+                }
+                else {
+                    switch ($columnName) {
+                        "Main Category" { 
+                            Add-PnPFieldFromXml -List $list -FieldXml $existingColumn.SchemaXml -ErrorAction Stop
+                            Write-Host "Added site column '$columnName' to '$list'"
+                        }
+                        "Sub Category" { 
+                            Add-PnPFieldFromXml -List $list -FieldXml $existingColumn.SchemaXml -ErrorAction Stop
+                            Write-Host "Added site column '$columnName' to '$list'"
+                        }
+                        Default {
+                            Add-PnPField -List $list -Field $existingColumn
+                            Write-Host "Added site column '$columnName' to '$list'"
+                        }
+                    }
+                    
+                    Write-Host "Added existing site column '$ColumnName' to Documents library on $($siteUrl)." -ForegroundColor Green
+                }
+            } 
+            else {
+                Write-Host "Site column '$ColumnName' already exists in Documents library on $($siteUrl). Skipping." -ForegroundColor Yellow
+            }
+
+        }
+
+    }
+    catch {
+        Write-Host "ERROR: Failed to add site column on $($siteUrl): $($_.Exception.Message)" -ForegroundColor Red
+    }
+    
+}
+
+
+
+function Set-Views {
+    param(
+        [string]$SiteUrl
+    )
+    try {
+        
+        foreach ($list in $viewsList) {
+        
+            $library = Get-PnPList -Identity $list -ErrorAction Stop
+            if (-not $library) {
+                Write-Host "ERROR: DocLibrary not found on $SiteUrl" -ForegroundColor Red
+           
+                
+            }
+            else {
+            
+                $view = Get-PnPView -List $library  | Where-Object { $_.DefaultView -eq $true }
+                Set-PnPView -List $library -Identity $view.Id -Fields "DocIcon", "Title", "Modified", "Editor", "ReviewDate1", "DoogleWFMainCategory", "MSDNotificationSent", "DoogleWFRestrictedApproval", "DoogleWFSubCategory" -ErrorAction Stop
+                Write-Host "Custom view created and set as default on $($library.Title)" -ForegroundColor Green
+            }
+        }
+    }
+    catch {
+        Write-Host "ERROR: Failed to set views on $($SiteUrl): $($_.Exception.Message)" -ForegroundColor Red
+        
+    }
+
+    
+    
+}
 
 
 try {
@@ -356,10 +490,7 @@ try {
         exit 1
     }
 
-    $total = $rows.Count
-    $index = 0
-    $success = 0
-    $failed = 0
+
 
     foreach ($row in $rows) {
         $index++
@@ -372,21 +503,21 @@ try {
 
         try {
         
-            Connect-PnPOnline -Url $siteUrl -ClientId $clientId -Tenant $tenantId -Thumbprint $thumbprint -ErrorAction Stop
+            Connect-PnPOnline -Url $siteUrl -ClientId $clientId -Tenant $tenantId -Thumbprint $thumbprint -ErrorAction Stop    
+
+            Add-PageTemplates -SiteUrl $SiteUrl  
+            Add-SiteToHubAssociation -SiteUrl $siteUrl -TargetHubSiteUrl $HubSiteUrl
             Set-SiteRegionalSettings -SiteUrl $siteUrl
             Set-SearchSettings -SiteUrl $siteUrl
             Set-DocLibraryPermissions -SiteUrl $siteUrl
-            
             Add-GroupstoSharePointGroups -SiteUrl $siteUrl
             Set-Branding -SiteUrl $siteUrl
             Install-App -SiteUrl $SiteUrl
-            Set-SearchSettings -SiteUrl $SiteUrl
-            #Add-PageTemplates -SiteUrl $SiteUrl
             Add-ContentTypes -SiteUrl $SiteUrl
+            Add-SiteColumns -SiteUrl $siteUrl
+           
+            Set-Views -SiteUrl $siteUrl    
             
-            
-            $success++
-            Write-Host "[$index/$total] Associated successfully." -ForegroundColor Green
         }
         catch {
             $failed++
@@ -394,11 +525,7 @@ try {
         }
     }
 
-    Write-Host ""
-    Write-Host "Hub association completed." -ForegroundColor Green
-    Write-Host "Success: $success" -ForegroundColor Green
-    Write-Host "Failed:  $failed" -ForegroundColor Yellow
-    Write-Host "Total:   $total" -ForegroundColor Cyan
+ 
 }
 finally {
     Disconnect-PnPOnline -ErrorAction SilentlyContinue
