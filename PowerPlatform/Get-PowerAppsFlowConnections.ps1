@@ -1,12 +1,35 @@
 Import-Module -Name Microsoft.PowerApps.Administration.PowerShell
 
-$outputFile = ".\powerplatinventory.csv"
+$outputFile = ".\powerplatpa.csv"
+$outputflowFile = ".\powerplatflows.csv"
+
+function Get-PowerAppCategory {
+    param (
+        [Parameter(Mandatory = $true)]
+        $PowerApp
+    )
+
+    $candidateTypes = @(
+        $PowerApp.AppType,
+        $PowerApp.Internal.properties.appType,
+        $PowerApp.Internal.properties.powerAppType
+    ) | Where-Object { -not [string]::IsNullOrWhiteSpace($_) }
+
+    foreach ($candidate in $candidateTypes) {
+        if ($candidate.ToString() -match "model") {
+            return "Power App (Model-Driven)"
+        }
+    }
+
+    return "Power App (Canvas)"
+}
 
 $environments = Get-AdminPowerAppEnvironment | Where-Object { $_.DisplayName -eq "cajesharepoint (default)" } # Include default environment
+$powerAppObjects = @()
 $powerPlatObjects = @()
 foreach ($e in $environments) {
     write-host "Environment: " $e.displayname
-    $powerapps = Get-AdminPowerApp -EnvironmentName $e.EnvironmentName
+    $powerapps = Get-AdminPowerApp -EnvironmentName $e.EnvironmentName  # Exclude Portal apps
     foreach ($pa in $powerapps) {
         write-host "  App Name: " $pa.DisplayName " - " $pa.AppName
         foreach ($conRef in $pa.Internal.properties.connectionReferences) {
@@ -16,9 +39,10 @@ foreach ($e in $environments) {
                     $apiTier = $conDetails.apiTier
                     if ($conDetails.isCustomApiConnection) { $apiTier = "Premium (CustomAPI)" }
                     if ($conDetails.isOnPremiseConnection ) { $apiTier = "Premium (OnPrem)" }
+                    $appCategory = Get-PowerAppCategory -PowerApp $pa
                     Write-Host "    " $conDetails.displayName " (" $apiTier ")"
                     $paObj = @{
-                        type           = "Power App"
+                        type           = $appCategory
                         ConnectionName = $conDetails.displayName
                         ConnectionId   = $conDetails.id
                         Tier           = $apiTier
@@ -27,7 +51,7 @@ foreach ($e in $environments) {
                         createdDate    = $pa.CreatedTime
                         createdBy      = $pa.Owner
                     }
-                    $powerPlatObjects += $(new-object psobject -Property $paObj)
+                    $powerAppObjects += $(new-object psobject -Property $paObj)
                 } #foreach $conId
             } #foreach $con
         } #foreach $conRef
@@ -43,20 +67,23 @@ foreach ($e in $environments) {
                     $apiTier = $conDetails.apiDefinition.properties.tier
                     if ($conDetails.apiDefinition.properties.isCustomApi) { $apiTier = "Premium (CustomAPI)" }
                     Write-Host "    " $conDetails.displayName " (" $apiTier ")"
-                    $paObj = @{
-                        type           = "Power Automate"
-                        ConnectionName = $conDetails.displayName
-                        ConnectionId   = $conDetails.id
-                        Tier           = $apiTier
-                        Environment    = $e.DisplayName
-                        AppFlowName    = $f.DisplayName
-                        createdDate    = $f.CreatedTime
-                        createdBy      = $f.CreatedBy
+                    $flowObj = @{
+                        type                 = "Power Automate"
+                        ConnectionName       = $conDetails.displayName
+                        ConnectionId         = $conDetails.id
+                        Tier                 = $apiTier
+                        Environment          = $e.DisplayName
+                        AppFlowName          = $f.DisplayName
+                        createdDate          = $f.CreatedTime
+                        createdBy            = $f.CreatedBy
+                        Enabled              = $f.Enabled
+                        ModifiedDate         = $fl.Internal.properties.lastModifiedTime
+                        FlowSuspensionReason = $fl.Internal.properties.flowSuspensionReason
                     }
-                    $powerPlatObjects += $(new-object psobject -Property $paObj)
+                    $powerPlatObjects += $(new-object psobject -Property $flowObj)
                 } #foreach $conId
             } #foreach $con
         } #foreach $conRef
     } #foreach flow
 } #foreach environment
-$powerPlatObjects | Export-Csv $outputFile -NoTypeInformation
+$powerPlatObjects | Export-Csv $outputflowFile  -NoTypeInformation
