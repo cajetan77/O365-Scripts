@@ -1,6 +1,6 @@
 Import-Module -Name Microsoft.PowerApps.Administration.PowerShell
 
-$outputFile = ".\powerplatpa.csv"
+$outputFile = ".\powerapps.csv"
 $outputflowFile = ".\powerplatflows.csv"
 
 function Get-PowerAppCategory {
@@ -56,6 +56,7 @@ foreach ($e in $environments) {
             } #foreach $con
         } #foreach $conRef
     } #foreach power app
+    $powerAppObjects | Export-Csv $outputFile  -NoTypeInformation
     $flows = Get-AdminFlow -EnvironmentName $e.EnvironmentName
     foreach ($f in $flows) {
         Write-Host "  Flow Name: " $f.DisplayName " - " $f.FlowName
