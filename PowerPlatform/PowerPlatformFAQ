@@ -1,0 +1,54 @@
+🏢 Power Platform Governance + CoE — Top Questions
+🧭 Strategy & CoE Setup
+How did your CoE evolve in the first 3–6 months?
+Did you start governance-first or enablement-first—and would you change that?
+What does your CoE operating model look like today (central, federated, hybrid)?
+🔐 Security, DLP & Guardrails (CoE Role)
+How does your CoE manage and update DLP policies over time?
+Did DLP ever block business users—and how did your CoE respond?
+Does your CoE actively monitor data risks or connector misuse?
+🏗️ Environment Strategy (Governed by CoE)
+Did your CoE define the environment strategy, or did it evolve organically?
+How does your CoE prevent or manage environment sprawl?
+What environment rules actually worked vs. were ignored?
+⚙️ ALM & Standards (CoE Enablement)
+How did your CoE introduce ALM without overwhelming makers?
+What’s your minimum viable ALM standard enforced by the CoE?
+Did your CoE provide templates or pipelines to make ALM easier?
+👥 Adoption, Training & Citizen Dev (Core CoE Function)
+How did your CoE drive adoption—what actually worked?
+Did users try to bypass governance, and how did the CoE handle it?
+What training, templates, or support made the biggest difference?
+📊 Monitoring, Insights & CoE Visibility
+What does your CoE track today that you wish you tracked earlier?
+How does your CoE identify risky or unused apps/flows?
+Do you use tools like the Power Platform CoE Starter Kit effectively?
+💰 Cost & Licensing Oversight
+Does your CoE have visibility into license usage and cost trends?
+Any surprises in cost that your CoE had to fix later?
+🚨 Risk, Failures & Lessons Learned
+What’s the biggest failure your CoE helped uncover or prevent?
+What governance rule exists today because something went wrong?
+Where does your CoE still feel underdeveloped or reactive?
+
+
+Strategy & Setup
+What did your first 3–6 months look like?
+If you started again, what would you do differently?
+Did you go centralized, federated, or hybrid—and why?
+🔐 Security & DLP
+Did DLP policies ever block real business needs?
+How do you manage connector classifications over time?
+Any data exposure incidents or near-misses?
+🏗️ Environments
+How did your environment strategy evolve?
+Did you face environment sprawl?
+What rules (naming, access, lifecycle) actually worked?
+⚙️ ALM & Delivery
+Did makers adopt ALM—or resist it?
+What’s the minimum ALM setup that worked?
+Any production issues caused by weak ALM?
+👥 Adoption vs Control
+Did users try to work around governance? What did you do?
+📊 Monitoring & Cost
+What do you wish you had monitored from day one?
