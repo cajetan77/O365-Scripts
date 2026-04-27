@@ -24,7 +24,38 @@ function Get-PowerAppCategory {
     return "Power App (Canvas)"
 }
 
-$environments = Get-AdminPowerAppEnvironment | Where-Object { $_.DisplayName -eq "cajesharepoint (default)" } # Include default environment
+function Get-SolutionInfo {
+    param (
+        [Parameter(Mandatory = $true)]
+        $Item
+    )
+
+    $solutionIdCandidates = @(
+        $Item.Internal.properties.solutionid,
+        $Item.Internal.properties.solutionId,
+        $Item.Properties.solutionid,
+        $Item.Properties.solutionId
+    ) | Where-Object { -not [string]::IsNullOrWhiteSpace($_) }
+
+    $solutionId = $null
+    if ($solutionIdCandidates.Count -gt 0) {
+        $solutionId = $solutionIdCandidates[0].ToString()
+    }
+
+    return @{
+        IsInSolution = -not [string]::IsNullOrWhiteSpace($solutionId)
+        SolutionId   = $solutionId
+    }
+}
+
+Import-Module Microsoft.Xrm.Data.Powershell
+$CRMOrgs = Get-CrmOrganizations -Credential $Cred -DeploymentRegion NorthAmerica –OnlineType Office365
+
+
+[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+Get-CrmConnection  
+
+$environments = Get-AdminPowerAppEnvironment | Where-Object { $_.DisplayName -eq "Caje Dev" } # Include default environment
 $powerAppObjects = @()
 $powerPlatObjects = @()
 foreach ($e in $environments) {
@@ -40,6 +71,7 @@ foreach ($e in $environments) {
                     if ($conDetails.isCustomApiConnection) { $apiTier = "Premium (CustomAPI)" }
                     if ($conDetails.isOnPremiseConnection ) { $apiTier = "Premium (OnPrem)" }
                     $appCategory = Get-PowerAppCategory -PowerApp $pa
+                    $appSolutionInfo = Get-SolutionInfo -Item $pa
                     Write-Host "    " $conDetails.displayName " (" $apiTier ")"
                     $paObj = @{
                         type           = $appCategory
@@ -50,6 +82,8 @@ foreach ($e in $environments) {
                         AppFlowName    = $pa.DisplayName
                         createdDate    = $pa.CreatedTime
                         createdBy      = $pa.Owner
+                        IsInSolution   = $appSolutionInfo.IsInSolution
+                        SolutionId     = $appSolutionInfo.SolutionId
                     }
                     $powerAppObjects += $(new-object psobject -Property $paObj)
                 } #foreach $conId
@@ -61,6 +95,7 @@ foreach ($e in $environments) {
     foreach ($f in $flows) {
         Write-Host "  Flow Name: " $f.DisplayName " - " $f.FlowName
         $fl = get-adminflow -FlowName $f.FlowName -EnvironmentName $e.EnvironmentName
+        $flowSolutionInfo = Get-SolutionInfo -Item $fl
         foreach ($conRef in $fl.Internal.properties.connectionReferences) {
             foreach ($con in $conRef) {
                 foreach ($conId in ($con | Get-Member -MemberType NoteProperty).Name) {
@@ -80,6 +115,8 @@ foreach ($e in $environments) {
                         Enabled              = $f.Enabled
                         ModifiedDate         = $fl.Internal.properties.lastModifiedTime
                         FlowSuspensionReason = $fl.Internal.properties.flowSuspensionReason
+                        IsInSolution         = $flowSolutionInfo.IsInSolution
+                        SolutionId           = $flowSolutionInfo.SolutionId
                     }
                     $powerPlatObjects += $(new-object psobject -Property $flowObj)
                 } #foreach $conId

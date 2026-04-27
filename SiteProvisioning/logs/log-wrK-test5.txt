@@ -31,3 +31,36 @@
 [2026-04-19 21:05:12] [Success] Custom view created and set as default on Documents
 [2026-04-19 21:05:14] [Success] Custom view created and set as default on Site Pages
 [2026-04-19 21:05:14] [Success] [2/2] Site 'https://caje77sharepoint.sharepoint.com/sites/WRK-TEST5' processed successfully
+[2026-04-26 20:29:13] [Info] [2/2] Site 'https://caje77sharepoint.sharepoint.com/sites/WRK-TEST5'
+[2026-04-26 20:29:14] [Success] Site https://caje77sharepoint.sharepoint.com/sites/WRK-TEST5 added to hub https://caje77sharepoint.sharepoint.com/sites/AIALIntranet
+[2026-04-26 20:29:14] [Info] Updated Site Regional Settings to have NZ Time Zone and NZ Locale  https://caje77sharepoint.sharepoint.com/sites/WRK-Test5
+[2026-04-26 20:29:15] [Success] Site Assets list no crawled on https://caje77sharepoint.sharepoint.com/sites/WRK-TEST5
+[2026-04-26 20:29:18] [Success] Permissions updated: Owners and Members have Contribute on Documents.
+[2026-04-26 20:29:19] [Success] Added Entra group with Object ID b4fa1e98-2893-4f26-bc64-f7a3e93b3753 to Owners group on https://caje77sharepoint.sharepoint.com/sites/WRK-TEST5
+[2026-04-26 20:29:19] [Success] Added Entra group with Object ID b4fa1e98-2893-4f26-bc64-f7a3e93b3753 to Members group on https://caje77sharepoint.sharepoint.com/sites/WRK-TEST5
+[2026-04-26 20:29:27] [Success] Header and Footer Extended  on https://caje77sharepoint.sharepoint.com/sites/WRK-TEST5
+[2026-04-26 20:29:27] [Warning] App already installed: PnP Modern Search - Search Web Parts - v4
+[2026-04-26 20:29:27] [Warning] App already installed: React Content Query
+[2026-04-26 20:29:28] [Success] Content types enabled on Documents
+[2026-04-26 20:29:28] [Info] Adding Content Type from the Content Type Hub
+[2026-04-26 20:29:28] [Info] Content Type Hub URL: https://caje77sharepoint.sharepoint.com/sites/contentTypeHub
+[2026-04-26 20:29:29] [Success] Disconnected from content type hub
+[2026-04-26 20:29:31] [Success] Added content type 'Doogle content category page' to site: https://caje77sharepoint.sharepoint.com/sites/WRK-TEST5
+[2026-04-26 20:29:32] [Success] Added content type 'Doogle content category page' to list 'Site Pages'
+[2026-04-26 20:29:33] [Success] Default content type set to 'Doogle content category page' on list 'Site Pages' (https://caje77sharepoint.sharepoint.com/sites/WRK-TEST5)
+[2026-04-26 20:29:34] [Warning] Site column 'Main Category'  exists on https://caje77sharepoint.sharepoint.com/sites/WRK-TEST5. Skipping creation.
+[2026-04-26 20:29:34] [Warning] Site column 'Main Category' already exists in Documents library on https://caje77sharepoint.sharepoint.com/sites/WRK-TEST5. Skipping.
+[2026-04-26 20:29:35] [Warning] Site column 'Review Date'  exists on https://caje77sharepoint.sharepoint.com/sites/WRK-TEST5. Skipping creation.
+[2026-04-26 20:29:35] [Warning] Site column 'Review Date' already exists in Documents library on https://caje77sharepoint.sharepoint.com/sites/WRK-TEST5. Skipping.
+[2026-04-26 20:29:36] [Warning] Site column 'Notification Sent'  exists on https://caje77sharepoint.sharepoint.com/sites/WRK-TEST5. Skipping creation.
+[2026-04-26 20:29:36] [Warning] Site column 'Notification Sent' already exists in Documents library on https://caje77sharepoint.sharepoint.com/sites/WRK-TEST5. Skipping.
+[2026-04-26 20:29:36] [Warning] Site column 'Sub Category'  exists on https://caje77sharepoint.sharepoint.com/sites/WRK-TEST5. Skipping creation.
+[2026-04-26 20:29:37] [Warning] Site column 'Sub Category' already exists in Documents library on https://caje77sharepoint.sharepoint.com/sites/WRK-TEST5. Skipping.
+[2026-04-26 20:29:37] [Warning] Site column 'Restricted Approval'  exists on https://caje77sharepoint.sharepoint.com/sites/WRK-TEST5. Skipping creation.
+[2026-04-26 20:29:37] [Warning] Site column 'Restricted Approval' already exists in Documents library on https://caje77sharepoint.sharepoint.com/sites/WRK-TEST5. Skipping.
+[2026-04-26 20:29:38] [Warning] Page template already exists: Landing-Page. Skipping creation.
+[2026-04-26 20:29:39] [Warning] Page template already exists: Page-Template-1. Skipping creation.
+[2026-04-26 20:29:39] [Warning] Page template already exists: Page-Template-2. Skipping creation.
+[2026-04-26 20:29:42] [Success] Custom view created and set as default on Documents
+[2026-04-26 20:29:43] [Success] Custom view created and set as default on Site Pages
+[2026-04-26 20:29:43] [Success] [2/2] Site 'https://caje77sharepoint.sharepoint.com/sites/WRK-TEST5' processed successfully
