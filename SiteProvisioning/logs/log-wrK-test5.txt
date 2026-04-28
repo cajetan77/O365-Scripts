@@ -64,3 +64,7 @@
 [2026-04-26 20:29:42] [Success] Custom view created and set as default on Documents
 [2026-04-26 20:29:43] [Success] Custom view created and set as default on Site Pages
 [2026-04-26 20:29:43] [Success] [2/2] Site 'https://caje77sharepoint.sharepoint.com/sites/WRK-TEST5' processed successfully
+[2026-04-28 20:55:33] [Info] [2/2] Site 'https://caje77sharepoint.sharepoint.com/sites/WRK-TEST5'
+[2026-04-28 20:55:34] [Warning] Page template already exists: Landing-Page. Skipping creation.
+[2026-04-28 20:55:34] [Warning] Page template already exists: Page-Template-1. Skipping creation.
+[2026-04-28 20:55:35] [Success] [2 / 2] Site 'https://caje77sharepoint.sharepoint.com/sites/WRK-TEST5' processed successfully

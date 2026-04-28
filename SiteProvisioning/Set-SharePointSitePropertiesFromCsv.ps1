@@ -153,6 +153,24 @@ function Set-Branding {
         [string]$siteName
     )
     try {
+        # 1. Make sure layout is Extended
+        Set-PnPWebHeader -HeaderLayout Extended
+
+        # 2. Upload image
+        $file = Add-PnPFile -Path $backgroundImagePath -Folder "SiteAssets"
+
+        # 3. Use URL encoded server-relative URL
+        $url = [System.Uri]::EscapeUriString($file.ServerRelativeUrl)
+
+        # 4. Apply in one call
+        Set-PnPWebHeader `
+            -HeaderLayout Extended `
+            -HeaderBackgroundImageUrl $url `
+            -HeaderBackgroundImageFocalX 0.5 `
+            -HeaderBackgroundImageFocalY 0.5
+        #$bgUrl = "/sites/WRK-Test4/SiteAssets/pexels-padrinan-255379.jpg"
+
+        $a = Set-PnPWebHeader -HeaderBackgroundImageUrl $bgUrl -HeaderLayout Extended  -ErrorAction Stop
         Set-PnPWebHeader -HeaderLayout "Extended"
         Set-PnPFooter -Layout "Extended"
         Set-PnPWeb -MegaMenuEnabled:$false
@@ -160,9 +178,8 @@ function Set-Branding {
         Set-PnPWeb -SiteLogoUrl $file.ServerRelativeUrl
         $file = Add-PnpFile -Path $SiteThumbnailPath -Folder "SiteAssets"
         Set-PnPWebHeader -SiteThumbnailUrl $file.ServerRelativeUrl
-        $file = Add-PnpFile -Path $backgroundImagePath -Folder "SiteAssets"
-        $bgUrl = "https://$((Get-PnPWeb).Url.Split('/')[2])$($file.ServerRelativeUrl)"
-        Set-PnPWebHeader -HeaderLayout "Extended" -HeaderBackgroundImageUrl $bgUrl -ErrorAction Stop
+       
+      
         Write-LogMessage -Message "Header and Footer Extended  on $($SiteUrl)" -Level Success -siteName $siteName
     }
     catch {
@@ -256,7 +273,7 @@ function Get-ContentTypeHub {
         [string]$siteName
     )
     Write-LogMessage -Message "Adding Content Type from the Content Type Hub" -Level Info -siteName $siteName
-    $contentTypesArray = $ct.Split(",") | ForEach-Object { $_.Trim() }  
+    $contentTypesArray = $ct.Split(", ") | ForEach-Object { $_.Trim() }  
     $contentTypeHubUrl = Get-PnPContentTypePublishingHubUrl
     Write-LogMessage -Message "Content Type Hub URL: $contentTypeHubUrl" -Level Info -siteName $siteName
     try {
@@ -398,33 +415,96 @@ function Add-PageTemplates {
     
     foreach ($pageTempalte in $pageTempaltes) {
         try {
-            if (Get-PnPPage -Identity $pageTempalte -ErrorAction SilentlyContinue) {
-                Write-LogMessage -Message "Page template already exists: $($pageTempalte). Skipping creation." -Level Warning -siteName $siteName
-            }
-            else {
+        
               
 
 
-                if ($pageTempalte -eq "Landing-Page") {
+            if ($pageTempalte -eq "Landing-Page") {
 
-                    $page = Add-PnpPage -Name $pageTempalte 
-
-                    $component = Get-PnPPageComponent -Page $page.Name -ListAvailable | Where-Object { $_.Name -eq "PnP - Search Results" }
-                   
-                    $sections = Get-PnPPage -Identity $page.Name | Select-Object -ExpandProperty Sections -ErrorAction SilentlyContinue
-                    if (-not $sections -or $sections.Count -eq 0) {
-                        Add-PnPPageSection -Page $page.Name -SectionTemplate OneColumn -ErrorAction Stop
-                    }
-                    $config = Get-Content -Raw -Path "webpartproperties.json"
-                    Add-PnPPageWebPart -Page $page.Name  -Component $component -Section 1 -Column 1 -WebPartProperties $config -ErrorAction Stop
-                    Set-PnPPage -Identity $page.Name -PromoteAs Template -Publish -ErrorAction Stop
+                $pageFileName = "$pageTempalte.aspx"
+                $pageItems = Get-PnPListItem -List "Site Pages" -Fields "FileLeafRef", "FileDirRef" -PageSize 2000 -ErrorAction Stop |
+                Where-Object { $_["FileLeafRef"] -eq $pageFileName }
+                foreach ($item in $pageItems) {
+                    Remove-PnPListItem -List "Site Pages" -Identity $item.Id -Force -ErrorAction Stop
                 }
 
-                else {
-                    $page = Add-PnpPage -Name $pageTempalte -PromoteAs Template -Publish
+                $page = Add-PnpPage -Name $pageTempalte -ErrorAction Stop
+                $component = Get-PnPPageComponent -Page $page.Name -ListAvailable | Where-Object { $_.Name -eq "PnP - Search Results" }
+
+                Add-PnPPageSection `
+                    -Page $page.Name `
+                    -SectionTemplate TwoColumnRight `
+                    -Order 1 `
+                    -ErrorAction Stop
+
+                # Keep the left side empty on the template. This avoids text controls
+                # being added to full-width sections on previously customized pages.
+
+                if (-not $component) {
+                    throw "PnP - Search Results web part is not available on page '$($page.Name)'."
                 }
-                Write-LogMessage -Message "Page template added: $($pageTempalte)" -Level Success  -siteName $siteName  
+
+                $webPartConfigPath = Join-Path -Path $PSScriptRoot -ChildPath "webpartproperties.json"
+                $config = Get-Content -Raw -Path $webPartConfigPath
+                Add-PnPPageTextPart `
+                    -Page $page.Name `
+                    -Section 1 `
+                    -Column 1 `
+                    -Text "<p>Hello from PowerShell.</p>" `
+                    -ErrorAction Stop
+                Add-PnPPageWebPart -Page $page.Name -Component $component -Section 1 -Column 2 -WebPartProperties $config -ErrorAction Stop
+                
+                Add-PnPPageSection `
+                    -Page $page.Name `
+                    -SectionTemplate TwoColumnRight `
+                    -Order 2 `
+                    -ErrorAction Stop  
+                $component = Get-PnPPageComponent -Page $page.Name -ListAvailable | Where-Object { $_.Name -eq "PnP - Search Results" }
+
+                Add-PnPPageSection `
+                    -Page $page.Name `
+                    -SectionTemplate TwoColumnRight `
+                    -Order 1 `
+                    -ErrorAction Stop
+
+                # Keep the left side empty on the template. This avoids text controls
+                # being added to full-width sections on previously customized pages.
+
+                if (-not $component) {
+                    throw "PnP - Search Results web part is not available on page '$($page.Name)'."
+                }
+
+                $webPartConfigPath = Join-Path -Path $PSScriptRoot -ChildPath "webpartproperties.json"
+                $config = Get-Content -Raw -Path $webPartConfigPath
+                Add-PnPPageTextPart `
+                    -Page $page.Name `
+                    -Section 2 `
+                    -Column 1 `
+                    -Text "<p>Hello from PowerShell2.</p>" `
+                    -ErrorAction Stop
+                Add-PnPPageWebPart -Page $page.Name -Component $component -Section 2 -Column 2 -WebPartProperties $config -ErrorAction Stop
+
+
+
+                Set-PnPPage -Identity $page.Name -PromoteAs Template -Publish -ErrorAction Stop
+
+                # SharePoint keeps both /SitePages/<name>.aspx and /SitePages/Templates/<name>.aspx
+                # after template promotion. Remove the normal page so only the template remains.
+                $promotedItems = Get-PnPListItem -List "Site Pages" -Fields "FileLeafRef", "FileDirRef" -PageSize 2000 -ErrorAction Stop |
+                Where-Object { $_["FileLeafRef"] -eq $pageFileName }
+                $normalPageItems = @(
+                    $promotedItems | Where-Object { $_["FileDirRef"] -notmatch "/SitePages/Templates$" }
+                )
+                foreach ($normalItem in $normalPageItems) {
+                    Remove-PnPListItem -List "Site Pages" -Identity $normalItem.Id -Force -ErrorAction Stop
+                }
             }
+
+            else {
+                $page = Add-PnpPage -Name $pageTempalte -PromoteAs Template -Publish
+            }
+            Write-LogMessage -Message "Page template added: $($pageTempalte)" -Level Success  -siteName $siteName  
+            
             
         }
         catch {
@@ -547,29 +627,29 @@ try {
      
         try {
 
-            #Write-Host "[$index/$total] Site '$siteNameForLog' — transcript: $logPath" -ForegroundColor Cyan
+            #Write-Host "[$index / $total] Site '$siteNameForLog' — transcript: $logPath" -ForegroundColor Cyan
 
             Write-LogMessage -Message "[$index/$total] Site '$siteUrl'" -Level Info -siteName $siteName
             Connect-PnPOnline -Url $siteUrl -ClientId $clientId -Tenant $tenantId -Thumbprint $thumbprint -ErrorAction Stop
 
-            Add-SiteToHubAssociation -SiteUrl $siteUrl -TargetHubSiteUrl $HubSiteUrl -SiteName $siteName
-            Set-SiteRegionalSettings -SiteUrl $siteUrl -siteName $siteName
-            Set-SearchSettings -SiteUrl $siteUrl -siteName $siteName
-            Set-DocLibraryPermissions -SiteUrl $siteUrl -siteName $siteName
-            Add-GroupstoSharePointGroups -SiteUrl $siteUrl -siteName $siteName
-            Set-Branding -SiteUrl $siteUrl  -siteName $siteName
-            Install-App -SiteUrl $SiteUrl -siteName $siteName
-            Add-ContentTypes -SiteUrl $SiteUrl  -siteName $siteName
-            Add-SiteColumns -SiteUrl $siteUrl   -siteName $siteName
+            # Add-SiteToHubAssociation -SiteUrl $siteUrl -TargetHubSiteUrl $HubSiteUrl -SiteName $siteName
+            #Set-SiteRegionalSettings -SiteUrl $siteUrl -siteName $siteName
+            #Set-SearchSettings -SiteUrl $siteUrl -siteName $siteName
+            #Set-DocLibraryPermissions -SiteUrl $siteUrl -siteName $siteName
+            #Add-GroupstoSharePointGroups -SiteUrl $siteUrl -siteName $siteName
+            #Set-Branding -SiteUrl $siteUrl  -siteName $siteName
+            #Install-App -SiteUrl $SiteUrl -siteName $siteName
+            #Add-ContentTypes -SiteUrl $SiteUrl  -siteName $siteName
+            #Add-SiteColumns -SiteUrl $siteUrl   -siteName $siteName
             Add-PageTemplates -SiteUrl $SiteUrl -siteName $siteName
             Set-Views -SiteUrl $siteUrl     -siteName $siteName
         }
         catch {
             $failed++
-            Write-LogMessage -Message "[$index/$total] ERROR: Failed   $($_.Exception.Message)" -Level Error -siteName $siteName
+            Write-LogMessage -Message "[$index / $total] ERROR: Failed   $($_.Exception.Message)" -Level Error -siteName $siteName
         }
         finally {
-            Write-LogMessage -Message "[$index/$total] Site '$siteUrl' processed successfully" -Level Success -siteName $siteName
+            Write-LogMessage -Message "[$index / $total] Site '$siteUrl' processed successfully" -Level Success -siteName $siteName
         }
     }
 

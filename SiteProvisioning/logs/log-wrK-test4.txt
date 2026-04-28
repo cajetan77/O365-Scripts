@@ -64,3 +64,116 @@
 [2026-04-26 20:29:12] [Success] Custom view created and set as default on Documents
 [2026-04-26 20:29:13] [Success] Custom view created and set as default on Site Pages
 [2026-04-26 20:29:13] [Success] [1/2] Site 'https://caje77sharepoint.sharepoint.com/sites/WRK-TEST4' processed successfully
+[2026-04-28 20:09:46] [Info] [1/2] Site 'https://caje77sharepoint.sharepoint.com/sites/WRK-TEST4'
+[2026-04-28 20:09:49] [Success] Site https://caje77sharepoint.sharepoint.com/sites/WRK-TEST4 added to hub https://caje77sharepoint.sharepoint.com/sites/AIALIntranet
+[2026-04-28 20:09:50] [Info] Updated Site Regional Settings to have NZ Time Zone and NZ Locale  https://caje77sharepoint.sharepoint.com/sites/WRK-Test4
+[2026-04-28 20:09:51] [Success] Site Assets list no crawled on https://caje77sharepoint.sharepoint.com/sites/WRK-TEST4
+[2026-04-28 20:09:54] [Success] Permissions updated: Owners and Members have Contribute on Documents.
+[2026-04-28 20:09:56] [Success] Added Entra group with Object ID b4fa1e98-2893-4f26-bc64-f7a3e93b3753 to Owners group on https://caje77sharepoint.sharepoint.com/sites/WRK-TEST4
+[2026-04-28 20:09:58] [Success] Added Entra group with Object ID b4fa1e98-2893-4f26-bc64-f7a3e93b3753 to Members group on https://caje77sharepoint.sharepoint.com/sites/WRK-TEST4
+[2026-04-28 20:10:30] [Success] [1/2] Site 'https://caje77sharepoint.sharepoint.com/sites/WRK-TEST4' processed successfully
+[2026-04-28 20:10:47] [Info] [1/2] Site 'https://caje77sharepoint.sharepoint.com/sites/WRK-TEST4'
+[2026-04-28 20:10:48] [Success] Site https://caje77sharepoint.sharepoint.com/sites/WRK-TEST4 added to hub https://caje77sharepoint.sharepoint.com/sites/AIALIntranet
+[2026-04-28 20:10:48] [Info] Updated Site Regional Settings to have NZ Time Zone and NZ Locale  https://caje77sharepoint.sharepoint.com/sites/WRK-Test4
+[2026-04-28 20:10:49] [Success] Site Assets list no crawled on https://caje77sharepoint.sharepoint.com/sites/WRK-TEST4
+[2026-04-28 20:10:52] [Success] Permissions updated: Owners and Members have Contribute on Documents.
+[2026-04-28 20:10:53] [Success] Added Entra group with Object ID b4fa1e98-2893-4f26-bc64-f7a3e93b3753 to Owners group on https://caje77sharepoint.sharepoint.com/sites/WRK-TEST4
+[2026-04-28 20:10:53] [Success] Added Entra group with Object ID b4fa1e98-2893-4f26-bc64-f7a3e93b3753 to Members group on https://caje77sharepoint.sharepoint.com/sites/WRK-TEST4
+[2026-04-28 20:14:53] [Success] [1/2] Site 'https://caje77sharepoint.sharepoint.com/sites/WRK-TEST4' processed successfully
+[2026-04-28 20:14:57] [Info] [1/2] Site 'https://caje77sharepoint.sharepoint.com/sites/WRK-TEST4'
+[2026-04-28 20:14:58] [Success] Site https://caje77sharepoint.sharepoint.com/sites/WRK-TEST4 added to hub https://caje77sharepoint.sharepoint.com/sites/AIALIntranet
+[2026-04-28 20:14:59] [Info] Updated Site Regional Settings to have NZ Time Zone and NZ Locale  https://caje77sharepoint.sharepoint.com/sites/WRK-Test4
+[2026-04-28 20:15:00] [Success] Site Assets list no crawled on https://caje77sharepoint.sharepoint.com/sites/WRK-TEST4
+[2026-04-28 20:15:03] [Success] Permissions updated: Owners and Members have Contribute on Documents.
+[2026-04-28 20:15:04] [Success] Added Entra group with Object ID b4fa1e98-2893-4f26-bc64-f7a3e93b3753 to Owners group on https://caje77sharepoint.sharepoint.com/sites/WRK-TEST4
+[2026-04-28 20:15:05] [Success] Added Entra group with Object ID b4fa1e98-2893-4f26-bc64-f7a3e93b3753 to Members group on https://caje77sharepoint.sharepoint.com/sites/WRK-TEST4
+[2026-04-28 20:16:55] [Success] [1 / 2] Site 'https://caje77sharepoint.sharepoint.com/sites/WRK-TEST4' processed successfully
+[2026-04-28 20:17:01] [Info] [1/2] Site 'https://caje77sharepoint.sharepoint.com/sites/WRK-TEST4'
+[2026-04-28 20:17:02] [Success] Site https://caje77sharepoint.sharepoint.com/sites/WRK-TEST4 added to hub https://caje77sharepoint.sharepoint.com/sites/AIALIntranet
+[2026-04-28 20:17:02] [Info] Updated Site Regional Settings to have NZ Time Zone and NZ Locale  https://caje77sharepoint.sharepoint.com/sites/WRK-Test4
+[2026-04-28 20:17:03] [Success] Site Assets list no crawled on https://caje77sharepoint.sharepoint.com/sites/WRK-TEST4
+[2026-04-28 20:17:07] [Success] Permissions updated: Owners and Members have Contribute on Documents.
+[2026-04-28 20:17:08] [Success] Added Entra group with Object ID b4fa1e98-2893-4f26-bc64-f7a3e93b3753 to Owners group on https://caje77sharepoint.sharepoint.com/sites/WRK-TEST4
+[2026-04-28 20:17:09] [Success] Added Entra group with Object ID b4fa1e98-2893-4f26-bc64-f7a3e93b3753 to Members group on https://caje77sharepoint.sharepoint.com/sites/WRK-TEST4
+[2026-04-28 20:18:05] [Success] [1 / 2] Site 'https://caje77sharepoint.sharepoint.com/sites/WRK-TEST4' processed successfully
+[2026-04-28 20:18:12] [Info] [1/2] Site 'https://caje77sharepoint.sharepoint.com/sites/WRK-TEST4'
+[2026-04-28 20:18:12] [Success] Site https://caje77sharepoint.sharepoint.com/sites/WRK-TEST4 added to hub https://caje77sharepoint.sharepoint.com/sites/AIALIntranet
+[2026-04-28 20:18:12] [Info] Updated Site Regional Settings to have NZ Time Zone and NZ Locale  https://caje77sharepoint.sharepoint.com/sites/WRK-Test4
+[2026-04-28 20:18:13] [Success] Site Assets list no crawled on https://caje77sharepoint.sharepoint.com/sites/WRK-TEST4
+[2026-04-28 20:18:17] [Success] Permissions updated: Owners and Members have Contribute on Documents.
+[2026-04-28 20:18:17] [Success] Added Entra group with Object ID b4fa1e98-2893-4f26-bc64-f7a3e93b3753 to Owners group on https://caje77sharepoint.sharepoint.com/sites/WRK-TEST4
+[2026-04-28 20:18:19] [Success] Added Entra group with Object ID b4fa1e98-2893-4f26-bc64-f7a3e93b3753 to Members group on https://caje77sharepoint.sharepoint.com/sites/WRK-TEST4
+[2026-04-28 20:24:53] [Success] [1 / 2] Site 'https://caje77sharepoint.sharepoint.com/sites/WRK-TEST4' processed successfully
+[2026-04-28 20:25:02] [Info] [1/2] Site 'https://caje77sharepoint.sharepoint.com/sites/WRK-TEST4'
+[2026-04-28 20:25:03] [Success] Site https://caje77sharepoint.sharepoint.com/sites/WRK-TEST4 added to hub https://caje77sharepoint.sharepoint.com/sites/AIALIntranet
+[2026-04-28 20:25:03] [Info] Updated Site Regional Settings to have NZ Time Zone and NZ Locale  https://caje77sharepoint.sharepoint.com/sites/WRK-Test4
+[2026-04-28 20:25:04] [Success] Site Assets list no crawled on https://caje77sharepoint.sharepoint.com/sites/WRK-TEST4
+[2026-04-28 20:25:07] [Success] Permissions updated: Owners and Members have Contribute on Documents.
+[2026-04-28 20:25:08] [Success] Added Entra group with Object ID b4fa1e98-2893-4f26-bc64-f7a3e93b3753 to Owners group on https://caje77sharepoint.sharepoint.com/sites/WRK-TEST4
+[2026-04-28 20:25:09] [Success] Added Entra group with Object ID b4fa1e98-2893-4f26-bc64-f7a3e93b3753 to Members group on https://caje77sharepoint.sharepoint.com/sites/WRK-TEST4
+[2026-04-28 20:26:51] [Success] [1 / 2] Site 'https://caje77sharepoint.sharepoint.com/sites/WRK-TEST4' processed successfully
+[2026-04-28 20:26:59] [Info] [1/2] Site 'https://caje77sharepoint.sharepoint.com/sites/WRK-TEST4'
+[2026-04-28 20:27:00] [Success] Site https://caje77sharepoint.sharepoint.com/sites/WRK-TEST4 added to hub https://caje77sharepoint.sharepoint.com/sites/AIALIntranet
+[2026-04-28 20:27:00] [Info] Updated Site Regional Settings to have NZ Time Zone and NZ Locale  https://caje77sharepoint.sharepoint.com/sites/WRK-Test4
+[2026-04-28 20:27:01] [Success] Site Assets list no crawled on https://caje77sharepoint.sharepoint.com/sites/WRK-TEST4
+[2026-04-28 20:27:04] [Success] Permissions updated: Owners and Members have Contribute on Documents.
+[2026-04-28 20:27:05] [Success] Added Entra group with Object ID b4fa1e98-2893-4f26-bc64-f7a3e93b3753 to Owners group on https://caje77sharepoint.sharepoint.com/sites/WRK-TEST4
+[2026-04-28 20:27:06] [Success] Added Entra group with Object ID b4fa1e98-2893-4f26-bc64-f7a3e93b3753 to Members group on https://caje77sharepoint.sharepoint.com/sites/WRK-TEST4
+[2026-04-28 20:27:28] [Error] ERROR: Failed to set branding on https://caje77sharepoint.sharepoint.com/sites/WRK-TEST4: Method invocation failed because [PnP.PowerShell.Commands.Model.SharePoint.SharePointWebHeader] does not contain a method named 'Update'.
+[2026-04-28 20:28:30] [Success] [1 / 2] Site 'https://caje77sharepoint.sharepoint.com/sites/WRK-TEST4' processed successfully
+[2026-04-28 20:29:50] [Info] [1/2] Site 'https://caje77sharepoint.sharepoint.com/sites/WRK-TEST4'
+[2026-04-28 20:29:51] [Success] Site https://caje77sharepoint.sharepoint.com/sites/WRK-TEST4 added to hub https://caje77sharepoint.sharepoint.com/sites/AIALIntranet
+[2026-04-28 20:29:52] [Info] Updated Site Regional Settings to have NZ Time Zone and NZ Locale  https://caje77sharepoint.sharepoint.com/sites/WRK-Test4
+[2026-04-28 20:29:53] [Success] Site Assets list no crawled on https://caje77sharepoint.sharepoint.com/sites/WRK-TEST4
+[2026-04-28 20:29:56] [Success] Permissions updated: Owners and Members have Contribute on Documents.
+[2026-04-28 20:29:57] [Success] Added Entra group with Object ID b4fa1e98-2893-4f26-bc64-f7a3e93b3753 to Owners group on https://caje77sharepoint.sharepoint.com/sites/WRK-TEST4
+[2026-04-28 20:29:58] [Success] Added Entra group with Object ID b4fa1e98-2893-4f26-bc64-f7a3e93b3753 to Members group on https://caje77sharepoint.sharepoint.com/sites/WRK-TEST4
+[2026-04-28 20:30:11] [Success] [1 / 2] Site 'https://caje77sharepoint.sharepoint.com/sites/WRK-TEST4' processed successfully
+[2026-04-28 20:30:18] [Info] [1/2] Site 'https://caje77sharepoint.sharepoint.com/sites/WRK-TEST4'
+[2026-04-28 20:30:18] [Success] Site https://caje77sharepoint.sharepoint.com/sites/WRK-TEST4 added to hub https://caje77sharepoint.sharepoint.com/sites/AIALIntranet
+[2026-04-28 20:30:19] [Info] Updated Site Regional Settings to have NZ Time Zone and NZ Locale  https://caje77sharepoint.sharepoint.com/sites/WRK-Test4
+[2026-04-28 20:30:19] [Success] Site Assets list no crawled on https://caje77sharepoint.sharepoint.com/sites/WRK-TEST4
+[2026-04-28 20:30:23] [Success] Permissions updated: Owners and Members have Contribute on Documents.
+[2026-04-28 20:30:24] [Success] Added Entra group with Object ID b4fa1e98-2893-4f26-bc64-f7a3e93b3753 to Owners group on https://caje77sharepoint.sharepoint.com/sites/WRK-TEST4
+[2026-04-28 20:30:25] [Success] Added Entra group with Object ID b4fa1e98-2893-4f26-bc64-f7a3e93b3753 to Members group on https://caje77sharepoint.sharepoint.com/sites/WRK-TEST4
+[2026-04-28 20:33:26] [Success] [1 / 2] Site 'https://caje77sharepoint.sharepoint.com/sites/WRK-TEST4' processed successfully
+[2026-04-28 20:33:35] [Info] [1/2] Site 'https://caje77sharepoint.sharepoint.com/sites/WRK-TEST4'
+[2026-04-28 20:33:36] [Success] Site https://caje77sharepoint.sharepoint.com/sites/WRK-TEST4 added to hub https://caje77sharepoint.sharepoint.com/sites/AIALIntranet
+[2026-04-28 20:33:37] [Info] Updated Site Regional Settings to have NZ Time Zone and NZ Locale  https://caje77sharepoint.sharepoint.com/sites/WRK-Test4
+[2026-04-28 20:33:37] [Success] Site Assets list no crawled on https://caje77sharepoint.sharepoint.com/sites/WRK-TEST4
+[2026-04-28 20:33:41] [Success] Permissions updated: Owners and Members have Contribute on Documents.
+[2026-04-28 20:33:42] [Success] Added Entra group with Object ID b4fa1e98-2893-4f26-bc64-f7a3e93b3753 to Owners group on https://caje77sharepoint.sharepoint.com/sites/WRK-TEST4
+[2026-04-28 20:33:43] [Success] Added Entra group with Object ID b4fa1e98-2893-4f26-bc64-f7a3e93b3753 to Members group on https://caje77sharepoint.sharepoint.com/sites/WRK-TEST4
+[2026-04-28 20:35:14] [Success] [1 / 2] Site 'https://caje77sharepoint.sharepoint.com/sites/WRK-TEST4' processed successfully
+[2026-04-28 20:43:16] [Info] [1/2] Site 'https://caje77sharepoint.sharepoint.com/sites/WRK-TEST4'
+[2026-04-28 20:43:19] [Warning] Page template already exists: Landing-Page. Skipping creation.
+[2026-04-28 20:43:19] [Warning] Page template already exists: Page-Template-1. Skipping creation.
+[2026-04-28 20:43:20] [Warning] Page template already exists: Page-Template-2. Skipping creation.
+[2026-04-28 20:43:22] [Success] Custom view created and set as default on Documents
+[2026-04-28 20:43:23] [Success] [1 / 2] Site 'https://caje77sharepoint.sharepoint.com/sites/WRK-TEST4' processed successfully
+[2026-04-28 20:43:38] [Info] [1/2] Site 'https://caje77sharepoint.sharepoint.com/sites/WRK-TEST4'
+[2026-04-28 20:44:16] [Error] ERROR: Failed to add page template: Landing-Page: Index was out of range. Must be non-negative and less than the size of the collection. (Parameter 'index')
+[2026-04-28 20:44:23] [Success] [1 / 2] Site 'https://caje77sharepoint.sharepoint.com/sites/WRK-TEST4' processed successfully
+[2026-04-28 20:44:46] [Info] [1/2] Site 'https://caje77sharepoint.sharepoint.com/sites/WRK-TEST4'
+[2026-04-28 20:46:50] [Success] [1 / 2] Site 'https://caje77sharepoint.sharepoint.com/sites/WRK-TEST4' processed successfully
+[2026-04-28 20:48:20] [Info] [1/2] Site 'https://caje77sharepoint.sharepoint.com/sites/WRK-TEST4'
+[2026-04-28 20:53:03] [Success] [1 / 2] Site 'https://caje77sharepoint.sharepoint.com/sites/WRK-TEST4' processed successfully
+[2026-04-28 20:55:26] [Info] [1/2] Site 'https://caje77sharepoint.sharepoint.com/sites/WRK-TEST4'
+[2026-04-28 20:55:28] [Warning] Page template already exists: Landing-Page. Skipping creation.
+[2026-04-28 20:55:29] [Warning] Page template already exists: Page-Template-1. Skipping creation.
+[2026-04-28 20:55:30] [Warning] Page template already exists: Page-Template-2. Skipping creation.
+[2026-04-28 20:55:31] [Success] Custom view created and set as default on Documents
+[2026-04-28 20:55:33] [Success] Custom view created and set as default on Site Pages
+[2026-04-28 20:55:33] [Success] [1 / 2] Site 'https://caje77sharepoint.sharepoint.com/sites/WRK-TEST4' processed successfully
+[2026-04-28 20:57:22] [Info] [1/2] Site 'https://caje77sharepoint.sharepoint.com/sites/WRK-TEST4'
+[2026-04-28 20:58:15] [Success] [1 / 2] Site 'https://caje77sharepoint.sharepoint.com/sites/WRK-TEST4' processed successfully
+[2026-04-28 20:58:21] [Info] [1/2] Site 'https://caje77sharepoint.sharepoint.com/sites/WRK-TEST4'
+[2026-04-28 21:00:24] [Success] [1 / 2] Site 'https://caje77sharepoint.sharepoint.com/sites/WRK-TEST4' processed successfully
+[2026-04-28 21:00:40] [Info] [1/2] Site 'https://caje77sharepoint.sharepoint.com/sites/WRK-TEST4'
+[2026-04-28 21:04:52] [Success] [1 / 2] Site 'https://caje77sharepoint.sharepoint.com/sites/WRK-TEST4' processed successfully
+[2026-04-28 21:05:17] [Info] [1/2] Site 'https://caje77sharepoint.sharepoint.com/sites/WRK-TEST4'
+[2026-04-28 21:08:56] [Success] [1 / 2] Site 'https://caje77sharepoint.sharepoint.com/sites/WRK-TEST4' processed successfully
+[2026-04-28 21:09:01] [Info] [1/2] Site 'https://caje77sharepoint.sharepoint.com/sites/WRK-TEST4'
+[2026-04-28 21:11:02] [Success] [1 / 2] Site 'https://caje77sharepoint.sharepoint.com/sites/WRK-TEST4' processed successfully
+[2026-04-28 21:11:17] [Info] [1/2] Site 'https://caje77sharepoint.sharepoint.com/sites/WRK-TEST4'
+[2026-04-28 21:12:52] [Success] [1 / 2] Site 'https://caje77sharepoint.sharepoint.com/sites/WRK-TEST4' processed successfully
