@@ -407,6 +407,40 @@ function Install-App {
 }
 
 
+
+function SavePageTemplate {
+    param (
+        [string] $siteUrl,
+        [string] $siteName
+    )
+    try {
+        $templatesiteCollection = "https://caje77sharepoint.sharepoint.com/sites/WRK-AboutUs"
+        $saveTemplateLocation = $PSScriptRoot
+        $templateName = "template"
+        
+        Connect-PnPOnline -Url $siteCollection -ClientId $clientId -Tenant $tenantId -Thumbprint $thumbprint
+        $siteTemplate = Get-PnPSiteTemplate -IncludeAllClientSidePages -Handlers Pages, PageContents -OutputInstance 
+        
+        $pagesTemplate = New-PnPSiteTemplate
+        foreach ($page in $siteTemplate.ClientSidePages) {
+            if ($page.PromoteAsTemplate -eq $true) {
+                $pagesTemplate.ClientSidePages.Add($page)
+            }
+        }
+        
+        Save-PnPSiteTemplate -Template $pagesTemplate -Out ("{0}{1}.xml" -f $saveTemplateLocation, $templateName)
+    }
+    catch {
+        Write-LogMessage -Message "ERROR: Failed to save page template on $($siteUrl): $($_.Exception.Message)" -Level Error -siteName $siteName
+    }
+
+    Connect-PnPOnline -Url $siteUrl -ClientId $clientId -Tenant $tenantId -Thumbprint $thumbprint
+    Invoke-PnPSiteTemplate -Path ("{0}{1}.xml" -f $saveTemplateLocation, $templateName)
+    Write-LogMessage -Message "Page template added: $($pageTempalte)" -Level Success  -siteName $siteName  
+}
+
+
+
 function Add-PageTemplates {
     param (
         [string] $siteUrl,
@@ -641,8 +675,9 @@ try {
             #Install-App -SiteUrl $SiteUrl -siteName $siteName
             #Add-ContentTypes -SiteUrl $SiteUrl  -siteName $siteName
             #Add-SiteColumns -SiteUrl $siteUrl   -siteName $siteName
-            Add-PageTemplates -SiteUrl $SiteUrl -siteName $siteName
-            Set-Views -SiteUrl $siteUrl     -siteName $siteName
+            #Add-PageTemplates -SiteUrl $SiteUrl -siteName $siteName
+            #Set-Views -SiteUrl $siteUrl     -siteName $siteName
+            SavePageTemplate -SiteUrl $SiteUrl -siteName $siteName
         }
         catch {
             $failed++
