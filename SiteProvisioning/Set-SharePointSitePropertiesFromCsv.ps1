@@ -418,10 +418,10 @@ function SavePageTemplate {
         $saveTemplateLocation = $PSScriptRoot
         $templateName = "template"
         
-        Connect-PnPOnline -Url $siteCollection -ClientId $clientId -Tenant $tenantId -Thumbprint $thumbprint
+        Connect-PnPOnline -Url $templatesiteCollection -ClientId $clientId -Tenant $tenantId -Thumbprint $thumbprint
         $siteTemplate = Get-PnPSiteTemplate -IncludeAllClientSidePages -Handlers Pages, PageContents -OutputInstance 
         
-        $pagesTemplate = New-PnPSiteTemplate
+         $pagesTemplate = New-PnPSiteTemplate
         foreach ($page in $siteTemplate.ClientSidePages) {
             if ($page.PromoteAsTemplate -eq $true) {
                 $pagesTemplate.ClientSidePages.Add($page)
