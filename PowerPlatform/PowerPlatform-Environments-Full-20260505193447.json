@@ -1,0 +1,4767 @@
+[
+  {
+    "EnvironmentName": "03d3cf2c-41c2-e544-a3ae-a40ef063fdc8",
+    "DisplayName": "Sydelle Trindade",
+    "Description": null,
+    "IsDefault": false,
+    "Location": "australia",
+    "CreatedTime": "2026-02-23T21:44:01.0711707Z",
+    "CreatedBy": {
+      "id": "39d370d7-9372-490c-9cc6-1ba838a48075",
+      "displayName": "",
+      "email": "",
+      "type": "User",
+      "tenantId": "764b46e8-d798-4ed3-87db-ae55ed7b0432",
+      "userPrincipalName": ""
+    },
+    "LastModifiedTime": "2026-02-23T21:44:12.1107121Z",
+    "LastModifiedBy": null,
+    "CreationType": "User",
+    "EnvironmentType": "Developer",
+    "CommonDataServiceDatabaseProvisioningState": "Succeeded",
+    "CommonDataServiceDatabaseType": "Common Data Service for Apps",
+    "Internal": {
+      "id": "/providers/Microsoft.BusinessAppPlatform/scopes/admin/environments/03d3cf2c-41c2-e544-a3ae-a40ef063fdc8",
+      "type": "Microsoft.BusinessAppPlatform/scopes/environments",
+      "location": "australia",
+      "name": "03d3cf2c-41c2-e544-a3ae-a40ef063fdc8",
+      "properties": {
+        "tenantId": "764b46e8-d798-4ed3-87db-ae55ed7b0432",
+        "azureRegionHint": "australiaeast",
+        "displayName": "Sydelle Trindade",
+        "createdTime": "2026-02-23T21:44:01.0711707Z",
+        "createdBy": {
+          "id": "39d370d7-9372-490c-9cc6-1ba838a48075",
+          "displayName": "",
+          "email": "",
+          "type": "User",
+          "tenantId": "764b46e8-d798-4ed3-87db-ae55ed7b0432",
+          "userPrincipalName": ""
+        },
+        "usedBy": {
+          "id": "39d370d7-9372-490c-9cc6-1ba838a48075",
+          "displayName": "",
+          "email": "",
+          "type": "User",
+          "tenantId": "764b46e8-d798-4ed3-87db-ae55ed7b0432",
+          "userPrincipalName": ""
+        },
+        "lastModifiedTime": "2026-02-23T21:44:12.1107121Z",
+        "provisioningState": "Succeeded",
+        "creationType": "User",
+        "environmentSku": "Developer",
+        "environmentType": "Production",
+        "isDefault": false,
+        "permissions": {
+          "CreatePowerApp": {
+            "displayName": "Create PowerApps"
+          },
+          "ReadEnvironment": {
+            "displayName": "Read Environment"
+          },
+          "GenerateResourceStorage": {
+            "displayName": "Generate Resource Storage"
+          },
+          "CreateGateway": {
+            "displayName": "CreateGateway"
+          },
+          "CreateFlow": {
+            "displayName": "Create Flow"
+          },
+          "CreateCustomApi": {
+            "displayName": "Create Custom Connector"
+          },
+          "AdminReadEnvironment": {
+            "displayName": "Admin Read Environment"
+          },
+          "UpdateEnvironment": {
+            "displayName": "Update Environment"
+          },
+          "DeleteEnvironment": {
+            "displayName": "Delete Environment"
+          },
+          "SetDLPPolicy": {
+            "displayName": "Update DLP Policy"
+          },
+          "SetPowerAppAsFeatured": {
+            "displayName": "Set PowerApps As Featured"
+          },
+          "SetPowerAppAsHero": {
+            "displayName": "Set PowerApps As Hero"
+          },
+          "SetPowerAppConnectionDirectConsentBypass": {
+            "displayName": "Set PowerApps Connection Direct Consent Bypass"
+          },
+          "ListAnyPowerApp": {
+            "displayName": "List Any PowerApps"
+          },
+          "ListAnyFlow": {
+            "displayName": "List Any Flow"
+          },
+          "DeleteAnyPowerApp": {
+            "displayName": "Delete Any PowerApps"
+          },
+          "DeleteAnyFlow": {
+            "displayName": "Delete Any Flow"
+          },
+          "AddEnvironmentRoleAssignment": {
+            "displayName": "Add Environment Role Assignment"
+          },
+          "ReadEnvironmentRoleInformation": {
+            "displayName": "Read Environment Role Information"
+          },
+          "RemoveEnvironmentRoleAssignment": {
+            "displayName": "Remove Environment Role Assignment"
+          },
+          "ModifyDatabaseRoleAssignments": {
+            "displayName": "Modify Database Role Assignments"
+          },
+          "ModifyDatabaseRoleDefinitions": {
+            "displayName": "Modify Database Role Definitions"
+          },
+          "CreateDatabase": {
+            "displayName": "Create Database"
+          },
+          "ListDatabaseEntities": {
+            "displayName": "List Database Entities"
+          },
+          "CreateDatabaseEntities": {
+            "displayName": "Create Database Entities"
+          },
+          "UpdateDatabaseEntities": {
+            "displayName": "Update Database Entities"
+          },
+          "DeleteDatabaseEntities": {
+            "displayName": "Delete Database Entities"
+          },
+          "ExportEnvironmentPackage": {
+            "displayName": "ExportEnvironmentPackage"
+          },
+          "ImportEnvironmentPackage": {
+            "displayName": "ImportEnvironmentPackage"
+          },
+          "ManageAnyPowerApp": {
+            "displayName": "ManageAnyPowerApp"
+          },
+          "ManageAnyConnection": {
+            "displayName": "ManageAnyConnection"
+          },
+          "ManageCDSMigration": {
+            "displayName": "ManageCDSMigration"
+          },
+          "ManageTalentEnvironmentSettings": {
+            "displayName": "ManageTalentEnvironmentSettings"
+          },
+          "ManageDatabaseUsers": {
+            "displayName": "ManageDatabaseUsers"
+          },
+          "ManageAnyCustomApi": {
+            "displayName": "ManageAnyCustomApi"
+          },
+          "CreateFunction": {
+            "displayName": "CreateFunction"
+          },
+          "ListAnyFunction": {
+            "displayName": "ListAnyFunction"
+          },
+          "DeleteAnyFunction": {
+            "displayName": "DeleteAnyFunction"
+          },
+          "ReadConsumption": {
+            "displayName": "Read Environment Consumption"
+          },
+          "AllocateCapacity": {
+            "displayName": "Allocate Environment Capacity"
+          },
+          "Move": {
+            "displayName": "Move"
+          },
+          "CopyFrom": {
+            "displayName": "CopyFrom"
+          },
+          "CopyTo": {
+            "displayName": "CopyTo"
+          },
+          "RestoreTo": {
+            "displayName": "RestoreTo"
+          },
+          "RestoreFrom": {
+            "displayName": "RestoreFrom"
+          },
+          "ManageProtectionKeys": {
+            "displayName": "ManageProtectionKeys"
+          },
+          "Reset": {
+            "displayName": "Reset"
+          },
+          "Promote": {
+            "displayName": "Promote"
+          },
+          "Enable": {
+            "displayName": "Enable"
+          },
+          "Disable": {
+            "displayName": "Disable"
+          },
+          "CreateSharePointCustomFormCanvasApp": {
+            "displayName": "CreateSharePointCustomFormCanvasApp"
+          },
+          "Failover": {
+            "displayName": "Force Failover Environment"
+          },
+          "CreateBot": {
+            "displayName": "CreateBot"
+          }
+        },
+        "capacity": [
+          {
+            "capacityType": "Database",
+            "actualConsumption": 130.0859,
+            "ratedConsumption": 0.0,
+            "capacityUnit": "MB",
+            "updatedOn": "2026-05-04T11:50:43Z"
+          },
+          {
+            "capacityType": "File",
+            "actualConsumption": 2285.526,
+            "ratedConsumption": 0.0,
+            "capacityUnit": "MB",
+            "updatedOn": "2026-05-04T11:50:43Z"
+          },
+          {
+            "capacityType": "Log",
+            "actualConsumption": 0.0,
+            "ratedConsumption": 0.0,
+            "capacityUnit": "MB",
+            "updatedOn": "2026-05-04T11:50:43Z"
+          },
+          {
+            "capacityType": "FinOpsDatabase",
+            "actualConsumption": 0.0,
+            "ratedConsumption": 0.0,
+            "capacityUnit": "MB",
+            "updatedOn": "2026-05-04T11:50:43Z"
+          },
+          {
+            "capacityType": "FinOpsFile",
+            "actualConsumption": 0.0,
+            "ratedConsumption": 0.0,
+            "capacityUnit": "MB",
+            "updatedOn": "2026-05-04T11:50:43Z"
+          }
+        ],
+        "addons": [],
+        "runtimeEndpoints": {
+          "microsoft.BusinessAppPlatform": "https://australia.api.bap.microsoft.com",
+          "microsoft.CommonDataModel": "https://australia.api.cds.microsoft.com",
+          "microsoft.PowerApps": "https://australia.api.powerapps.com",
+          "microsoft.PowerAppsAdvisor": "https://australia.api.advisor.powerapps.com",
+          "microsoft.PowerVirtualAgents": "https://powervamg.au-il101.gateway.prod.island.powerapps.com",
+          "microsoft.ApiManagement": "https://management.AUSTRALIA.azure-apihub.net",
+          "microsoft.Flow": "https://australia.api.flow.microsoft.com"
+        },
+        "linkedEnvironmentMetadata": {
+          "type": "Dynamics365Instance",
+          "resourceId": "6815c5ca-5010-f111-afc1-0022481536cb",
+          "friendlyName": "Sydelle Trindade",
+          "uniqueName": "unq6815c5ca5010f111afc1002248153",
+          "domainName": "org70929762",
+          "version": "9.2.26035.200",
+          "instanceUrl": "https://org70929762.crm6.dynamics.com/",
+          "instanceApiUrl": "https://org70929762.api.crm6.dynamics.com",
+          "baseLanguage": 1033,
+          "instanceState": "Ready",
+          "createdTime": "2026-02-23T21:44:02.233Z",
+          "modifiedTime": "2026-02-23T21:44:02.233Z",
+          "hostNameSuffix": "crm6.dynamics.com",
+          "bapSolutionId": "00000001-0000-0000-0001-00000000009b",
+          "creationTemplates": [
+            "D365_CDS"
+          ],
+          "webApiVersion": "v9.0",
+          "backgroundOperationsState": "Enabled",
+          "scaleGroup": "OCECRMLIVESG613",
+          "crmGeo": "OCE",
+          "platformSku": "Standard",
+          "schemaType": "Standard",
+          "isDormant": false
+        },
+        "trialScenarioType": "None",
+        "notificationMetadata": {
+          "state": "NotSpecified",
+          "branding": "NotSpecific"
+        },
+        "retentionPeriod": "P7D",
+        "states": {
+          "management": {
+            "id": "Ready"
+          },
+          "runtime": {
+            "runtimeReasonCode": "NotSpecified",
+            "requestedBy": {
+              "displayName": "SYSTEM",
+              "type": "NotSpecified"
+            },
+            "id": "Enabled"
+          },
+          "disasterRecovery": {
+            "copyLocation": "NearCopy",
+            "id": "Unavailable"
+          }
+        },
+        "updateCadence": {
+          "id": "Frequent"
+        },
+        "retentionDetails": {
+          "retentionPeriod": "P7D",
+          "backupsAvailableFromDateTime": "2026-04-28T07:38:46.1571446Z"
+        },
+        "protectionStatus": {
+          "keyManagedBy": "Microsoft"
+        },
+        "cluster": {
+          "category": "Prod",
+          "number": "101",
+          "uriSuffix": "au-il101.gateway.prod.island",
+          "geoShortName": "AU",
+          "environment": "Prod",
+          "scaleGroupId": "6b3c92b8-0613-0000-0613-000000000000"
+        },
+        "connectedGroups": [],
+        "lifecycleOperationsEnforcement": {
+          "allowedOperations": [
+            {
+              "type": {
+                "id": "Move"
+              }
+            },
+            {
+              "type": {
+                "id": "Backup"
+              }
+            },
+            {
+              "type": {
+                "id": "Copy"
+              }
+            },
+            {
+              "type": {
+                "id": "Delete"
+              }
+            },
+            {
+              "type": {
+                "id": "Edit"
+              }
+            },
+            {
+              "type": {
+                "id": "Recover"
+              }
+            },
+            {
+              "type": {
+                "id": "Reset"
+              }
+            },
+            {
+              "type": {
+                "id": "Restore"
+              }
+            },
+            {
+              "type": {
+                "id": "NewCustomerManagedKey"
+              }
+            },
+            {
+              "type": {
+                "id": "NewNetworkInjection"
+              }
+            },
+            {
+              "type": {
+                "id": "SwapNetworkInjection"
+              }
+            },
+            {
+              "type": {
+                "id": "RevertNetworkInjection"
+              }
+            },
+            {
+              "type": {
+                "id": "NewIdentity"
+              }
+            },
+            {
+              "type": {
+                "id": "SwapIdentity"
+              }
+            },
+            {
+              "type": {
+                "id": "RevertIdentity"
+              }
+            },
+            {
+              "type": {
+                "id": "Enable"
+              }
+            },
+            {
+              "type": {
+                "id": "Disable"
+              }
+            },
+            {
+              "type": {
+                "id": "DisableGovernanceConfiguration"
+              }
+            },
+            {
+              "type": {
+                "id": "UpdateGovernanceConfiguration"
+              }
+            },
+            {
+              "type": {
+                "id": "PrepareTenantToTenant"
+              }
+            },
+            {
+              "type": {
+                "id": "MigrateTenantToTenant"
+              }
+            }
+          ],
+          "disallowedOperations": [
+            {
+              "type": {
+                "id": "Provision"
+              },
+              "reason": {
+                "message": "Provision cannot be performed because there is no linked CDS instance or the CDS instance version is not supported.",
+                "type": "CdsLink"
+              }
+            },
+            {
+              "type": {
+                "id": "Unlock"
+              },
+              "reason": {
+                "message": "Unlock cannot be performed because there is no linked CDS instance or the CDS instance version is not supported.",
+                "type": "CdsLink"
+              }
+            },
+            {
+              "type": {
+                "id": "Convert"
+              },
+              "reason": {
+                "message": "Convert cannot be performed on environment of type Developer.",
+                "type": "EnvironmentSkuType"
+              }
+            },
+            {
+              "type": {
+                "id": "Promote"
+              },
+              "reason": {
+                "message": "Promote cannot be performed on environment of type Developer.",
+                "type": "EnvironmentSkuType"
+              }
+            },
+            {
+              "type": {
+                "id": "UpdateProtectionStatus"
+              },
+              "reason": {
+                "message": "UpdateProtectionStatus cannot be performed on environment of type Developer.",
+                "type": "EnvironmentSkuType"
+              }
+            },
+            {
+              "type": {
+                "id": "ForceFailover"
+              },
+              "reason": {
+                "message": "ForceFailover cannot be performed on environment of type Developer.",
+                "type": "EnvironmentSkuType"
+              }
+            },
+            {
+              "type": {
+                "id": "DisasterRecoveryDrill"
+              },
+              "reason": {
+                "message": "DisasterRecoveryDrill cannot be performed on environment of type Developer.",
+                "type": "EnvironmentSkuType"
+              }
+            },
+            {
+              "type": {
+                "id": "FailbackToNearCopy"
+              },
+              "reason": {
+                "message": "FailbackToNearCopy cannot be performed on environment of type Developer.",
+                "type": "EnvironmentSkuType"
+              }
+            },
+            {
+              "type": {
+                "id": "RotateCustomerManagedKey"
+              },
+              "reason": {
+                "type": "EnvironmentCmkLinked"
+              }
+            },
+            {
+              "type": {
+                "id": "RevertToMicrosoftKey"
+              },
+              "reason": {
+                "type": "EnvironmentCmkLinked"
+              }
+            },
+            {
+              "type": {
+                "id": "EnableGovernanceConfiguration"
+              },
+              "reason": {
+                "message": "EnableGovernanceConfiguration cannot be performed on Power Platform environment because of the governance configuration.",
+                "type": "GovernanceConfig"
+              }
+            }
+          ]
+        },
+        "governanceConfiguration": {
+          "protectionLevel": "Standard",
+          "settings": {
+            "extendedSettings": {
+              "excludeEnvironmentFromAnalysis": "false",
+              "isGroupSharingDisabled": "true",
+              "maxLimitUserSharing": "5",
+              "includeOnHomepageInsights": "false",
+              "limitSharingMode": "excludeSharingToSecurityGroups",
+              "solutionCheckerMode": "warn",
+              "solutionCheckerRuleOverrides": ""
+            }
+          }
+        },
+        "bingChatEnabled": true,
+        "m365Enabled": true,
+        "appDraftingCopilotEnabled": true,
+        "enableAnalyticsForMakers": true
+      }
+    },
+    "InternalCds": null,
+    "OrganizationId": "6815c5ca-5010-f111-afc1-0022481536cb",
+    "Capacity": [
+      {
+        "capacityType": "Database",
+        "actualConsumption": 130.0859,
+        "ratedConsumption": 0.0,
+        "capacityUnit": "MB",
+        "updatedOn": "2026-05-04T11:50:43Z"
+      },
+      {
+        "capacityType": "File",
+        "actualConsumption": 2285.526,
+        "ratedConsumption": 0.0,
+        "capacityUnit": "MB",
+        "updatedOn": "2026-05-04T11:50:43Z"
+      },
+      {
+        "capacityType": "Log",
+        "actualConsumption": 0.0,
+        "ratedConsumption": 0.0,
+        "capacityUnit": "MB",
+        "updatedOn": "2026-05-04T11:50:43Z"
+      },
+      {
+        "capacityType": "FinOpsDatabase",
+        "actualConsumption": 0.0,
+        "ratedConsumption": 0.0,
+        "capacityUnit": "MB",
+        "updatedOn": "2026-05-04T11:50:43Z"
+      },
+      {
+        "capacityType": "FinOpsFile",
+        "actualConsumption": 0.0,
+        "ratedConsumption": 0.0,
+        "capacityUnit": "MB",
+        "updatedOn": "2026-05-04T11:50:43Z"
+      }
+    ],
+    "RetentionPeriod": 7
+  },
+  {
+    "EnvironmentName": "2d1ff904-94f9-e83a-aeac-8f7a040c41c8",
+    "DisplayName": "cSFF",
+    "Description": "Employee Relations",
+    "IsDefault": false,
+    "Location": "australia",
+    "CreatedTime": "2026-04-24T22:17:45.1784571Z",
+    "CreatedBy": {
+      "id": "32293c3d-3b5d-4388-8e91-7cdab18cf308",
+      "displayName": "",
+      "email": "",
+      "type": "User",
+      "tenantId": "764b46e8-d798-4ed3-87db-ae55ed7b0432",
+      "userPrincipalName": ""
+    },
+    "LastModifiedTime": "2026-04-24T22:18:00.0222244Z",
+    "LastModifiedBy": null,
+    "CreationType": "User",
+    "EnvironmentType": "NotSpecified",
+    "CommonDataServiceDatabaseProvisioningState": "Succeeded",
+    "CommonDataServiceDatabaseType": "Common Data Service for Apps",
+    "Internal": {
+      "id": "/providers/Microsoft.BusinessAppPlatform/scopes/admin/environments/2d1ff904-94f9-e83a-aeac-8f7a040c41c8",
+      "type": "Microsoft.BusinessAppPlatform/scopes/environments",
+      "location": "australia",
+      "name": "2d1ff904-94f9-e83a-aeac-8f7a040c41c8",
+      "properties": {
+        "tenantId": "764b46e8-d798-4ed3-87db-ae55ed7b0432",
+        "azureRegionHint": "australiaeast",
+        "displayName": "cSFF",
+        "description": "Employee Relations",
+        "createdTime": "2026-04-24T22:17:45.1784571Z",
+        "createdBy": {
+          "id": "32293c3d-3b5d-4388-8e91-7cdab18cf308",
+          "displayName": "",
+          "email": "",
+          "type": "User",
+          "tenantId": "764b46e8-d798-4ed3-87db-ae55ed7b0432",
+          "userPrincipalName": ""
+        },
+        "lastModifiedTime": "2026-04-24T22:18:00.0222244Z",
+        "provisioningState": "Succeeded",
+        "creationType": "User",
+        "environmentSku": "NotSpecified",
+        "environmentType": "Production",
+        "isDefault": false,
+        "permissions": {
+          "CreatePowerApp": {
+            "displayName": "Create PowerApps"
+          },
+          "ReadEnvironment": {
+            "displayName": "Read Environment"
+          },
+          "GenerateResourceStorage": {
+            "displayName": "Generate Resource Storage"
+          },
+          "CreateGateway": {
+            "displayName": "CreateGateway"
+          },
+          "CreateFlow": {
+            "displayName": "Create Flow"
+          },
+          "CreateCustomApi": {
+            "displayName": "Create Custom Connector"
+          },
+          "AdminReadEnvironment": {
+            "displayName": "Admin Read Environment"
+          },
+          "UpdateEnvironment": {
+            "displayName": "Update Environment"
+          },
+          "DeleteEnvironment": {
+            "displayName": "Delete Environment"
+          },
+          "SetDLPPolicy": {
+            "displayName": "Update DLP Policy"
+          },
+          "SetPowerAppAsFeatured": {
+            "displayName": "Set PowerApps As Featured"
+          },
+          "SetPowerAppAsHero": {
+            "displayName": "Set PowerApps As Hero"
+          },
+          "SetPowerAppConnectionDirectConsentBypass": {
+            "displayName": "Set PowerApps Connection Direct Consent Bypass"
+          },
+          "ListAnyPowerApp": {
+            "displayName": "List Any PowerApps"
+          },
+          "ListAnyFlow": {
+            "displayName": "List Any Flow"
+          },
+          "DeleteAnyPowerApp": {
+            "displayName": "Delete Any PowerApps"
+          },
+          "DeleteAnyFlow": {
+            "displayName": "Delete Any Flow"
+          },
+          "AddEnvironmentRoleAssignment": {
+            "displayName": "Add Environment Role Assignment"
+          },
+          "ReadEnvironmentRoleInformation": {
+            "displayName": "Read Environment Role Information"
+          },
+          "RemoveEnvironmentRoleAssignment": {
+            "displayName": "Remove Environment Role Assignment"
+          },
+          "ModifyDatabaseRoleAssignments": {
+            "displayName": "Modify Database Role Assignments"
+          },
+          "ModifyDatabaseRoleDefinitions": {
+            "displayName": "Modify Database Role Definitions"
+          },
+          "CreateDatabase": {
+            "displayName": "Create Database"
+          },
+          "ListDatabaseEntities": {
+            "displayName": "List Database Entities"
+          },
+          "CreateDatabaseEntities": {
+            "displayName": "Create Database Entities"
+          },
+          "UpdateDatabaseEntities": {
+            "displayName": "Update Database Entities"
+          },
+          "DeleteDatabaseEntities": {
+            "displayName": "Delete Database Entities"
+          },
+          "ExportEnvironmentPackage": {
+            "displayName": "ExportEnvironmentPackage"
+          },
+          "ImportEnvironmentPackage": {
+            "displayName": "ImportEnvironmentPackage"
+          },
+          "ManageAnyPowerApp": {
+            "displayName": "ManageAnyPowerApp"
+          },
+          "ManageAnyConnection": {
+            "displayName": "ManageAnyConnection"
+          },
+          "ManageCDSMigration": {
+            "displayName": "ManageCDSMigration"
+          },
+          "ManageTalentEnvironmentSettings": {
+            "displayName": "ManageTalentEnvironmentSettings"
+          },
+          "ManageDatabaseUsers": {
+            "displayName": "ManageDatabaseUsers"
+          },
+          "ManageAnyCustomApi": {
+            "displayName": "ManageAnyCustomApi"
+          },
+          "CreateFunction": {
+            "displayName": "CreateFunction"
+          },
+          "ListAnyFunction": {
+            "displayName": "ListAnyFunction"
+          },
+          "DeleteAnyFunction": {
+            "displayName": "DeleteAnyFunction"
+          },
+          "ReadConsumption": {
+            "displayName": "Read Environment Consumption"
+          },
+          "AllocateCapacity": {
+            "displayName": "Allocate Environment Capacity"
+          },
+          "Move": {
+            "displayName": "Move"
+          },
+          "CopyFrom": {
+            "displayName": "CopyFrom"
+          },
+          "CopyTo": {
+            "displayName": "CopyTo"
+          },
+          "RestoreTo": {
+            "displayName": "RestoreTo"
+          },
+          "RestoreFrom": {
+            "displayName": "RestoreFrom"
+          },
+          "ManageProtectionKeys": {
+            "displayName": "ManageProtectionKeys"
+          },
+          "Reset": {
+            "displayName": "Reset"
+          },
+          "Promote": {
+            "displayName": "Promote"
+          },
+          "Enable": {
+            "displayName": "Enable"
+          },
+          "Disable": {
+            "displayName": "Disable"
+          },
+          "CreateSharePointCustomFormCanvasApp": {
+            "displayName": "CreateSharePointCustomFormCanvasApp"
+          },
+          "Failover": {
+            "displayName": "Force Failover Environment"
+          },
+          "CreateBot": {
+            "displayName": "CreateBot"
+          }
+        },
+        "capacity": [
+          {
+            "capacityType": "Database",
+            "actualConsumption": 892.85979,
+            "ratedConsumption": 892.85979,
+            "capacityUnit": "MB",
+            "updatedOn": "2026-05-05T06:49:11Z"
+          }
+        ],
+        "addons": [],
+        "runtimeEndpoints": {
+          "microsoft.BusinessAppPlatform": "https://australia.api.bap.microsoft.com",
+          "microsoft.CommonDataModel": "https://australia.api.cds.microsoft.com",
+          "microsoft.PowerApps": "https://australia.api.powerapps.com",
+          "microsoft.PowerAppsAdvisor": "https://australia.api.advisor.powerapps.com",
+          "microsoft.PowerVirtualAgents": "https://powervamg.au-il101.gateway.prod.island.powerapps.com",
+          "microsoft.ApiManagement": "https://management.AUSTRALIA.azure-apihub.net",
+          "microsoft.Flow": "https://australia.api.flow.microsoft.com"
+        },
+        "linkedEnvironmentMetadata": {
+          "type": "Dynamics365Instance",
+          "resourceId": "7295a6bf-fa3f-f111-b320-000d3ae0c1c4",
+          "friendlyName": "cSFF",
+          "uniqueName": "unq7295a6bffa3ff111b320000d3ae0c",
+          "domainName": "org257115d2",
+          "version": "9.2.26033.179",
+          "instanceUrl": "https://org257115d2.crm6.dynamics.com/",
+          "instanceApiUrl": "https://org257115d2.api.crm6.dynamics.com",
+          "baseLanguage": 1033,
+          "instanceState": "Ready",
+          "createdTime": "2026-04-24T22:17:46.337Z",
+          "modifiedTime": "2026-04-24T22:17:46.337Z",
+          "hostNameSuffix": "crm6.dynamics.com",
+          "bapSolutionId": "00000001-0000-0000-0001-00000000009b",
+          "creationTemplates": [
+            "D365_CDS"
+          ],
+          "securityGroupId": "63a7d1fd-c30e-4e41-9078-7c1d441e6d17",
+          "webApiVersion": "v9.0",
+          "backgroundOperationsState": "Enabled",
+          "scaleGroup": "OCECRMLIVESG623",
+          "crmGeo": "OCE",
+          "platformSku": "Lite",
+          "schemaType": "Core",
+          "isDormant": false
+        },
+        "trialScenarioType": "None",
+        "notificationMetadata": {
+          "state": "NotSpecified",
+          "branding": "NotSpecific"
+        },
+        "retentionPeriod": "P7D",
+        "states": {
+          "management": {
+            "id": "Ready"
+          },
+          "runtime": {
+            "runtimeReasonCode": "NotSpecified",
+            "requestedBy": {
+              "displayName": "SYSTEM",
+              "type": "NotSpecified"
+            },
+            "id": "Enabled"
+          },
+          "disasterRecovery": {
+            "copyLocation": "NearCopy",
+            "id": "Unavailable"
+          }
+        },
+        "updateCadence": {
+          "id": "Frequent"
+        },
+        "retentionDetails": {
+          "retentionPeriod": "P7D",
+          "backupsAvailableFromDateTime": "2026-04-28T07:38:46.1571446Z"
+        },
+        "protectionStatus": {
+          "keyManagedBy": "Microsoft"
+        },
+        "cluster": {
+          "category": "Prod",
+          "number": "101",
+          "uriSuffix": "au-il101.gateway.prod.island",
+          "geoShortName": "AU",
+          "environment": "Prod",
+          "scaleGroupId": "06b1395b-0623-0000-0623-000000000000"
+        },
+        "connectedGroups": [
+          {
+            "id": "63a7d1fd-c30e-4e41-9078-7c1d441e6d17",
+            "displayName": "cSFF",
+            "state": "Created",
+            "resources": [
+              {
+                "type": "Team",
+                "id": "63a7d1fd-c30e-4e41-9078-7c1d441e6d17"
+              }
+            ]
+          }
+        ],
+        "lifecycleOperationsEnforcement": {
+          "allowedOperations": [
+            {
+              "type": {
+                "id": "Move"
+              }
+            },
+            {
+              "type": {
+                "id": "Backup"
+              }
+            },
+            {
+              "type": {
+                "id": "Delete"
+              }
+            },
+            {
+              "type": {
+                "id": "Edit"
+              }
+            },
+            {
+              "type": {
+                "id": "Promote"
+              }
+            },
+            {
+              "type": {
+                "id": "Recover"
+              }
+            },
+            {
+              "type": {
+                "id": "Restore"
+              }
+            },
+            {
+              "type": {
+                "id": "NewIdentity"
+              }
+            },
+            {
+              "type": {
+                "id": "SwapIdentity"
+              }
+            },
+            {
+              "type": {
+                "id": "RevertIdentity"
+              }
+            },
+            {
+              "type": {
+                "id": "Enable"
+              }
+            },
+            {
+              "type": {
+                "id": "Disable"
+              }
+            },
+            {
+              "type": {
+                "id": "EnableGovernanceConfiguration"
+              }
+            }
+          ],
+          "disallowedOperations": [
+            {
+              "type": {
+                "id": "Provision"
+              },
+              "reason": {
+                "message": "Provision cannot be performed because there is no linked CDS instance or the CDS instance version is not supported.",
+                "type": "CdsLink"
+              }
+            },
+            {
+              "type": {
+                "id": "Unlock"
+              },
+              "reason": {
+                "message": "Unlock cannot be performed because there is no linked CDS instance or the CDS instance version is not supported.",
+                "type": "CdsLink"
+              }
+            },
+            {
+              "type": {
+                "id": "Convert"
+              },
+              "reason": {
+                "message": "Convert cannot be performed on environment of type Teams.",
+                "type": "EnvironmentSkuType"
+              }
+            },
+            {
+              "type": {
+                "id": "Copy"
+              },
+              "reason": {
+                "message": "Copy cannot be performed on environment of type Teams.",
+                "type": "EnvironmentSkuType"
+              }
+            },
+            {
+              "type": {
+                "id": "Reset"
+              },
+              "reason": {
+                "message": "Reset cannot be performed on environment of type Teams.",
+                "type": "EnvironmentSkuType"
+              }
+            },
+            {
+              "type": {
+                "id": "UpdateProtectionStatus"
+              },
+              "reason": {
+                "message": "UpdateProtectionStatus cannot be performed on environment of type Teams.",
+                "type": "EnvironmentSkuType"
+              }
+            },
+            {
+              "type": {
+                "id": "NewCustomerManagedKey"
+              },
+              "reason": {
+                "message": "NewCustomerManagedKey cannot be performed on environment of type Teams.",
+                "type": "EnvironmentSkuType"
+              }
+            },
+            {
+              "type": {
+                "id": "RotateCustomerManagedKey"
+              },
+              "reason": {
+                "message": "RotateCustomerManagedKey cannot be performed on environment of type Teams.",
+                "type": "EnvironmentSkuType"
+              }
+            },
+            {
+              "type": {
+                "id": "RevertToMicrosoftKey"
+              },
+              "reason": {
+                "message": "RevertToMicrosoftKey cannot be performed on environment of type Teams.",
+                "type": "EnvironmentSkuType"
+              }
+            },
+            {
+              "type": {
+                "id": "NewNetworkInjection"
+              },
+              "reason": {
+                "message": "NewNetworkInjection cannot be performed on environment of type Teams.",
+                "type": "EnvironmentSkuType"
+              }
+            },
+            {
+              "type": {
+                "id": "SwapNetworkInjection"
+              },
+              "reason": {
+                "message": "SwapNetworkInjection cannot be performed on environment of type Teams.",
+                "type": "EnvironmentSkuType"
+              }
+            },
+            {
+              "type": {
+                "id": "RevertNetworkInjection"
+              },
+              "reason": {
+                "message": "RevertNetworkInjection cannot be performed on environment of type Teams.",
+                "type": "EnvironmentSkuType"
+              }
+            },
+            {
+              "type": {
+                "id": "PrepareTenantToTenant"
+              },
+              "reason": {
+                "message": "PrepareTenantToTenant cannot be performed on environment of type Teams.",
+                "type": "EnvironmentSkuType"
+              }
+            },
+            {
+              "type": {
+                "id": "MigrateTenantToTenant"
+              },
+              "reason": {
+                "message": "MigrateTenantToTenant cannot be performed on environment of type Teams.",
+                "type": "EnvironmentSkuType"
+              }
+            },
+            {
+              "type": {
+                "id": "ForceFailover"
+              },
+              "reason": {
+                "message": "ForceFailover cannot be performed on environment of type Teams.",
+                "type": "EnvironmentSkuType"
+              }
+            },
+            {
+              "type": {
+                "id": "DisasterRecoveryDrill"
+              },
+              "reason": {
+                "message": "DisasterRecoveryDrill cannot be performed on environment of type Teams.",
+                "type": "EnvironmentSkuType"
+              }
+            },
+            {
+              "type": {
+                "id": "FailbackToNearCopy"
+              },
+              "reason": {
+                "message": "FailbackToNearCopy cannot be performed on environment of type Teams.",
+                "type": "EnvironmentSkuType"
+              }
+            },
+            {
+              "type": {
+                "id": "DisableGovernanceConfiguration"
+              },
+              "reason": {
+                "message": "DisableGovernanceConfiguration cannot be performed on Power Platform environment because of the governance configuration.",
+                "type": "GovernanceConfig"
+              }
+            },
+            {
+              "type": {
+                "id": "UpdateGovernanceConfiguration"
+              },
+              "reason": {
+                "message": "UpdateGovernanceConfiguration cannot be performed on Power Platform environment because of the governance configuration.",
+                "type": "GovernanceConfig"
+              }
+            }
+          ]
+        },
+        "governanceConfiguration": {
+          "protectionLevel": "Basic"
+        },
+        "bingChatEnabled": true,
+        "m365Enabled": true,
+        "appDraftingCopilotEnabled": true,
+        "enableAnalyticsForMakers": true
+      }
+    },
+    "InternalCds": null,
+    "OrganizationId": "7295a6bf-fa3f-f111-b320-000d3ae0c1c4",
+    "SecurityGroupId": "63a7d1fd-c30e-4e41-9078-7c1d441e6d17",
+    "Capacity": [
+      {
+        "capacityType": "Database",
+        "actualConsumption": 892.85979,
+        "ratedConsumption": 892.85979,
+        "capacityUnit": "MB",
+        "updatedOn": "2026-05-05T06:49:11Z"
+      }
+    ],
+    "RetentionPeriod": 7
+  },
+  {
+    "EnvironmentName": "996ea98f-39d5-ee2f-91e8-1befffae6ece",
+    "DisplayName": "A Caj1",
+    "Description": "A Caj1 Group",
+    "IsDefault": false,
+    "Location": "australia",
+    "CreatedTime": "2026-04-23T07:01:00.291246Z",
+    "CreatedBy": {
+      "id": "32293c3d-3b5d-4388-8e91-7cdab18cf308",
+      "displayName": "",
+      "email": "",
+      "type": "User",
+      "tenantId": "764b46e8-d798-4ed3-87db-ae55ed7b0432",
+      "userPrincipalName": ""
+    },
+    "LastModifiedTime": "2026-04-23T07:01:12.4324313Z",
+    "LastModifiedBy": null,
+    "CreationType": "User",
+    "EnvironmentType": "NotSpecified",
+    "CommonDataServiceDatabaseProvisioningState": "Succeeded",
+    "CommonDataServiceDatabaseType": "Common Data Service for Apps",
+    "Internal": {
+      "id": "/providers/Microsoft.BusinessAppPlatform/scopes/admin/environments/996ea98f-39d5-ee2f-91e8-1befffae6ece",
+      "type": "Microsoft.BusinessAppPlatform/scopes/environments",
+      "location": "australia",
+      "name": "996ea98f-39d5-ee2f-91e8-1befffae6ece",
+      "properties": {
+        "tenantId": "764b46e8-d798-4ed3-87db-ae55ed7b0432",
+        "azureRegionHint": "australiaeast",
+        "displayName": "A Caj1",
+        "description": "A Caj1 Group",
+        "createdTime": "2026-04-23T07:01:00.291246Z",
+        "createdBy": {
+          "id": "32293c3d-3b5d-4388-8e91-7cdab18cf308",
+          "displayName": "",
+          "email": "",
+          "type": "User",
+          "tenantId": "764b46e8-d798-4ed3-87db-ae55ed7b0432",
+          "userPrincipalName": ""
+        },
+        "lastModifiedTime": "2026-04-23T07:01:12.4324313Z",
+        "provisioningState": "Succeeded",
+        "creationType": "User",
+        "environmentSku": "NotSpecified",
+        "environmentType": "Production",
+        "isDefault": false,
+        "permissions": {
+          "CreatePowerApp": {
+            "displayName": "Create PowerApps"
+          },
+          "ReadEnvironment": {
+            "displayName": "Read Environment"
+          },
+          "GenerateResourceStorage": {
+            "displayName": "Generate Resource Storage"
+          },
+          "CreateGateway": {
+            "displayName": "CreateGateway"
+          },
+          "CreateFlow": {
+            "displayName": "Create Flow"
+          },
+          "CreateCustomApi": {
+            "displayName": "Create Custom Connector"
+          },
+          "AdminReadEnvironment": {
+            "displayName": "Admin Read Environment"
+          },
+          "UpdateEnvironment": {
+            "displayName": "Update Environment"
+          },
+          "DeleteEnvironment": {
+            "displayName": "Delete Environment"
+          },
+          "SetDLPPolicy": {
+            "displayName": "Update DLP Policy"
+          },
+          "SetPowerAppAsFeatured": {
+            "displayName": "Set PowerApps As Featured"
+          },
+          "SetPowerAppAsHero": {
+            "displayName": "Set PowerApps As Hero"
+          },
+          "SetPowerAppConnectionDirectConsentBypass": {
+            "displayName": "Set PowerApps Connection Direct Consent Bypass"
+          },
+          "ListAnyPowerApp": {
+            "displayName": "List Any PowerApps"
+          },
+          "ListAnyFlow": {
+            "displayName": "List Any Flow"
+          },
+          "DeleteAnyPowerApp": {
+            "displayName": "Delete Any PowerApps"
+          },
+          "DeleteAnyFlow": {
+            "displayName": "Delete Any Flow"
+          },
+          "AddEnvironmentRoleAssignment": {
+            "displayName": "Add Environment Role Assignment"
+          },
+          "ReadEnvironmentRoleInformation": {
+            "displayName": "Read Environment Role Information"
+          },
+          "RemoveEnvironmentRoleAssignment": {
+            "displayName": "Remove Environment Role Assignment"
+          },
+          "ModifyDatabaseRoleAssignments": {
+            "displayName": "Modify Database Role Assignments"
+          },
+          "ModifyDatabaseRoleDefinitions": {
+            "displayName": "Modify Database Role Definitions"
+          },
+          "CreateDatabase": {
+            "displayName": "Create Database"
+          },
+          "ListDatabaseEntities": {
+            "displayName": "List Database Entities"
+          },
+          "CreateDatabaseEntities": {
+            "displayName": "Create Database Entities"
+          },
+          "UpdateDatabaseEntities": {
+            "displayName": "Update Database Entities"
+          },
+          "DeleteDatabaseEntities": {
+            "displayName": "Delete Database Entities"
+          },
+          "ExportEnvironmentPackage": {
+            "displayName": "ExportEnvironmentPackage"
+          },
+          "ImportEnvironmentPackage": {
+            "displayName": "ImportEnvironmentPackage"
+          },
+          "ManageAnyPowerApp": {
+            "displayName": "ManageAnyPowerApp"
+          },
+          "ManageAnyConnection": {
+            "displayName": "ManageAnyConnection"
+          },
+          "ManageCDSMigration": {
+            "displayName": "ManageCDSMigration"
+          },
+          "ManageTalentEnvironmentSettings": {
+            "displayName": "ManageTalentEnvironmentSettings"
+          },
+          "ManageDatabaseUsers": {
+            "displayName": "ManageDatabaseUsers"
+          },
+          "ManageAnyCustomApi": {
+            "displayName": "ManageAnyCustomApi"
+          },
+          "CreateFunction": {
+            "displayName": "CreateFunction"
+          },
+          "ListAnyFunction": {
+            "displayName": "ListAnyFunction"
+          },
+          "DeleteAnyFunction": {
+            "displayName": "DeleteAnyFunction"
+          },
+          "ReadConsumption": {
+            "displayName": "Read Environment Consumption"
+          },
+          "AllocateCapacity": {
+            "displayName": "Allocate Environment Capacity"
+          },
+          "Move": {
+            "displayName": "Move"
+          },
+          "CopyFrom": {
+            "displayName": "CopyFrom"
+          },
+          "CopyTo": {
+            "displayName": "CopyTo"
+          },
+          "RestoreTo": {
+            "displayName": "RestoreTo"
+          },
+          "RestoreFrom": {
+            "displayName": "RestoreFrom"
+          },
+          "ManageProtectionKeys": {
+            "displayName": "ManageProtectionKeys"
+          },
+          "Reset": {
+            "displayName": "Reset"
+          },
+          "Promote": {
+            "displayName": "Promote"
+          },
+          "Enable": {
+            "displayName": "Enable"
+          },
+          "Disable": {
+            "displayName": "Disable"
+          },
+          "CreateSharePointCustomFormCanvasApp": {
+            "displayName": "CreateSharePointCustomFormCanvasApp"
+          },
+          "Failover": {
+            "displayName": "Force Failover Environment"
+          },
+          "CreateBot": {
+            "displayName": "CreateBot"
+          }
+        },
+        "capacity": [
+          {
+            "capacityType": "Database",
+            "actualConsumption": 918.93569,
+            "ratedConsumption": 918.93569,
+            "capacityUnit": "MB",
+            "updatedOn": "2026-05-04T13:02:07Z"
+          }
+        ],
+        "addons": [],
+        "runtimeEndpoints": {
+          "microsoft.BusinessAppPlatform": "https://australia.api.bap.microsoft.com",
+          "microsoft.CommonDataModel": "https://australia.api.cds.microsoft.com",
+          "microsoft.PowerApps": "https://australia.api.powerapps.com",
+          "microsoft.PowerAppsAdvisor": "https://australia.api.advisor.powerapps.com",
+          "microsoft.PowerVirtualAgents": "https://powervamg.au-il101.gateway.prod.island.powerapps.com",
+          "microsoft.ApiManagement": "https://management.AUSTRALIA.azure-apihub.net",
+          "microsoft.Flow": "https://australia.api.flow.microsoft.com"
+        },
+        "linkedEnvironmentMetadata": {
+          "type": "Dynamics365Instance",
+          "resourceId": "11a93a8e-e03e-f111-b320-002248e344cc",
+          "friendlyName": "A Caj1",
+          "uniqueName": "unq11a93a8ee03ef111b320002248e34",
+          "domainName": "org245667d8",
+          "version": "9.2.26035.200",
+          "instanceUrl": "https://org245667d8.crm6.dynamics.com/",
+          "instanceApiUrl": "https://org245667d8.api.crm6.dynamics.com",
+          "baseLanguage": 1033,
+          "instanceState": "Ready",
+          "createdTime": "2026-04-23T07:01:01.15Z",
+          "modifiedTime": "2026-04-23T07:01:01.15Z",
+          "hostNameSuffix": "crm6.dynamics.com",
+          "bapSolutionId": "00000001-0000-0000-0001-00000000009b",
+          "creationTemplates": [
+            "D365_CDS"
+          ],
+          "securityGroupId": "17a337ed-cdeb-4124-8299-ac923d78e203",
+          "webApiVersion": "v9.0",
+          "backgroundOperationsState": "Enabled",
+          "scaleGroup": "OCECRMLIVESG623",
+          "crmGeo": "OCE",
+          "platformSku": "Lite",
+          "schemaType": "Core",
+          "isDormant": false
+        },
+        "trialScenarioType": "None",
+        "notificationMetadata": {
+          "state": "NotSpecified",
+          "branding": "NotSpecific"
+        },
+        "retentionPeriod": "P7D",
+        "states": {
+          "management": {
+            "id": "Ready"
+          },
+          "runtime": {
+            "runtimeReasonCode": "NotSpecified",
+            "requestedBy": {
+              "displayName": "SYSTEM",
+              "type": "NotSpecified"
+            },
+            "id": "Enabled"
+          },
+          "disasterRecovery": {
+            "copyLocation": "NearCopy",
+            "id": "Unavailable"
+          }
+        },
+        "updateCadence": {
+          "id": "Frequent"
+        },
+        "retentionDetails": {
+          "retentionPeriod": "P7D",
+          "backupsAvailableFromDateTime": "2026-04-28T07:38:46.1571446Z"
+        },
+        "protectionStatus": {
+          "keyManagedBy": "Microsoft"
+        },
+        "cluster": {
+          "category": "Prod",
+          "number": "101",
+          "uriSuffix": "au-il101.gateway.prod.island",
+          "geoShortName": "AU",
+          "environment": "Prod",
+          "scaleGroupId": "06b1395b-0623-0000-0623-000000000000"
+        },
+        "connectedGroups": [
+          {
+            "id": "17a337ed-cdeb-4124-8299-ac923d78e203",
+            "displayName": "A Caj1",
+            "state": "Created",
+            "resources": [
+              {
+                "type": "Team",
+                "id": "17a337ed-cdeb-4124-8299-ac923d78e203"
+              }
+            ]
+          }
+        ],
+        "lifecycleOperationsEnforcement": {
+          "allowedOperations": [
+            {
+              "type": {
+                "id": "Move"
+              }
+            },
+            {
+              "type": {
+                "id": "Backup"
+              }
+            },
+            {
+              "type": {
+                "id": "Delete"
+              }
+            },
+            {
+              "type": {
+                "id": "Edit"
+              }
+            },
+            {
+              "type": {
+                "id": "Promote"
+              }
+            },
+            {
+              "type": {
+                "id": "Recover"
+              }
+            },
+            {
+              "type": {
+                "id": "Restore"
+              }
+            },
+            {
+              "type": {
+                "id": "NewIdentity"
+              }
+            },
+            {
+              "type": {
+                "id": "SwapIdentity"
+              }
+            },
+            {
+              "type": {
+                "id": "RevertIdentity"
+              }
+            },
+            {
+              "type": {
+                "id": "Enable"
+              }
+            },
+            {
+              "type": {
+                "id": "Disable"
+              }
+            },
+            {
+              "type": {
+                "id": "EnableGovernanceConfiguration"
+              }
+            }
+          ],
+          "disallowedOperations": [
+            {
+              "type": {
+                "id": "Provision"
+              },
+              "reason": {
+                "message": "Provision cannot be performed because there is no linked CDS instance or the CDS instance version is not supported.",
+                "type": "CdsLink"
+              }
+            },
+            {
+              "type": {
+                "id": "Unlock"
+              },
+              "reason": {
+                "message": "Unlock cannot be performed because there is no linked CDS instance or the CDS instance version is not supported.",
+                "type": "CdsLink"
+              }
+            },
+            {
+              "type": {
+                "id": "Convert"
+              },
+              "reason": {
+                "message": "Convert cannot be performed on environment of type Teams.",
+                "type": "EnvironmentSkuType"
+              }
+            },
+            {
+              "type": {
+                "id": "Copy"
+              },
+              "reason": {
+                "message": "Copy cannot be performed on environment of type Teams.",
+                "type": "EnvironmentSkuType"
+              }
+            },
+            {
+              "type": {
+                "id": "Reset"
+              },
+              "reason": {
+                "message": "Reset cannot be performed on environment of type Teams.",
+                "type": "EnvironmentSkuType"
+              }
+            },
+            {
+              "type": {
+                "id": "UpdateProtectionStatus"
+              },
+              "reason": {
+                "message": "UpdateProtectionStatus cannot be performed on environment of type Teams.",
+                "type": "EnvironmentSkuType"
+              }
+            },
+            {
+              "type": {
+                "id": "NewCustomerManagedKey"
+              },
+              "reason": {
+                "message": "NewCustomerManagedKey cannot be performed on environment of type Teams.",
+                "type": "EnvironmentSkuType"
+              }
+            },
+            {
+              "type": {
+                "id": "RotateCustomerManagedKey"
+              },
+              "reason": {
+                "message": "RotateCustomerManagedKey cannot be performed on environment of type Teams.",
+                "type": "EnvironmentSkuType"
+              }
+            },
+            {
+              "type": {
+                "id": "RevertToMicrosoftKey"
+              },
+              "reason": {
+                "message": "RevertToMicrosoftKey cannot be performed on environment of type Teams.",
+                "type": "EnvironmentSkuType"
+              }
+            },
+            {
+              "type": {
+                "id": "NewNetworkInjection"
+              },
+              "reason": {
+                "message": "NewNetworkInjection cannot be performed on environment of type Teams.",
+                "type": "EnvironmentSkuType"
+              }
+            },
+            {
+              "type": {
+                "id": "SwapNetworkInjection"
+              },
+              "reason": {
+                "message": "SwapNetworkInjection cannot be performed on environment of type Teams.",
+                "type": "EnvironmentSkuType"
+              }
+            },
+            {
+              "type": {
+                "id": "RevertNetworkInjection"
+              },
+              "reason": {
+                "message": "RevertNetworkInjection cannot be performed on environment of type Teams.",
+                "type": "EnvironmentSkuType"
+              }
+            },
+            {
+              "type": {
+                "id": "PrepareTenantToTenant"
+              },
+              "reason": {
+                "message": "PrepareTenantToTenant cannot be performed on environment of type Teams.",
+                "type": "EnvironmentSkuType"
+              }
+            },
+            {
+              "type": {
+                "id": "MigrateTenantToTenant"
+              },
+              "reason": {
+                "message": "MigrateTenantToTenant cannot be performed on environment of type Teams.",
+                "type": "EnvironmentSkuType"
+              }
+            },
+            {
+              "type": {
+                "id": "ForceFailover"
+              },
+              "reason": {
+                "message": "ForceFailover cannot be performed on environment of type Teams.",
+                "type": "EnvironmentSkuType"
+              }
+            },
+            {
+              "type": {
+                "id": "DisasterRecoveryDrill"
+              },
+              "reason": {
+                "message": "DisasterRecoveryDrill cannot be performed on environment of type Teams.",
+                "type": "EnvironmentSkuType"
+              }
+            },
+            {
+              "type": {
+                "id": "FailbackToNearCopy"
+              },
+              "reason": {
+                "message": "FailbackToNearCopy cannot be performed on environment of type Teams.",
+                "type": "EnvironmentSkuType"
+              }
+            },
+            {
+              "type": {
+                "id": "DisableGovernanceConfiguration"
+              },
+              "reason": {
+                "message": "DisableGovernanceConfiguration cannot be performed on Power Platform environment because of the governance configuration.",
+                "type": "GovernanceConfig"
+              }
+            },
+            {
+              "type": {
+                "id": "UpdateGovernanceConfiguration"
+              },
+              "reason": {
+                "message": "UpdateGovernanceConfiguration cannot be performed on Power Platform environment because of the governance configuration.",
+                "type": "GovernanceConfig"
+              }
+            }
+          ]
+        },
+        "governanceConfiguration": {
+          "protectionLevel": "Basic"
+        },
+        "bingChatEnabled": true,
+        "m365Enabled": true,
+        "appDraftingCopilotEnabled": true,
+        "enableAnalyticsForMakers": true
+      }
+    },
+    "InternalCds": null,
+    "OrganizationId": "11a93a8e-e03e-f111-b320-002248e344cc",
+    "SecurityGroupId": "17a337ed-cdeb-4124-8299-ac923d78e203",
+    "Capacity": [
+      {
+        "capacityType": "Database",
+        "actualConsumption": 918.93569,
+        "ratedConsumption": 918.93569,
+        "capacityUnit": "MB",
+        "updatedOn": "2026-05-04T13:02:07Z"
+      }
+    ],
+    "RetentionPeriod": 7
+  },
+  {
+    "EnvironmentName": "b8c68c04-3c46-e5b2-9c78-53225e2b22ce",
+    "DisplayName": "Caje Dev",
+    "Description": null,
+    "IsDefault": false,
+    "Location": "australia",
+    "CreatedTime": "2025-12-26T20:30:28.3090175Z",
+    "CreatedBy": {
+      "id": "32293c3d-3b5d-4388-8e91-7cdab18cf308",
+      "displayName": "",
+      "email": "",
+      "type": "User",
+      "tenantId": "764b46e8-d798-4ed3-87db-ae55ed7b0432",
+      "userPrincipalName": ""
+    },
+    "LastModifiedTime": "2026-04-25T00:48:04.7647209Z",
+    "LastModifiedBy": null,
+    "CreationType": "User",
+    "EnvironmentType": "Developer",
+    "CommonDataServiceDatabaseProvisioningState": "Succeeded",
+    "CommonDataServiceDatabaseType": "Common Data Service for Apps",
+    "Internal": {
+      "id": "/providers/Microsoft.BusinessAppPlatform/scopes/admin/environments/b8c68c04-3c46-e5b2-9c78-53225e2b22ce",
+      "type": "Microsoft.BusinessAppPlatform/scopes/environments",
+      "location": "australia",
+      "name": "b8c68c04-3c46-e5b2-9c78-53225e2b22ce",
+      "properties": {
+        "tenantId": "764b46e8-d798-4ed3-87db-ae55ed7b0432",
+        "azureRegionHint": "australiaeast",
+        "displayName": "Caje Dev",
+        "createdTime": "2025-12-26T20:30:28.3090175Z",
+        "createdBy": {
+          "id": "32293c3d-3b5d-4388-8e91-7cdab18cf308",
+          "displayName": "",
+          "email": "",
+          "type": "User",
+          "tenantId": "764b46e8-d798-4ed3-87db-ae55ed7b0432",
+          "userPrincipalName": ""
+        },
+        "usedBy": {
+          "id": "32293c3d-3b5d-4388-8e91-7cdab18cf308",
+          "displayName": "",
+          "email": "",
+          "type": "User",
+          "tenantId": "764b46e8-d798-4ed3-87db-ae55ed7b0432",
+          "userPrincipalName": ""
+        },
+        "lastModifiedTime": "2026-04-25T00:48:04.7647209Z",
+        "provisioningState": "Succeeded",
+        "creationType": "User",
+        "environmentSku": "Developer",
+        "environmentType": "Production",
+        "isDefault": false,
+        "permissions": {
+          "CreatePowerApp": {
+            "displayName": "Create PowerApps"
+          },
+          "ReadEnvironment": {
+            "displayName": "Read Environment"
+          },
+          "GenerateResourceStorage": {
+            "displayName": "Generate Resource Storage"
+          },
+          "CreateGateway": {
+            "displayName": "CreateGateway"
+          },
+          "CreateFlow": {
+            "displayName": "Create Flow"
+          },
+          "CreateCustomApi": {
+            "displayName": "Create Custom Connector"
+          },
+          "AdminReadEnvironment": {
+            "displayName": "Admin Read Environment"
+          },
+          "UpdateEnvironment": {
+            "displayName": "Update Environment"
+          },
+          "DeleteEnvironment": {
+            "displayName": "Delete Environment"
+          },
+          "SetDLPPolicy": {
+            "displayName": "Update DLP Policy"
+          },
+          "SetPowerAppAsFeatured": {
+            "displayName": "Set PowerApps As Featured"
+          },
+          "SetPowerAppAsHero": {
+            "displayName": "Set PowerApps As Hero"
+          },
+          "SetPowerAppConnectionDirectConsentBypass": {
+            "displayName": "Set PowerApps Connection Direct Consent Bypass"
+          },
+          "ListAnyPowerApp": {
+            "displayName": "List Any PowerApps"
+          },
+          "ListAnyFlow": {
+            "displayName": "List Any Flow"
+          },
+          "DeleteAnyPowerApp": {
+            "displayName": "Delete Any PowerApps"
+          },
+          "DeleteAnyFlow": {
+            "displayName": "Delete Any Flow"
+          },
+          "AddEnvironmentRoleAssignment": {
+            "displayName": "Add Environment Role Assignment"
+          },
+          "ReadEnvironmentRoleInformation": {
+            "displayName": "Read Environment Role Information"
+          },
+          "RemoveEnvironmentRoleAssignment": {
+            "displayName": "Remove Environment Role Assignment"
+          },
+          "ModifyDatabaseRoleAssignments": {
+            "displayName": "Modify Database Role Assignments"
+          },
+          "ModifyDatabaseRoleDefinitions": {
+            "displayName": "Modify Database Role Definitions"
+          },
+          "CreateDatabase": {
+            "displayName": "Create Database"
+          },
+          "ListDatabaseEntities": {
+            "displayName": "List Database Entities"
+          },
+          "CreateDatabaseEntities": {
+            "displayName": "Create Database Entities"
+          },
+          "UpdateDatabaseEntities": {
+            "displayName": "Update Database Entities"
+          },
+          "DeleteDatabaseEntities": {
+            "displayName": "Delete Database Entities"
+          },
+          "ExportEnvironmentPackage": {
+            "displayName": "ExportEnvironmentPackage"
+          },
+          "ImportEnvironmentPackage": {
+            "displayName": "ImportEnvironmentPackage"
+          },
+          "ManageAnyPowerApp": {
+            "displayName": "ManageAnyPowerApp"
+          },
+          "ManageAnyConnection": {
+            "displayName": "ManageAnyConnection"
+          },
+          "ManageCDSMigration": {
+            "displayName": "ManageCDSMigration"
+          },
+          "ManageTalentEnvironmentSettings": {
+            "displayName": "ManageTalentEnvironmentSettings"
+          },
+          "ManageDatabaseUsers": {
+            "displayName": "ManageDatabaseUsers"
+          },
+          "ManageAnyCustomApi": {
+            "displayName": "ManageAnyCustomApi"
+          },
+          "CreateFunction": {
+            "displayName": "CreateFunction"
+          },
+          "ListAnyFunction": {
+            "displayName": "ListAnyFunction"
+          },
+          "DeleteAnyFunction": {
+            "displayName": "DeleteAnyFunction"
+          },
+          "ReadConsumption": {
+            "displayName": "Read Environment Consumption"
+          },
+          "AllocateCapacity": {
+            "displayName": "Allocate Environment Capacity"
+          },
+          "Move": {
+            "displayName": "Move"
+          },
+          "CopyFrom": {
+            "displayName": "CopyFrom"
+          },
+          "CopyTo": {
+            "displayName": "CopyTo"
+          },
+          "RestoreTo": {
+            "displayName": "RestoreTo"
+          },
+          "RestoreFrom": {
+            "displayName": "RestoreFrom"
+          },
+          "ManageProtectionKeys": {
+            "displayName": "ManageProtectionKeys"
+          },
+          "Reset": {
+            "displayName": "Reset"
+          },
+          "Promote": {
+            "displayName": "Promote"
+          },
+          "Enable": {
+            "displayName": "Enable"
+          },
+          "Disable": {
+            "displayName": "Disable"
+          },
+          "CreateSharePointCustomFormCanvasApp": {
+            "displayName": "CreateSharePointCustomFormCanvasApp"
+          },
+          "Failover": {
+            "displayName": "Force Failover Environment"
+          },
+          "CreateBot": {
+            "displayName": "CreateBot"
+          }
+        },
+        "capacity": [
+          {
+            "capacityType": "Database",
+            "actualConsumption": 149.3438,
+            "ratedConsumption": 0.0,
+            "capacityUnit": "MB",
+            "updatedOn": "2026-05-04T17:50:09Z"
+          },
+          {
+            "capacityType": "File",
+            "actualConsumption": 2610.1,
+            "ratedConsumption": 0.0,
+            "capacityUnit": "MB",
+            "updatedOn": "2026-05-04T17:50:09Z"
+          },
+          {
+            "capacityType": "Log",
+            "actualConsumption": 0.05850601,
+            "ratedConsumption": 0.0,
+            "capacityUnit": "MB",
+            "updatedOn": "2026-05-04T17:50:09Z"
+          },
+          {
+            "capacityType": "FinOpsDatabase",
+            "actualConsumption": 0.0,
+            "ratedConsumption": 0.0,
+            "capacityUnit": "MB",
+            "updatedOn": "2026-05-04T17:50:09Z"
+          },
+          {
+            "capacityType": "FinOpsFile",
+            "actualConsumption": 0.0,
+            "ratedConsumption": 0.0,
+            "capacityUnit": "MB",
+            "updatedOn": "2026-05-04T17:50:09Z"
+          }
+        ],
+        "addons": [],
+        "runtimeEndpoints": {
+          "microsoft.BusinessAppPlatform": "https://australia.api.bap.microsoft.com",
+          "microsoft.CommonDataModel": "https://australia.api.cds.microsoft.com",
+          "microsoft.PowerApps": "https://australia.api.powerapps.com",
+          "microsoft.PowerAppsAdvisor": "https://australia.api.advisor.powerapps.com",
+          "microsoft.PowerVirtualAgents": "https://powervamg.au-il101.gateway.prod.island.powerapps.com",
+          "microsoft.ApiManagement": "https://management.AUSTRALIA.azure-apihub.net",
+          "microsoft.Flow": "https://australia.api.flow.microsoft.com"
+        },
+        "linkedEnvironmentMetadata": {
+          "type": "Dynamics365Instance",
+          "resourceId": "c6769b9e-dce0-f011-872b-002248e365ce",
+          "friendlyName": "Caje Dev",
+          "uniqueName": "unqc6769b9edce0f011872b002248e36",
+          "domainName": "caje-dev",
+          "version": "9.2.26035.200",
+          "instanceUrl": "https://caje-dev.crm6.dynamics.com/",
+          "instanceApiUrl": "https://caje-dev.api.crm6.dynamics.com",
+          "baseLanguage": 1033,
+          "instanceState": "Ready",
+          "createdTime": "2025-12-26T20:30:29.34Z",
+          "modifiedTime": "2025-12-26T20:30:29.34Z",
+          "hostNameSuffix": "crm6.dynamics.com",
+          "bapSolutionId": "00000001-0000-0000-0001-00000000009b",
+          "creationTemplates": [
+            "D365_CDS"
+          ],
+          "webApiVersion": "v9.0",
+          "backgroundOperationsState": "Enabled",
+          "scaleGroup": "OCECRMLIVESG613",
+          "crmGeo": "OCE",
+          "platformSku": "Standard",
+          "schemaType": "Standard",
+          "isDormant": false
+        },
+        "trialScenarioType": "None",
+        "notificationMetadata": {
+          "state": "NotSpecified",
+          "branding": "NotSpecific"
+        },
+        "retentionPeriod": "P7D",
+        "states": {
+          "management": {
+            "id": "Ready"
+          },
+          "runtime": {
+            "runtimeReasonCode": "NotSpecified",
+            "requestedBy": {
+              "displayName": "SYSTEM",
+              "type": "NotSpecified"
+            },
+            "id": "Enabled"
+          },
+          "disasterRecovery": {
+            "copyLocation": "NearCopy",
+            "id": "Unavailable"
+          }
+        },
+        "updateCadence": {
+          "id": "Frequent"
+        },
+        "retentionDetails": {
+          "retentionPeriod": "P7D",
+          "backupsAvailableFromDateTime": "2026-04-28T07:38:46.1571446Z"
+        },
+        "protectionStatus": {
+          "keyManagedBy": "Microsoft"
+        },
+        "cluster": {
+          "category": "Prod",
+          "number": "101",
+          "uriSuffix": "au-il101.gateway.prod.island",
+          "geoShortName": "AU",
+          "environment": "Prod",
+          "scaleGroupId": "6b3c92b8-0613-0000-0613-000000000000"
+        },
+        "connectedGroups": [],
+        "lifecycleOperationsEnforcement": {
+          "allowedOperations": [
+            {
+              "type": {
+                "id": "Move"
+              }
+            },
+            {
+              "type": {
+                "id": "Backup"
+              }
+            },
+            {
+              "type": {
+                "id": "Copy"
+              }
+            },
+            {
+              "type": {
+                "id": "Delete"
+              }
+            },
+            {
+              "type": {
+                "id": "Edit"
+              }
+            },
+            {
+              "type": {
+                "id": "Recover"
+              }
+            },
+            {
+              "type": {
+                "id": "Reset"
+              }
+            },
+            {
+              "type": {
+                "id": "Restore"
+              }
+            },
+            {
+              "type": {
+                "id": "NewCustomerManagedKey"
+              }
+            },
+            {
+              "type": {
+                "id": "NewNetworkInjection"
+              }
+            },
+            {
+              "type": {
+                "id": "SwapNetworkInjection"
+              }
+            },
+            {
+              "type": {
+                "id": "RevertNetworkInjection"
+              }
+            },
+            {
+              "type": {
+                "id": "NewIdentity"
+              }
+            },
+            {
+              "type": {
+                "id": "SwapIdentity"
+              }
+            },
+            {
+              "type": {
+                "id": "RevertIdentity"
+              }
+            },
+            {
+              "type": {
+                "id": "Enable"
+              }
+            },
+            {
+              "type": {
+                "id": "Disable"
+              }
+            },
+            {
+              "type": {
+                "id": "DisableGovernanceConfiguration"
+              }
+            },
+            {
+              "type": {
+                "id": "UpdateGovernanceConfiguration"
+              }
+            },
+            {
+              "type": {
+                "id": "PrepareTenantToTenant"
+              }
+            },
+            {
+              "type": {
+                "id": "MigrateTenantToTenant"
+              }
+            }
+          ],
+          "disallowedOperations": [
+            {
+              "type": {
+                "id": "Provision"
+              },
+              "reason": {
+                "message": "Provision cannot be performed because there is no linked CDS instance or the CDS instance version is not supported.",
+                "type": "CdsLink"
+              }
+            },
+            {
+              "type": {
+                "id": "Unlock"
+              },
+              "reason": {
+                "message": "Unlock cannot be performed because there is no linked CDS instance or the CDS instance version is not supported.",
+                "type": "CdsLink"
+              }
+            },
+            {
+              "type": {
+                "id": "Convert"
+              },
+              "reason": {
+                "message": "Convert cannot be performed on environment of type Developer.",
+                "type": "EnvironmentSkuType"
+              }
+            },
+            {
+              "type": {
+                "id": "Promote"
+              },
+              "reason": {
+                "message": "Promote cannot be performed on environment of type Developer.",
+                "type": "EnvironmentSkuType"
+              }
+            },
+            {
+              "type": {
+                "id": "UpdateProtectionStatus"
+              },
+              "reason": {
+                "message": "UpdateProtectionStatus cannot be performed on environment of type Developer.",
+                "type": "EnvironmentSkuType"
+              }
+            },
+            {
+              "type": {
+                "id": "ForceFailover"
+              },
+              "reason": {
+                "message": "ForceFailover cannot be performed on environment of type Developer.",
+                "type": "EnvironmentSkuType"
+              }
+            },
+            {
+              "type": {
+                "id": "DisasterRecoveryDrill"
+              },
+              "reason": {
+                "message": "DisasterRecoveryDrill cannot be performed on environment of type Developer.",
+                "type": "EnvironmentSkuType"
+              }
+            },
+            {
+              "type": {
+                "id": "FailbackToNearCopy"
+              },
+              "reason": {
+                "message": "FailbackToNearCopy cannot be performed on environment of type Developer.",
+                "type": "EnvironmentSkuType"
+              }
+            },
+            {
+              "type": {
+                "id": "RotateCustomerManagedKey"
+              },
+              "reason": {
+                "type": "EnvironmentCmkLinked"
+              }
+            },
+            {
+              "type": {
+                "id": "RevertToMicrosoftKey"
+              },
+              "reason": {
+                "type": "EnvironmentCmkLinked"
+              }
+            },
+            {
+              "type": {
+                "id": "EnableGovernanceConfiguration"
+              },
+              "reason": {
+                "message": "EnableGovernanceConfiguration cannot be performed on Power Platform environment because of the governance configuration.",
+                "type": "GovernanceConfig"
+              }
+            }
+          ]
+        },
+        "governanceConfiguration": {
+          "protectionLevel": "Standard",
+          "settings": {
+            "extendedSettings": {
+              "excludeEnvironmentFromAnalysis": "false",
+              "isGroupSharingDisabled": "false",
+              "maxLimitUserSharing": "-1",
+              "includeOnHomepageInsights": "false",
+              "limitSharingMode": "noLimit",
+              "solutionCheckerMode": "warn",
+              "suppressValidationEmails": "false",
+              "solutionCheckerRuleOverrides": "",
+              "solutionCloudFlows-limitSharingMode": "noLimit",
+              "solutionCloudFlows-maxLimitUserSharing": "-1",
+              "bot-authoringSharingDisabled": "false",
+              "bot-limitSharingMode": "noLimit",
+              "bot-maxLimitUserSharing": "-1",
+              "disableAiGeneratedDescriptions": "false"
+            }
+          }
+        },
+        "bingChatEnabled": false,
+        "m365Enabled": false,
+        "appDraftingCopilotEnabled": false,
+        "enableAnalyticsForMakers": true
+      }
+    },
+    "InternalCds": null,
+    "OrganizationId": "c6769b9e-dce0-f011-872b-002248e365ce",
+    "Capacity": [
+      {
+        "capacityType": "Database",
+        "actualConsumption": 149.3438,
+        "ratedConsumption": 0.0,
+        "capacityUnit": "MB",
+        "updatedOn": "2026-05-04T17:50:09Z"
+      },
+      {
+        "capacityType": "File",
+        "actualConsumption": 2610.1,
+        "ratedConsumption": 0.0,
+        "capacityUnit": "MB",
+        "updatedOn": "2026-05-04T17:50:09Z"
+      },
+      {
+        "capacityType": "Log",
+        "actualConsumption": 0.05850601,
+        "ratedConsumption": 0.0,
+        "capacityUnit": "MB",
+        "updatedOn": "2026-05-04T17:50:09Z"
+      },
+      {
+        "capacityType": "FinOpsDatabase",
+        "actualConsumption": 0.0,
+        "ratedConsumption": 0.0,
+        "capacityUnit": "MB",
+        "updatedOn": "2026-05-04T17:50:09Z"
+      },
+      {
+        "capacityType": "FinOpsFile",
+        "actualConsumption": 0.0,
+        "ratedConsumption": 0.0,
+        "capacityUnit": "MB",
+        "updatedOn": "2026-05-04T17:50:09Z"
+      }
+    ],
+    "RetentionPeriod": 7
+  },
+  {
+    "EnvironmentName": "bdc1e9a8-a8fb-ec56-8ac6-3ceb111a84c9",
+    "DisplayName": "Pipeline Orchestrator",
+    "Description": null,
+    "IsDefault": false,
+    "Location": "australia",
+    "CreatedTime": "2025-12-27T01:34:22.9948162Z",
+    "CreatedBy": {
+      "id": "32293c3d-3b5d-4388-8e91-7cdab18cf308",
+      "displayName": "",
+      "email": "",
+      "type": "User",
+      "tenantId": "764b46e8-d798-4ed3-87db-ae55ed7b0432",
+      "userPrincipalName": ""
+    },
+    "LastModifiedTime": "2025-12-30T05:42:24.4007604Z",
+    "LastModifiedBy": null,
+    "CreationType": "User",
+    "EnvironmentType": "Developer",
+    "CommonDataServiceDatabaseProvisioningState": "Succeeded",
+    "CommonDataServiceDatabaseType": "Common Data Service for Apps",
+    "Internal": {
+      "id": "/providers/Microsoft.BusinessAppPlatform/scopes/admin/environments/bdc1e9a8-a8fb-ec56-8ac6-3ceb111a84c9",
+      "type": "Microsoft.BusinessAppPlatform/scopes/environments",
+      "location": "australia",
+      "name": "bdc1e9a8-a8fb-ec56-8ac6-3ceb111a84c9",
+      "properties": {
+        "tenantId": "764b46e8-d798-4ed3-87db-ae55ed7b0432",
+        "azureRegionHint": "australiaeast",
+        "displayName": "Pipeline Orchestrator",
+        "createdTime": "2025-12-27T01:34:22.9948162Z",
+        "createdBy": {
+          "id": "32293c3d-3b5d-4388-8e91-7cdab18cf308",
+          "displayName": "",
+          "email": "",
+          "type": "User",
+          "tenantId": "764b46e8-d798-4ed3-87db-ae55ed7b0432",
+          "userPrincipalName": ""
+        },
+        "usedBy": {
+          "id": "32293c3d-3b5d-4388-8e91-7cdab18cf308",
+          "displayName": "",
+          "email": "",
+          "type": "User",
+          "tenantId": "764b46e8-d798-4ed3-87db-ae55ed7b0432",
+          "userPrincipalName": ""
+        },
+        "lastModifiedTime": "2025-12-30T05:42:24.4007604Z",
+        "provisioningState": "Succeeded",
+        "creationType": "User",
+        "environmentSku": "Developer",
+        "environmentType": "Production",
+        "isDefault": false,
+        "permissions": {
+          "CreatePowerApp": {
+            "displayName": "Create PowerApps"
+          },
+          "ReadEnvironment": {
+            "displayName": "Read Environment"
+          },
+          "GenerateResourceStorage": {
+            "displayName": "Generate Resource Storage"
+          },
+          "CreateGateway": {
+            "displayName": "CreateGateway"
+          },
+          "CreateFlow": {
+            "displayName": "Create Flow"
+          },
+          "CreateCustomApi": {
+            "displayName": "Create Custom Connector"
+          },
+          "AdminReadEnvironment": {
+            "displayName": "Admin Read Environment"
+          },
+          "UpdateEnvironment": {
+            "displayName": "Update Environment"
+          },
+          "DeleteEnvironment": {
+            "displayName": "Delete Environment"
+          },
+          "SetDLPPolicy": {
+            "displayName": "Update DLP Policy"
+          },
+          "SetPowerAppAsFeatured": {
+            "displayName": "Set PowerApps As Featured"
+          },
+          "SetPowerAppAsHero": {
+            "displayName": "Set PowerApps As Hero"
+          },
+          "SetPowerAppConnectionDirectConsentBypass": {
+            "displayName": "Set PowerApps Connection Direct Consent Bypass"
+          },
+          "ListAnyPowerApp": {
+            "displayName": "List Any PowerApps"
+          },
+          "ListAnyFlow": {
+            "displayName": "List Any Flow"
+          },
+          "DeleteAnyPowerApp": {
+            "displayName": "Delete Any PowerApps"
+          },
+          "DeleteAnyFlow": {
+            "displayName": "Delete Any Flow"
+          },
+          "AddEnvironmentRoleAssignment": {
+            "displayName": "Add Environment Role Assignment"
+          },
+          "ReadEnvironmentRoleInformation": {
+            "displayName": "Read Environment Role Information"
+          },
+          "RemoveEnvironmentRoleAssignment": {
+            "displayName": "Remove Environment Role Assignment"
+          },
+          "ModifyDatabaseRoleAssignments": {
+            "displayName": "Modify Database Role Assignments"
+          },
+          "ModifyDatabaseRoleDefinitions": {
+            "displayName": "Modify Database Role Definitions"
+          },
+          "CreateDatabase": {
+            "displayName": "Create Database"
+          },
+          "ListDatabaseEntities": {
+            "displayName": "List Database Entities"
+          },
+          "CreateDatabaseEntities": {
+            "displayName": "Create Database Entities"
+          },
+          "UpdateDatabaseEntities": {
+            "displayName": "Update Database Entities"
+          },
+          "DeleteDatabaseEntities": {
+            "displayName": "Delete Database Entities"
+          },
+          "ExportEnvironmentPackage": {
+            "displayName": "ExportEnvironmentPackage"
+          },
+          "ImportEnvironmentPackage": {
+            "displayName": "ImportEnvironmentPackage"
+          },
+          "ManageAnyPowerApp": {
+            "displayName": "ManageAnyPowerApp"
+          },
+          "ManageAnyConnection": {
+            "displayName": "ManageAnyConnection"
+          },
+          "ManageCDSMigration": {
+            "displayName": "ManageCDSMigration"
+          },
+          "ManageTalentEnvironmentSettings": {
+            "displayName": "ManageTalentEnvironmentSettings"
+          },
+          "ManageDatabaseUsers": {
+            "displayName": "ManageDatabaseUsers"
+          },
+          "ManageAnyCustomApi": {
+            "displayName": "ManageAnyCustomApi"
+          },
+          "CreateFunction": {
+            "displayName": "CreateFunction"
+          },
+          "ListAnyFunction": {
+            "displayName": "ListAnyFunction"
+          },
+          "DeleteAnyFunction": {
+            "displayName": "DeleteAnyFunction"
+          },
+          "ReadConsumption": {
+            "displayName": "Read Environment Consumption"
+          },
+          "AllocateCapacity": {
+            "displayName": "Allocate Environment Capacity"
+          },
+          "Move": {
+            "displayName": "Move"
+          },
+          "CopyFrom": {
+            "displayName": "CopyFrom"
+          },
+          "CopyTo": {
+            "displayName": "CopyTo"
+          },
+          "RestoreTo": {
+            "displayName": "RestoreTo"
+          },
+          "RestoreFrom": {
+            "displayName": "RestoreFrom"
+          },
+          "ManageProtectionKeys": {
+            "displayName": "ManageProtectionKeys"
+          },
+          "Reset": {
+            "displayName": "Reset"
+          },
+          "Promote": {
+            "displayName": "Promote"
+          },
+          "Enable": {
+            "displayName": "Enable"
+          },
+          "Disable": {
+            "displayName": "Disable"
+          },
+          "CreateSharePointCustomFormCanvasApp": {
+            "displayName": "CreateSharePointCustomFormCanvasApp"
+          },
+          "Failover": {
+            "displayName": "Force Failover Environment"
+          },
+          "CreateBot": {
+            "displayName": "CreateBot"
+          }
+        },
+        "capacity": [
+          {
+            "capacityType": "Database",
+            "actualConsumption": 125.8594,
+            "ratedConsumption": 0.0,
+            "capacityUnit": "MB",
+            "updatedOn": "2026-05-04T11:03:27Z"
+          },
+          {
+            "capacityType": "File",
+            "actualConsumption": 2481.534,
+            "ratedConsumption": 0.0,
+            "capacityUnit": "MB",
+            "updatedOn": "2026-05-04T11:03:27Z"
+          },
+          {
+            "capacityType": "Log",
+            "actualConsumption": 0.0,
+            "ratedConsumption": 0.0,
+            "capacityUnit": "MB",
+            "updatedOn": "2026-05-04T11:03:27Z"
+          },
+          {
+            "capacityType": "FinOpsDatabase",
+            "actualConsumption": 0.0,
+            "ratedConsumption": 0.0,
+            "capacityUnit": "MB",
+            "updatedOn": "2026-05-04T11:03:27Z"
+          },
+          {
+            "capacityType": "FinOpsFile",
+            "actualConsumption": 0.0,
+            "ratedConsumption": 0.0,
+            "capacityUnit": "MB",
+            "updatedOn": "2026-05-04T11:03:27Z"
+          }
+        ],
+        "addons": [],
+        "runtimeEndpoints": {
+          "microsoft.BusinessAppPlatform": "https://australia.api.bap.microsoft.com",
+          "microsoft.CommonDataModel": "https://australia.api.cds.microsoft.com",
+          "microsoft.PowerApps": "https://australia.api.powerapps.com",
+          "microsoft.PowerAppsAdvisor": "https://australia.api.advisor.powerapps.com",
+          "microsoft.PowerVirtualAgents": "https://powervamg.au-il101.gateway.prod.island.powerapps.com",
+          "microsoft.ApiManagement": "https://management.AUSTRALIA.azure-apihub.net",
+          "microsoft.Flow": "https://australia.api.flow.microsoft.com"
+        },
+        "linkedEnvironmentMetadata": {
+          "type": "Dynamics365Instance",
+          "resourceId": "10bc8e10-3ce2-f011-89f5-0022489424c5",
+          "friendlyName": "Pipeline Orchestrator",
+          "uniqueName": "unq10bc8e103ce2f01189f5002248942",
+          "domainName": "orgcb197955",
+          "version": "9.2.26035.200",
+          "instanceUrl": "https://orgcb197955.crm6.dynamics.com/",
+          "instanceApiUrl": "https://orgcb197955.api.crm6.dynamics.com",
+          "baseLanguage": 1033,
+          "instanceState": "Ready",
+          "createdTime": "2025-12-27T01:34:23.767Z",
+          "modifiedTime": "2025-12-27T01:34:23.767Z",
+          "hostNameSuffix": "crm6.dynamics.com",
+          "bapSolutionId": "00000001-0000-0000-0001-00000000009b",
+          "creationTemplates": [
+            "D365_CDS"
+          ],
+          "webApiVersion": "v9.0",
+          "backgroundOperationsState": "Enabled",
+          "scaleGroup": "OCECRMLIVESG613",
+          "crmGeo": "OCE",
+          "platformSku": "Standard",
+          "schemaType": "Standard",
+          "isDormant": false
+        },
+        "trialScenarioType": "None",
+        "notificationMetadata": {
+          "state": "NotSpecified",
+          "branding": "NotSpecific"
+        },
+        "retentionPeriod": "P7D",
+        "states": {
+          "management": {
+            "id": "Ready"
+          },
+          "runtime": {
+            "runtimeReasonCode": "NotSpecified",
+            "requestedBy": {
+              "displayName": "SYSTEM",
+              "type": "NotSpecified"
+            },
+            "id": "Enabled"
+          },
+          "disasterRecovery": {
+            "copyLocation": "NearCopy",
+            "id": "Unavailable"
+          }
+        },
+        "updateCadence": {
+          "id": "Frequent"
+        },
+        "retentionDetails": {
+          "retentionPeriod": "P7D",
+          "backupsAvailableFromDateTime": "2026-04-28T07:38:46.1571446Z"
+        },
+        "protectionStatus": {
+          "keyManagedBy": "Microsoft"
+        },
+        "cluster": {
+          "category": "Prod",
+          "number": "101",
+          "uriSuffix": "au-il101.gateway.prod.island",
+          "geoShortName": "AU",
+          "environment": "Prod",
+          "scaleGroupId": "6b3c92b8-0613-0000-0613-000000000000"
+        },
+        "connectedGroups": [],
+        "lifecycleOperationsEnforcement": {
+          "allowedOperations": [
+            {
+              "type": {
+                "id": "Move"
+              }
+            },
+            {
+              "type": {
+                "id": "Backup"
+              }
+            },
+            {
+              "type": {
+                "id": "Copy"
+              }
+            },
+            {
+              "type": {
+                "id": "Delete"
+              }
+            },
+            {
+              "type": {
+                "id": "Edit"
+              }
+            },
+            {
+              "type": {
+                "id": "Recover"
+              }
+            },
+            {
+              "type": {
+                "id": "Reset"
+              }
+            },
+            {
+              "type": {
+                "id": "Restore"
+              }
+            },
+            {
+              "type": {
+                "id": "NewCustomerManagedKey"
+              }
+            },
+            {
+              "type": {
+                "id": "NewNetworkInjection"
+              }
+            },
+            {
+              "type": {
+                "id": "SwapNetworkInjection"
+              }
+            },
+            {
+              "type": {
+                "id": "RevertNetworkInjection"
+              }
+            },
+            {
+              "type": {
+                "id": "NewIdentity"
+              }
+            },
+            {
+              "type": {
+                "id": "SwapIdentity"
+              }
+            },
+            {
+              "type": {
+                "id": "RevertIdentity"
+              }
+            },
+            {
+              "type": {
+                "id": "Enable"
+              }
+            },
+            {
+              "type": {
+                "id": "Disable"
+              }
+            },
+            {
+              "type": {
+                "id": "DisableGovernanceConfiguration"
+              }
+            },
+            {
+              "type": {
+                "id": "UpdateGovernanceConfiguration"
+              }
+            },
+            {
+              "type": {
+                "id": "PrepareTenantToTenant"
+              }
+            },
+            {
+              "type": {
+                "id": "MigrateTenantToTenant"
+              }
+            }
+          ],
+          "disallowedOperations": [
+            {
+              "type": {
+                "id": "Provision"
+              },
+              "reason": {
+                "message": "Provision cannot be performed because there is no linked CDS instance or the CDS instance version is not supported.",
+                "type": "CdsLink"
+              }
+            },
+            {
+              "type": {
+                "id": "Unlock"
+              },
+              "reason": {
+                "message": "Unlock cannot be performed because there is no linked CDS instance or the CDS instance version is not supported.",
+                "type": "CdsLink"
+              }
+            },
+            {
+              "type": {
+                "id": "Convert"
+              },
+              "reason": {
+                "message": "Convert cannot be performed on environment of type Developer.",
+                "type": "EnvironmentSkuType"
+              }
+            },
+            {
+              "type": {
+                "id": "Promote"
+              },
+              "reason": {
+                "message": "Promote cannot be performed on environment of type Developer.",
+                "type": "EnvironmentSkuType"
+              }
+            },
+            {
+              "type": {
+                "id": "UpdateProtectionStatus"
+              },
+              "reason": {
+                "message": "UpdateProtectionStatus cannot be performed on environment of type Developer.",
+                "type": "EnvironmentSkuType"
+              }
+            },
+            {
+              "type": {
+                "id": "ForceFailover"
+              },
+              "reason": {
+                "message": "ForceFailover cannot be performed on environment of type Developer.",
+                "type": "EnvironmentSkuType"
+              }
+            },
+            {
+              "type": {
+                "id": "DisasterRecoveryDrill"
+              },
+              "reason": {
+                "message": "DisasterRecoveryDrill cannot be performed on environment of type Developer.",
+                "type": "EnvironmentSkuType"
+              }
+            },
+            {
+              "type": {
+                "id": "FailbackToNearCopy"
+              },
+              "reason": {
+                "message": "FailbackToNearCopy cannot be performed on environment of type Developer.",
+                "type": "EnvironmentSkuType"
+              }
+            },
+            {
+              "type": {
+                "id": "RotateCustomerManagedKey"
+              },
+              "reason": {
+                "type": "EnvironmentCmkLinked"
+              }
+            },
+            {
+              "type": {
+                "id": "RevertToMicrosoftKey"
+              },
+              "reason": {
+                "type": "EnvironmentCmkLinked"
+              }
+            },
+            {
+              "type": {
+                "id": "EnableGovernanceConfiguration"
+              },
+              "reason": {
+                "message": "EnableGovernanceConfiguration cannot be performed on Power Platform environment because of the governance configuration.",
+                "type": "GovernanceConfig"
+              }
+            }
+          ]
+        },
+        "governanceConfiguration": {
+          "protectionLevel": "Standard",
+          "settings": {
+            "extendedSettings": {
+              "excludeEnvironmentFromAnalysis": "false",
+              "isGroupSharingDisabled": "false",
+              "maxLimitUserSharing": "-1",
+              "includeOnHomepageInsights": "false",
+              "limitSharingMode": "noLimit",
+              "solutionCheckerMode": "warn",
+              "suppressValidationEmails": "false",
+              "solutionCheckerRuleOverrides": "",
+              "solutionCloudFlows-limitSharingMode": "noLimit",
+              "solutionCloudFlows-maxLimitUserSharing": "-1",
+              "bot-authoringSharingDisabled": "false",
+              "bot-limitSharingMode": "noLimit",
+              "bot-maxLimitUserSharing": "-1",
+              "disableAiGeneratedDescriptions": "false"
+            }
+          }
+        },
+        "bingChatEnabled": true,
+        "m365Enabled": true,
+        "appDraftingCopilotEnabled": true,
+        "enableAnalyticsForMakers": true
+      }
+    },
+    "InternalCds": null,
+    "OrganizationId": "10bc8e10-3ce2-f011-89f5-0022489424c5",
+    "Capacity": [
+      {
+        "capacityType": "Database",
+        "actualConsumption": 125.8594,
+        "ratedConsumption": 0.0,
+        "capacityUnit": "MB",
+        "updatedOn": "2026-05-04T11:03:27Z"
+      },
+      {
+        "capacityType": "File",
+        "actualConsumption": 2481.534,
+        "ratedConsumption": 0.0,
+        "capacityUnit": "MB",
+        "updatedOn": "2026-05-04T11:03:27Z"
+      },
+      {
+        "capacityType": "Log",
+        "actualConsumption": 0.0,
+        "ratedConsumption": 0.0,
+        "capacityUnit": "MB",
+        "updatedOn": "2026-05-04T11:03:27Z"
+      },
+      {
+        "capacityType": "FinOpsDatabase",
+        "actualConsumption": 0.0,
+        "ratedConsumption": 0.0,
+        "capacityUnit": "MB",
+        "updatedOn": "2026-05-04T11:03:27Z"
+      },
+      {
+        "capacityType": "FinOpsFile",
+        "actualConsumption": 0.0,
+        "ratedConsumption": 0.0,
+        "capacityUnit": "MB",
+        "updatedOn": "2026-05-04T11:03:27Z"
+      }
+    ],
+    "RetentionPeriod": 7
+  },
+  {
+    "EnvironmentName": "Default-764b46e8-d798-4ed3-87db-ae55ed7b0432",
+    "DisplayName": "cajesharepoint (default)",
+    "Description": null,
+    "IsDefault": true,
+    "Location": "australia",
+    "CreatedTime": "2020-05-06T05:22:16.786437Z",
+    "CreatedBy": {
+      "id": "SYSTEM",
+      "displayName": "",
+      "email": "",
+      "type": "NotSpecified",
+      "userPrincipalName": ""
+    },
+    "LastModifiedTime": "2026-02-22T07:23:34.4378159Z",
+    "LastModifiedBy": null,
+    "CreationType": "DefaultTenant",
+    "EnvironmentType": "Default",
+    "CommonDataServiceDatabaseProvisioningState": "Succeeded",
+    "CommonDataServiceDatabaseType": "Common Data Service for Apps",
+    "Internal": {
+      "id": "/providers/Microsoft.BusinessAppPlatform/scopes/admin/environments/Default-764b46e8-d798-4ed3-87db-ae55ed7b0432",
+      "type": "Microsoft.BusinessAppPlatform/scopes/environments",
+      "location": "australia",
+      "name": "Default-764b46e8-d798-4ed3-87db-ae55ed7b0432",
+      "properties": {
+        "tenantId": "764b46e8-d798-4ed3-87db-ae55ed7b0432",
+        "azureRegionHint": "australiasoutheast",
+        "displayName": "cajesharepoint (default)",
+        "createdTime": "2020-05-06T05:22:16.786437Z",
+        "createdBy": {
+          "id": "SYSTEM",
+          "displayName": "",
+          "email": "",
+          "type": "NotSpecified",
+          "userPrincipalName": ""
+        },
+        "lastModifiedTime": "2026-02-22T07:23:34.4378159Z",
+        "provisioningState": "Succeeded",
+        "creationType": "DefaultTenant",
+        "environmentSku": "Default",
+        "environmentType": "Production",
+        "isDefault": true,
+        "permissions": {
+          "CreatePowerApp": {
+            "displayName": "Create PowerApps"
+          },
+          "ReadEnvironment": {
+            "displayName": "Read Environment"
+          },
+          "GenerateResourceStorage": {
+            "displayName": "Generate Resource Storage"
+          },
+          "CreateGateway": {
+            "displayName": "CreateGateway"
+          },
+          "CreateFlow": {
+            "displayName": "Create Flow"
+          },
+          "CreateCustomApi": {
+            "displayName": "Create Custom Connector"
+          },
+          "AdminReadEnvironment": {
+            "displayName": "Admin Read Environment"
+          },
+          "UpdateEnvironment": {
+            "displayName": "Update Environment"
+          },
+          "DeleteEnvironment": {
+            "displayName": "Delete Environment"
+          },
+          "SetDLPPolicy": {
+            "displayName": "Update DLP Policy"
+          },
+          "SetPowerAppAsFeatured": {
+            "displayName": "Set PowerApps As Featured"
+          },
+          "SetPowerAppAsHero": {
+            "displayName": "Set PowerApps As Hero"
+          },
+          "SetPowerAppConnectionDirectConsentBypass": {
+            "displayName": "Set PowerApps Connection Direct Consent Bypass"
+          },
+          "ListAnyPowerApp": {
+            "displayName": "List Any PowerApps"
+          },
+          "ListAnyFlow": {
+            "displayName": "List Any Flow"
+          },
+          "DeleteAnyPowerApp": {
+            "displayName": "Delete Any PowerApps"
+          },
+          "DeleteAnyFlow": {
+            "displayName": "Delete Any Flow"
+          },
+          "AddEnvironmentRoleAssignment": {
+            "displayName": "Add Environment Role Assignment"
+          },
+          "ReadEnvironmentRoleInformation": {
+            "displayName": "Read Environment Role Information"
+          },
+          "RemoveEnvironmentRoleAssignment": {
+            "displayName": "Remove Environment Role Assignment"
+          },
+          "ModifyDatabaseRoleAssignments": {
+            "displayName": "Modify Database Role Assignments"
+          },
+          "ModifyDatabaseRoleDefinitions": {
+            "displayName": "Modify Database Role Definitions"
+          },
+          "CreateDatabase": {
+            "displayName": "Create Database"
+          },
+          "ListDatabaseEntities": {
+            "displayName": "List Database Entities"
+          },
+          "CreateDatabaseEntities": {
+            "displayName": "Create Database Entities"
+          },
+          "UpdateDatabaseEntities": {
+            "displayName": "Update Database Entities"
+          },
+          "DeleteDatabaseEntities": {
+            "displayName": "Delete Database Entities"
+          },
+          "ExportEnvironmentPackage": {
+            "displayName": "ExportEnvironmentPackage"
+          },
+          "ImportEnvironmentPackage": {
+            "displayName": "ImportEnvironmentPackage"
+          },
+          "ManageAnyPowerApp": {
+            "displayName": "ManageAnyPowerApp"
+          },
+          "ManageAnyConnection": {
+            "displayName": "ManageAnyConnection"
+          },
+          "ManageCDSMigration": {
+            "displayName": "ManageCDSMigration"
+          },
+          "ManageTalentEnvironmentSettings": {
+            "displayName": "ManageTalentEnvironmentSettings"
+          },
+          "ManageDatabaseUsers": {
+            "displayName": "ManageDatabaseUsers"
+          },
+          "ManageAnyCustomApi": {
+            "displayName": "ManageAnyCustomApi"
+          },
+          "CreateFunction": {
+            "displayName": "CreateFunction"
+          },
+          "ListAnyFunction": {
+            "displayName": "ListAnyFunction"
+          },
+          "DeleteAnyFunction": {
+            "displayName": "DeleteAnyFunction"
+          },
+          "ReadConsumption": {
+            "displayName": "Read Environment Consumption"
+          },
+          "AllocateCapacity": {
+            "displayName": "Allocate Environment Capacity"
+          },
+          "Move": {
+            "displayName": "Move"
+          },
+          "CopyFrom": {
+            "displayName": "CopyFrom"
+          },
+          "CopyTo": {
+            "displayName": "CopyTo"
+          },
+          "RestoreTo": {
+            "displayName": "RestoreTo"
+          },
+          "RestoreFrom": {
+            "displayName": "RestoreFrom"
+          },
+          "ManageProtectionKeys": {
+            "displayName": "ManageProtectionKeys"
+          },
+          "Reset": {
+            "displayName": "Reset"
+          },
+          "Promote": {
+            "displayName": "Promote"
+          },
+          "Enable": {
+            "displayName": "Enable"
+          },
+          "Disable": {
+            "displayName": "Disable"
+          },
+          "CreateSharePointCustomFormCanvasApp": {
+            "displayName": "CreateSharePointCustomFormCanvasApp"
+          },
+          "Failover": {
+            "displayName": "Force Failover Environment"
+          },
+          "CreateBot": {
+            "displayName": "CreateBot"
+          }
+        },
+        "capacity": [
+          {
+            "capacityType": "Database",
+            "actualConsumption": 423.125,
+            "ratedConsumption": 0.0,
+            "capacityUnit": "MB",
+            "updatedOn": "2026-05-04T22:32:39Z"
+          },
+          {
+            "capacityType": "File",
+            "actualConsumption": 3189.631,
+            "ratedConsumption": 117.631,
+            "capacityUnit": "MB",
+            "updatedOn": "2026-05-04T22:32:39Z"
+          },
+          {
+            "capacityType": "Log",
+            "actualConsumption": 3.121078,
+            "ratedConsumption": 0.0,
+            "capacityUnit": "MB",
+            "updatedOn": "2026-05-04T22:32:39Z"
+          },
+          {
+            "capacityType": "FinOpsDatabase",
+            "actualConsumption": 0.0,
+            "ratedConsumption": 0.0,
+            "capacityUnit": "MB",
+            "updatedOn": "2026-05-04T22:32:39Z"
+          },
+          {
+            "capacityType": "FinOpsFile",
+            "actualConsumption": 0.0,
+            "ratedConsumption": 0.0,
+            "capacityUnit": "MB",
+            "updatedOn": "2026-05-04T22:32:39Z"
+          }
+        ],
+        "addons": [],
+        "runtimeEndpoints": {
+          "microsoft.BusinessAppPlatform": "https://australia.api.bap.microsoft.com",
+          "microsoft.CommonDataModel": "https://australia.api.cds.microsoft.com",
+          "microsoft.PowerApps": "https://australia.api.powerapps.com",
+          "microsoft.PowerAppsAdvisor": "https://australia.api.advisor.powerapps.com",
+          "microsoft.PowerVirtualAgents": "https://powervamg.au-il101.gateway.prod.island.powerapps.com",
+          "microsoft.ApiManagement": "https://management.AUSTRALIA.azure-apihub.net",
+          "microsoft.Flow": "https://australia.api.flow.microsoft.com"
+        },
+        "linkedEnvironmentMetadata": {
+          "type": "Dynamics365Instance",
+          "resourceId": "081f76ec-9f2b-400b-a5bf-6d28fc752ba8",
+          "friendlyName": "cajesharepoint (default)",
+          "uniqueName": "org727b4282",
+          "domainName": "org9401343f",
+          "version": "9.2.26035.200",
+          "instanceUrl": "https://org9401343f.crm6.dynamics.com/",
+          "instanceApiUrl": "https://org9401343f.api.crm6.dynamics.com",
+          "baseLanguage": 1033,
+          "instanceState": "Ready",
+          "createdTime": "2020-06-11T20:17:22.89Z",
+          "modifiedTime": "2020-06-11T20:17:48.73Z",
+          "hostNameSuffix": "crm6.dynamics.com",
+          "bapSolutionId": "00000001-0000-0000-0001-00000000009b",
+          "creationTemplates": [
+            "D365_CDS"
+          ],
+          "webApiVersion": "v9.0",
+          "backgroundOperationsState": "Enabled",
+          "scaleGroup": "OCECRMLIVESG612",
+          "crmGeo": "OCE",
+          "platformSku": "Standard",
+          "schemaType": "Standard",
+          "isDormant": false
+        },
+        "trialScenarioType": "None",
+        "retentionPeriod": "P7D",
+        "states": {
+          "management": {
+            "id": "Ready"
+          },
+          "runtime": {
+            "runtimeReasonCode": "NotSpecified",
+            "requestedBy": {
+              "displayName": "SYSTEM",
+              "type": "NotSpecified"
+            },
+            "id": "Enabled"
+          },
+          "disasterRecovery": {
+            "copyLocation": "NearCopy",
+            "id": "Unavailable"
+          }
+        },
+        "updateCadence": {
+          "id": "Frequent"
+        },
+        "retentionDetails": {
+          "retentionPeriod": "P7D",
+          "backupsAvailableFromDateTime": "2026-04-28T07:38:46.1571446Z"
+        },
+        "protectionStatus": {
+          "keyManagedBy": "Microsoft"
+        },
+        "cluster": {
+          "category": "Prod",
+          "number": "101",
+          "uriSuffix": "au-il101.gateway.prod.island",
+          "geoShortName": "AU",
+          "environment": "Prod",
+          "scaleGroupId": "6a3c92b8-0612-0000-0612-000000000000"
+        },
+        "connectedGroups": [],
+        "lifecycleOperationsEnforcement": {
+          "allowedOperations": [
+            {
+              "type": {
+                "id": "Move"
+              }
+            },
+            {
+              "type": {
+                "id": "Backup"
+              }
+            },
+            {
+              "type": {
+                "id": "Edit"
+              }
+            },
+            {
+              "type": {
+                "id": "Restore"
+              }
+            },
+            {
+              "type": {
+                "id": "NewCustomerManagedKey"
+              }
+            },
+            {
+              "type": {
+                "id": "NewNetworkInjection"
+              }
+            },
+            {
+              "type": {
+                "id": "SwapNetworkInjection"
+              }
+            },
+            {
+              "type": {
+                "id": "RevertNetworkInjection"
+              }
+            },
+            {
+              "type": {
+                "id": "Enable"
+              }
+            },
+            {
+              "type": {
+                "id": "Disable"
+              }
+            },
+            {
+              "type": {
+                "id": "DisableGovernanceConfiguration"
+              }
+            },
+            {
+              "type": {
+                "id": "UpdateGovernanceConfiguration"
+              }
+            }
+          ],
+          "disallowedOperations": [
+            {
+              "type": {
+                "id": "Provision"
+              },
+              "reason": {
+                "message": "Provision cannot be performed because there is no linked CDS instance or the CDS instance version is not supported.",
+                "type": "CdsLink"
+              }
+            },
+            {
+              "type": {
+                "id": "Unlock"
+              },
+              "reason": {
+                "message": "Unlock cannot be performed because there is no linked CDS instance or the CDS instance version is not supported.",
+                "type": "CdsLink"
+              }
+            },
+            {
+              "type": {
+                "id": "Convert"
+              },
+              "reason": {
+                "message": "Convert cannot be performed on environment of type Default.",
+                "type": "EnvironmentSkuType"
+              }
+            },
+            {
+              "type": {
+                "id": "Copy"
+              },
+              "reason": {
+                "message": "Copy cannot be performed on environment of type Default.",
+                "type": "EnvironmentSkuType"
+              }
+            },
+            {
+              "type": {
+                "id": "Delete"
+              },
+              "reason": {
+                "message": "Delete cannot be performed on environment of type Default.",
+                "type": "EnvironmentSkuType"
+              }
+            },
+            {
+              "type": {
+                "id": "Promote"
+              },
+              "reason": {
+                "message": "Promote cannot be performed on environment of type Default.",
+                "type": "EnvironmentSkuType"
+              }
+            },
+            {
+              "type": {
+                "id": "Recover"
+              },
+              "reason": {
+                "message": "Recover cannot be performed on environment of type Default.",
+                "type": "EnvironmentSkuType"
+              }
+            },
+            {
+              "type": {
+                "id": "Reset"
+              },
+              "reason": {
+                "message": "Reset cannot be performed on environment of type Default.",
+                "type": "EnvironmentSkuType"
+              }
+            },
+            {
+              "type": {
+                "id": "UpdateProtectionStatus"
+              },
+              "reason": {
+                "message": "UpdateProtectionStatus cannot be performed on environment of type Default.",
+                "type": "EnvironmentSkuType"
+              }
+            },
+            {
+              "type": {
+                "id": "NewIdentity"
+              },
+              "reason": {
+                "message": "NewIdentity cannot be performed on environment of type Default.",
+                "type": "EnvironmentSkuType"
+              }
+            },
+            {
+              "type": {
+                "id": "SwapIdentity"
+              },
+              "reason": {
+                "message": "SwapIdentity cannot be performed on environment of type Default.",
+                "type": "EnvironmentSkuType"
+              }
+            },
+            {
+              "type": {
+                "id": "RevertIdentity"
+              },
+              "reason": {
+                "message": "RevertIdentity cannot be performed on environment of type Default.",
+                "type": "EnvironmentSkuType"
+              }
+            },
+            {
+              "type": {
+                "id": "PrepareTenantToTenant"
+              },
+              "reason": {
+                "message": "PrepareTenantToTenant cannot be performed on environment of type Default.",
+                "type": "EnvironmentSkuType"
+              }
+            },
+            {
+              "type": {
+                "id": "MigrateTenantToTenant"
+              },
+              "reason": {
+                "message": "MigrateTenantToTenant cannot be performed on environment of type Default.",
+                "type": "EnvironmentSkuType"
+              }
+            },
+            {
+              "type": {
+                "id": "ForceFailover"
+              },
+              "reason": {
+                "message": "ForceFailover cannot be performed on environment of type Default.",
+                "type": "EnvironmentSkuType"
+              }
+            },
+            {
+              "type": {
+                "id": "DisasterRecoveryDrill"
+              },
+              "reason": {
+                "message": "DisasterRecoveryDrill cannot be performed on environment of type Default.",
+                "type": "EnvironmentSkuType"
+              }
+            },
+            {
+              "type": {
+                "id": "FailbackToNearCopy"
+              },
+              "reason": {
+                "message": "FailbackToNearCopy cannot be performed on environment of type Default.",
+                "type": "EnvironmentSkuType"
+              }
+            },
+            {
+              "type": {
+                "id": "RotateCustomerManagedKey"
+              },
+              "reason": {
+                "type": "EnvironmentCmkLinked"
+              }
+            },
+            {
+              "type": {
+                "id": "RevertToMicrosoftKey"
+              },
+              "reason": {
+                "type": "EnvironmentCmkLinked"
+              }
+            },
+            {
+              "type": {
+                "id": "EnableGovernanceConfiguration"
+              },
+              "reason": {
+                "message": "EnableGovernanceConfiguration cannot be performed on Power Platform environment because of the governance configuration.",
+                "type": "GovernanceConfig"
+              }
+            }
+          ]
+        },
+        "governanceConfiguration": {
+          "protectionLevel": "Standard",
+          "settings": {
+            "extendedSettings": {
+              "excludeEnvironmentFromAnalysis": "false",
+              "isGroupSharingDisabled": "true",
+              "maxLimitUserSharing": "25",
+              "includeOnHomepageInsights": "false",
+              "limitSharingMode": "excludeSharingToSecurityGroups",
+              "solutionCheckerMode": "warn",
+              "suppressValidationEmails": "false",
+              "solutionCheckerRuleOverrides": "",
+              "solutionCloudFlows-limitSharingMode": "noLimit",
+              "solutionCloudFlows-maxLimitUserSharing": "-1",
+              "bot-authoringSharingDisabled": "false",
+              "bot-limitSharingMode": "noLimit",
+              "bot-maxLimitUserSharing": "-1",
+              "disableAiGeneratedDescriptions": "false"
+            }
+          }
+        },
+        "bingChatEnabled": true,
+        "m365Enabled": true,
+        "appDraftingCopilotEnabled": true,
+        "enableAnalyticsForMakers": true
+      }
+    },
+    "InternalCds": null,
+    "OrganizationId": "081f76ec-9f2b-400b-a5bf-6d28fc752ba8",
+    "Capacity": [
+      {
+        "capacityType": "Database",
+        "actualConsumption": 423.125,
+        "ratedConsumption": 0.0,
+        "capacityUnit": "MB",
+        "updatedOn": "2026-05-04T22:32:39Z"
+      },
+      {
+        "capacityType": "File",
+        "actualConsumption": 3189.631,
+        "ratedConsumption": 117.631,
+        "capacityUnit": "MB",
+        "updatedOn": "2026-05-04T22:32:39Z"
+      },
+      {
+        "capacityType": "Log",
+        "actualConsumption": 3.121078,
+        "ratedConsumption": 0.0,
+        "capacityUnit": "MB",
+        "updatedOn": "2026-05-04T22:32:39Z"
+      },
+      {
+        "capacityType": "FinOpsDatabase",
+        "actualConsumption": 0.0,
+        "ratedConsumption": 0.0,
+        "capacityUnit": "MB",
+        "updatedOn": "2026-05-04T22:32:39Z"
+      },
+      {
+        "capacityType": "FinOpsFile",
+        "actualConsumption": 0.0,
+        "ratedConsumption": 0.0,
+        "capacityUnit": "MB",
+        "updatedOn": "2026-05-04T22:32:39Z"
+      }
+    ],
+    "RetentionPeriod": 7
+  },
+  {
+    "EnvironmentName": "ead886c8-26f2-e2aa-88fa-0feb875404cc",
+    "DisplayName": "WHAIKAHA",
+    "Description": null,
+    "IsDefault": false,
+    "Location": "australia",
+    "CreatedTime": "2026-04-30T07:24:41.2612399Z",
+    "CreatedBy": {
+      "id": "32293c3d-3b5d-4388-8e91-7cdab18cf308",
+      "displayName": "",
+      "email": "",
+      "type": "User",
+      "tenantId": "764b46e8-d798-4ed3-87db-ae55ed7b0432",
+      "userPrincipalName": ""
+    },
+    "LastModifiedTime": "2026-04-30T08:21:39.2610819Z",
+    "LastModifiedBy": null,
+    "CreationType": "User",
+    "EnvironmentType": "Trial",
+    "CommonDataServiceDatabaseProvisioningState": "Succeeded",
+    "CommonDataServiceDatabaseType": "Common Data Service for Apps",
+    "Internal": {
+      "id": "/providers/Microsoft.BusinessAppPlatform/scopes/admin/environments/ead886c8-26f2-e2aa-88fa-0feb875404cc",
+      "type": "Microsoft.BusinessAppPlatform/scopes/environments",
+      "location": "australia",
+      "name": "ead886c8-26f2-e2aa-88fa-0feb875404cc",
+      "properties": {
+        "tenantId": "764b46e8-d798-4ed3-87db-ae55ed7b0432",
+        "azureRegionHint": "australiaeast",
+        "displayName": "WHAIKAHA",
+        "createdTime": "2026-04-30T07:24:41.2612399Z",
+        "createdBy": {
+          "id": "32293c3d-3b5d-4388-8e91-7cdab18cf308",
+          "displayName": "",
+          "email": "",
+          "type": "User",
+          "tenantId": "764b46e8-d798-4ed3-87db-ae55ed7b0432",
+          "userPrincipalName": ""
+        },
+        "lastModifiedTime": "2026-04-30T08:21:39.2610819Z",
+        "provisioningState": "Succeeded",
+        "creationType": "User",
+        "environmentSku": "Trial",
+        "environmentType": "Production",
+        "isDefault": false,
+        "permissions": {
+          "CreatePowerApp": {
+            "displayName": "Create PowerApps"
+          },
+          "ReadEnvironment": {
+            "displayName": "Read Environment"
+          },
+          "GenerateResourceStorage": {
+            "displayName": "Generate Resource Storage"
+          },
+          "CreateGateway": {
+            "displayName": "CreateGateway"
+          },
+          "CreateFlow": {
+            "displayName": "Create Flow"
+          },
+          "CreateCustomApi": {
+            "displayName": "Create Custom Connector"
+          },
+          "AdminReadEnvironment": {
+            "displayName": "Admin Read Environment"
+          },
+          "UpdateEnvironment": {
+            "displayName": "Update Environment"
+          },
+          "DeleteEnvironment": {
+            "displayName": "Delete Environment"
+          },
+          "SetDLPPolicy": {
+            "displayName": "Update DLP Policy"
+          },
+          "SetPowerAppAsFeatured": {
+            "displayName": "Set PowerApps As Featured"
+          },
+          "SetPowerAppAsHero": {
+            "displayName": "Set PowerApps As Hero"
+          },
+          "SetPowerAppConnectionDirectConsentBypass": {
+            "displayName": "Set PowerApps Connection Direct Consent Bypass"
+          },
+          "ListAnyPowerApp": {
+            "displayName": "List Any PowerApps"
+          },
+          "ListAnyFlow": {
+            "displayName": "List Any Flow"
+          },
+          "DeleteAnyPowerApp": {
+            "displayName": "Delete Any PowerApps"
+          },
+          "DeleteAnyFlow": {
+            "displayName": "Delete Any Flow"
+          },
+          "AddEnvironmentRoleAssignment": {
+            "displayName": "Add Environment Role Assignment"
+          },
+          "ReadEnvironmentRoleInformation": {
+            "displayName": "Read Environment Role Information"
+          },
+          "RemoveEnvironmentRoleAssignment": {
+            "displayName": "Remove Environment Role Assignment"
+          },
+          "ModifyDatabaseRoleAssignments": {
+            "displayName": "Modify Database Role Assignments"
+          },
+          "ModifyDatabaseRoleDefinitions": {
+            "displayName": "Modify Database Role Definitions"
+          },
+          "CreateDatabase": {
+            "displayName": "Create Database"
+          },
+          "ListDatabaseEntities": {
+            "displayName": "List Database Entities"
+          },
+          "CreateDatabaseEntities": {
+            "displayName": "Create Database Entities"
+          },
+          "UpdateDatabaseEntities": {
+            "displayName": "Update Database Entities"
+          },
+          "DeleteDatabaseEntities": {
+            "displayName": "Delete Database Entities"
+          },
+          "ExportEnvironmentPackage": {
+            "displayName": "ExportEnvironmentPackage"
+          },
+          "ImportEnvironmentPackage": {
+            "displayName": "ImportEnvironmentPackage"
+          },
+          "ManageAnyPowerApp": {
+            "displayName": "ManageAnyPowerApp"
+          },
+          "ManageAnyConnection": {
+            "displayName": "ManageAnyConnection"
+          },
+          "ManageCDSMigration": {
+            "displayName": "ManageCDSMigration"
+          },
+          "ManageTalentEnvironmentSettings": {
+            "displayName": "ManageTalentEnvironmentSettings"
+          },
+          "ManageDatabaseUsers": {
+            "displayName": "ManageDatabaseUsers"
+          },
+          "ManageAnyCustomApi": {
+            "displayName": "ManageAnyCustomApi"
+          },
+          "CreateFunction": {
+            "displayName": "CreateFunction"
+          },
+          "ListAnyFunction": {
+            "displayName": "ListAnyFunction"
+          },
+          "DeleteAnyFunction": {
+            "displayName": "DeleteAnyFunction"
+          },
+          "ReadConsumption": {
+            "displayName": "Read Environment Consumption"
+          },
+          "AllocateCapacity": {
+            "displayName": "Allocate Environment Capacity"
+          },
+          "Move": {
+            "displayName": "Move"
+          },
+          "CopyFrom": {
+            "displayName": "CopyFrom"
+          },
+          "CopyTo": {
+            "displayName": "CopyTo"
+          },
+          "RestoreTo": {
+            "displayName": "RestoreTo"
+          },
+          "RestoreFrom": {
+            "displayName": "RestoreFrom"
+          },
+          "ManageProtectionKeys": {
+            "displayName": "ManageProtectionKeys"
+          },
+          "Reset": {
+            "displayName": "Reset"
+          },
+          "Promote": {
+            "displayName": "Promote"
+          },
+          "Enable": {
+            "displayName": "Enable"
+          },
+          "Disable": {
+            "displayName": "Disable"
+          },
+          "CreateSharePointCustomFormCanvasApp": {
+            "displayName": "CreateSharePointCustomFormCanvasApp"
+          },
+          "Failover": {
+            "displayName": "Force Failover Environment"
+          },
+          "CreateBot": {
+            "displayName": "CreateBot"
+          }
+        },
+        "capacity": [
+          {
+            "capacityType": "Database",
+            "actualConsumption": 117.3672,
+            "ratedConsumption": 1024.0,
+            "capacityUnit": "MB",
+            "updatedOn": "2026-05-04T13:08:25Z"
+          },
+          {
+            "capacityType": "File",
+            "actualConsumption": 2798.479,
+            "ratedConsumption": 2798.479,
+            "capacityUnit": "MB",
+            "updatedOn": "2026-05-04T13:08:25Z"
+          },
+          {
+            "capacityType": "Log",
+            "actualConsumption": 0.005580902,
+            "ratedConsumption": 0.005580902,
+            "capacityUnit": "MB",
+            "updatedOn": "2026-05-04T13:08:25Z"
+          }
+        ],
+        "addons": [],
+        "runtimeEndpoints": {
+          "microsoft.BusinessAppPlatform": "https://australia.api.bap.microsoft.com",
+          "microsoft.CommonDataModel": "https://australia.api.cds.microsoft.com",
+          "microsoft.PowerApps": "https://australia.api.powerapps.com",
+          "microsoft.PowerAppsAdvisor": "https://australia.api.advisor.powerapps.com",
+          "microsoft.PowerVirtualAgents": "https://powervamg.au-il101.gateway.prod.island.powerapps.com",
+          "microsoft.ApiManagement": "https://management.AUSTRALIA.azure-apihub.net",
+          "microsoft.Flow": "https://australia.api.flow.microsoft.com"
+        },
+        "expirationTime": "2026-05-30T07:25:25.3692076Z",
+        "maxAllowedExpirationTime": "2026-06-29T07:24:41.2612399Z",
+        "linkedEnvironmentMetadata": {
+          "type": "Dynamics365Instance",
+          "resourceId": "031f37ea-6244-f111-b31f-002248942ac1",
+          "friendlyName": "WHAIKAHA",
+          "uniqueName": "unq031f37ea6244f111b31f002248942",
+          "domainName": "orga26cd259",
+          "version": "9.2.26035.200",
+          "instanceUrl": "https://orga26cd259.crm6.dynamics.com/",
+          "instanceApiUrl": "https://orga26cd259.api.crm6.dynamics.com",
+          "baseLanguage": 1033,
+          "instanceState": "Ready",
+          "createdTime": "2026-04-30T07:25:14.817Z",
+          "modifiedTime": "2026-04-30T07:25:14.817Z",
+          "hostNameSuffix": "crm6.dynamics.com",
+          "bapSolutionId": "00000001-0000-0000-0001-00000000009b",
+          "creationTemplates": [
+            "D365_CDS"
+          ],
+          "securityGroupId": "eb1a509c-42f2-40ba-a83f-c34fa1f2e6b2",
+          "webApiVersion": "v9.0",
+          "backgroundOperationsState": "Enabled",
+          "scaleGroup": "OCECRMLIVESG623",
+          "crmGeo": "OCE",
+          "platformSku": "Standard",
+          "schemaType": "Standard",
+          "isDormant": false
+        },
+        "trialScenarioType": "None",
+        "notificationMetadata": {
+          "state": "NotSpecified",
+          "branding": "NotSpecific"
+        },
+        "retentionPeriod": "P7D",
+        "states": {
+          "management": {
+            "id": "Ready"
+          },
+          "runtime": {
+            "runtimeReasonCode": "NotSpecified",
+            "requestedBy": {
+              "displayName": "SYSTEM",
+              "type": "NotSpecified"
+            },
+            "id": "Enabled"
+          },
+          "disasterRecovery": {
+            "copyLocation": "NearCopy",
+            "id": "Unavailable"
+          }
+        },
+        "updateCadence": {
+          "id": "Frequent"
+        },
+        "retentionDetails": {
+          "retentionPeriod": "P7D",
+          "backupsAvailableFromDateTime": "2026-04-30T07:24:41.2738105Z"
+        },
+        "protectionStatus": {
+          "keyManagedBy": "Microsoft"
+        },
+        "cluster": {
+          "category": "Prod",
+          "number": "101",
+          "uriSuffix": "au-il101.gateway.prod.island",
+          "geoShortName": "AU",
+          "environment": "Prod",
+          "scaleGroupId": "06b1395b-0623-0000-0623-000000000000"
+        },
+        "connectedGroups": [],
+        "lifecycleOperationsEnforcement": {
+          "allowedOperations": [
+            {
+              "type": {
+                "id": "Move"
+              }
+            },
+            {
+              "type": {
+                "id": "Convert"
+              }
+            },
+            {
+              "type": {
+                "id": "Delete"
+              }
+            },
+            {
+              "type": {
+                "id": "Edit"
+              }
+            },
+            {
+              "type": {
+                "id": "Recover"
+              }
+            },
+            {
+              "type": {
+                "id": "UpdateProtectionStatus"
+              }
+            },
+            {
+              "type": {
+                "id": "NewIdentity"
+              }
+            },
+            {
+              "type": {
+                "id": "SwapIdentity"
+              }
+            },
+            {
+              "type": {
+                "id": "RevertIdentity"
+              }
+            },
+            {
+              "type": {
+                "id": "Enable"
+              }
+            },
+            {
+              "type": {
+                "id": "Disable"
+              }
+            },
+            {
+              "type": {
+                "id": "EnableGovernanceConfiguration"
+              }
+            },
+            {
+              "type": {
+                "id": "PrepareTenantToTenant"
+              }
+            },
+            {
+              "type": {
+                "id": "MigrateTenantToTenant"
+              }
+            }
+          ],
+          "disallowedOperations": [
+            {
+              "type": {
+                "id": "Provision"
+              },
+              "reason": {
+                "message": "Provision cannot be performed because there is no linked CDS instance or the CDS instance version is not supported.",
+                "type": "CdsLink"
+              }
+            },
+            {
+              "type": {
+                "id": "Unlock"
+              },
+              "reason": {
+                "message": "Unlock cannot be performed because there is no linked CDS instance or the CDS instance version is not supported.",
+                "type": "CdsLink"
+              }
+            },
+            {
+              "type": {
+                "id": "Backup"
+              },
+              "reason": {
+                "message": "Backup cannot be performed on environment of type Trial.",
+                "type": "EnvironmentSkuType"
+              }
+            },
+            {
+              "type": {
+                "id": "Copy"
+              },
+              "reason": {
+                "message": "Copy cannot be performed on environment of type Trial.",
+                "type": "EnvironmentSkuType"
+              }
+            },
+            {
+              "type": {
+                "id": "Promote"
+              },
+              "reason": {
+                "message": "Promote cannot be performed on environment of type Trial.",
+                "type": "EnvironmentSkuType"
+              }
+            },
+            {
+              "type": {
+                "id": "Reset"
+              },
+              "reason": {
+                "message": "Reset cannot be performed on environment of type Trial.",
+                "type": "EnvironmentSkuType"
+              }
+            },
+            {
+              "type": {
+                "id": "Restore"
+              },
+              "reason": {
+                "message": "Restore cannot be performed on environment of type Trial.",
+                "type": "EnvironmentSkuType"
+              }
+            },
+            {
+              "type": {
+                "id": "NewCustomerManagedKey"
+              },
+              "reason": {
+                "message": "NewCustomerManagedKey cannot be performed on environment of type Trial.",
+                "type": "EnvironmentSkuType"
+              }
+            },
+            {
+              "type": {
+                "id": "RotateCustomerManagedKey"
+              },
+              "reason": {
+                "message": "RotateCustomerManagedKey cannot be performed on environment of type Trial.",
+                "type": "EnvironmentSkuType"
+              }
+            },
+            {
+              "type": {
+                "id": "RevertToMicrosoftKey"
+              },
+              "reason": {
+                "message": "RevertToMicrosoftKey cannot be performed on environment of type Trial.",
+                "type": "EnvironmentSkuType"
+              }
+            },
+            {
+              "type": {
+                "id": "NewNetworkInjection"
+              },
+              "reason": {
+                "message": "NewNetworkInjection cannot be performed on environment of type Trial.",
+                "type": "EnvironmentSkuType"
+              }
+            },
+            {
+              "type": {
+                "id": "SwapNetworkInjection"
+              },
+              "reason": {
+                "message": "SwapNetworkInjection cannot be performed on environment of type Trial.",
+                "type": "EnvironmentSkuType"
+              }
+            },
+            {
+              "type": {
+                "id": "RevertNetworkInjection"
+              },
+              "reason": {
+                "message": "RevertNetworkInjection cannot be performed on environment of type Trial.",
+                "type": "EnvironmentSkuType"
+              }
+            },
+            {
+              "type": {
+                "id": "ForceFailover"
+              },
+              "reason": {
+                "message": "ForceFailover cannot be performed on environment of type Trial.",
+                "type": "EnvironmentSkuType"
+              }
+            },
+            {
+              "type": {
+                "id": "DisasterRecoveryDrill"
+              },
+              "reason": {
+                "message": "DisasterRecoveryDrill cannot be performed on environment of type Trial.",
+                "type": "EnvironmentSkuType"
+              }
+            },
+            {
+              "type": {
+                "id": "FailbackToNearCopy"
+              },
+              "reason": {
+                "message": "FailbackToNearCopy cannot be performed on environment of type Trial.",
+                "type": "EnvironmentSkuType"
+              }
+            },
+            {
+              "type": {
+                "id": "DisableGovernanceConfiguration"
+              },
+              "reason": {
+                "message": "DisableGovernanceConfiguration cannot be performed on Power Platform environment because of the governance configuration.",
+                "type": "GovernanceConfig"
+              }
+            },
+            {
+              "type": {
+                "id": "UpdateGovernanceConfiguration"
+              },
+              "reason": {
+                "message": "UpdateGovernanceConfiguration cannot be performed on Power Platform environment because of the governance configuration.",
+                "type": "GovernanceConfig"
+              }
+            }
+          ]
+        },
+        "governanceConfiguration": {
+          "protectionLevel": "Basic"
+        },
+        "bingChatEnabled": true,
+        "m365Enabled": true,
+        "appDraftingCopilotEnabled": true,
+        "enableAnalyticsForMakers": true
+      }
+    },
+    "InternalCds": null,
+    "OrganizationId": "031f37ea-6244-f111-b31f-002248942ac1",
+    "SecurityGroupId": "eb1a509c-42f2-40ba-a83f-c34fa1f2e6b2",
+    "Capacity": [
+      {
+        "capacityType": "Database",
+        "actualConsumption": 117.3672,
+        "ratedConsumption": 1024.0,
+        "capacityUnit": "MB",
+        "updatedOn": "2026-05-04T13:08:25Z"
+      },
+      {
+        "capacityType": "File",
+        "actualConsumption": 2798.479,
+        "ratedConsumption": 2798.479,
+        "capacityUnit": "MB",
+        "updatedOn": "2026-05-04T13:08:25Z"
+      },
+      {
+        "capacityType": "Log",
+        "actualConsumption": 0.005580902,
+        "ratedConsumption": 0.005580902,
+        "capacityUnit": "MB",
+        "updatedOn": "2026-05-04T13:08:25Z"
+      }
+    ],
+    "RetentionPeriod": 7
+  },
+  {
+    "EnvironmentName": "fa506370-56a4-ebc8-8d59-f9c00f83c2c0",
+    "DisplayName": "Flow Admin",
+    "Description": null,
+    "IsDefault": false,
+    "Location": "australia",
+    "CreatedTime": "2026-04-20T06:13:56.5023913Z",
+    "CreatedBy": {
+      "id": "0a85a6e8-3ec6-4054-ae60-5b36a2d7f580",
+      "displayName": "",
+      "email": "",
+      "type": "User",
+      "tenantId": "764b46e8-d798-4ed3-87db-ae55ed7b0432",
+      "userPrincipalName": ""
+    },
+    "LastModifiedTime": "2026-04-20T06:14:19.6744991Z",
+    "LastModifiedBy": null,
+    "CreationType": "User",
+    "EnvironmentType": "Developer",
+    "CommonDataServiceDatabaseProvisioningState": "Succeeded",
+    "CommonDataServiceDatabaseType": "Common Data Service for Apps",
+    "Internal": {
+      "id": "/providers/Microsoft.BusinessAppPlatform/scopes/admin/environments/fa506370-56a4-ebc8-8d59-f9c00f83c2c0",
+      "type": "Microsoft.BusinessAppPlatform/scopes/environments",
+      "location": "australia",
+      "name": "fa506370-56a4-ebc8-8d59-f9c00f83c2c0",
+      "properties": {
+        "tenantId": "764b46e8-d798-4ed3-87db-ae55ed7b0432",
+        "azureRegionHint": "australiaeast",
+        "displayName": "Flow Admin",
+        "createdTime": "2026-04-20T06:13:56.5023913Z",
+        "createdBy": {
+          "id": "0a85a6e8-3ec6-4054-ae60-5b36a2d7f580",
+          "displayName": "",
+          "email": "",
+          "type": "User",
+          "tenantId": "764b46e8-d798-4ed3-87db-ae55ed7b0432",
+          "userPrincipalName": ""
+        },
+        "usedBy": {
+          "id": "0a85a6e8-3ec6-4054-ae60-5b36a2d7f580",
+          "displayName": "",
+          "email": "",
+          "type": "User",
+          "tenantId": "764b46e8-d798-4ed3-87db-ae55ed7b0432",
+          "userPrincipalName": ""
+        },
+        "lastModifiedTime": "2026-04-20T06:14:19.6744991Z",
+        "provisioningState": "Succeeded",
+        "creationType": "User",
+        "environmentSku": "Developer",
+        "environmentType": "Production",
+        "isDefault": false,
+        "permissions": {
+          "CreatePowerApp": {
+            "displayName": "Create PowerApps"
+          },
+          "ReadEnvironment": {
+            "displayName": "Read Environment"
+          },
+          "GenerateResourceStorage": {
+            "displayName": "Generate Resource Storage"
+          },
+          "CreateGateway": {
+            "displayName": "CreateGateway"
+          },
+          "CreateFlow": {
+            "displayName": "Create Flow"
+          },
+          "CreateCustomApi": {
+            "displayName": "Create Custom Connector"
+          },
+          "AdminReadEnvironment": {
+            "displayName": "Admin Read Environment"
+          },
+          "UpdateEnvironment": {
+            "displayName": "Update Environment"
+          },
+          "DeleteEnvironment": {
+            "displayName": "Delete Environment"
+          },
+          "SetDLPPolicy": {
+            "displayName": "Update DLP Policy"
+          },
+          "SetPowerAppAsFeatured": {
+            "displayName": "Set PowerApps As Featured"
+          },
+          "SetPowerAppAsHero": {
+            "displayName": "Set PowerApps As Hero"
+          },
+          "SetPowerAppConnectionDirectConsentBypass": {
+            "displayName": "Set PowerApps Connection Direct Consent Bypass"
+          },
+          "ListAnyPowerApp": {
+            "displayName": "List Any PowerApps"
+          },
+          "ListAnyFlow": {
+            "displayName": "List Any Flow"
+          },
+          "DeleteAnyPowerApp": {
+            "displayName": "Delete Any PowerApps"
+          },
+          "DeleteAnyFlow": {
+            "displayName": "Delete Any Flow"
+          },
+          "AddEnvironmentRoleAssignment": {
+            "displayName": "Add Environment Role Assignment"
+          },
+          "ReadEnvironmentRoleInformation": {
+            "displayName": "Read Environment Role Information"
+          },
+          "RemoveEnvironmentRoleAssignment": {
+            "displayName": "Remove Environment Role Assignment"
+          },
+          "ModifyDatabaseRoleAssignments": {
+            "displayName": "Modify Database Role Assignments"
+          },
+          "ModifyDatabaseRoleDefinitions": {
+            "displayName": "Modify Database Role Definitions"
+          },
+          "CreateDatabase": {
+            "displayName": "Create Database"
+          },
+          "ListDatabaseEntities": {
+            "displayName": "List Database Entities"
+          },
+          "CreateDatabaseEntities": {
+            "displayName": "Create Database Entities"
+          },
+          "UpdateDatabaseEntities": {
+            "displayName": "Update Database Entities"
+          },
+          "DeleteDatabaseEntities": {
+            "displayName": "Delete Database Entities"
+          },
+          "ExportEnvironmentPackage": {
+            "displayName": "ExportEnvironmentPackage"
+          },
+          "ImportEnvironmentPackage": {
+            "displayName": "ImportEnvironmentPackage"
+          },
+          "ManageAnyPowerApp": {
+            "displayName": "ManageAnyPowerApp"
+          },
+          "ManageAnyConnection": {
+            "displayName": "ManageAnyConnection"
+          },
+          "ManageCDSMigration": {
+            "displayName": "ManageCDSMigration"
+          },
+          "ManageTalentEnvironmentSettings": {
+            "displayName": "ManageTalentEnvironmentSettings"
+          },
+          "ManageDatabaseUsers": {
+            "displayName": "ManageDatabaseUsers"
+          },
+          "ManageAnyCustomApi": {
+            "displayName": "ManageAnyCustomApi"
+          },
+          "CreateFunction": {
+            "displayName": "CreateFunction"
+          },
+          "ListAnyFunction": {
+            "displayName": "ListAnyFunction"
+          },
+          "DeleteAnyFunction": {
+            "displayName": "DeleteAnyFunction"
+          },
+          "ReadConsumption": {
+            "displayName": "Read Environment Consumption"
+          },
+          "AllocateCapacity": {
+            "displayName": "Allocate Environment Capacity"
+          },
+          "Move": {
+            "displayName": "Move"
+          },
+          "CopyFrom": {
+            "displayName": "CopyFrom"
+          },
+          "CopyTo": {
+            "displayName": "CopyTo"
+          },
+          "RestoreTo": {
+            "displayName": "RestoreTo"
+          },
+          "RestoreFrom": {
+            "displayName": "RestoreFrom"
+          },
+          "ManageProtectionKeys": {
+            "displayName": "ManageProtectionKeys"
+          },
+          "Reset": {
+            "displayName": "Reset"
+          },
+          "Promote": {
+            "displayName": "Promote"
+          },
+          "Enable": {
+            "displayName": "Enable"
+          },
+          "Disable": {
+            "displayName": "Disable"
+          },
+          "CreateSharePointCustomFormCanvasApp": {
+            "displayName": "CreateSharePointCustomFormCanvasApp"
+          },
+          "Failover": {
+            "displayName": "Force Failover Environment"
+          },
+          "CreateBot": {
+            "displayName": "CreateBot"
+          }
+        },
+        "capacity": [
+          {
+            "capacityType": "Database",
+            "actualConsumption": 141.25,
+            "ratedConsumption": 0.0,
+            "capacityUnit": "MB",
+            "updatedOn": "2026-05-04T08:14:02Z"
+          },
+          {
+            "capacityType": "File",
+            "actualConsumption": 2474.645,
+            "ratedConsumption": 0.0,
+            "capacityUnit": "MB",
+            "updatedOn": "2026-05-04T08:14:02Z"
+          },
+          {
+            "capacityType": "Log",
+            "actualConsumption": 0.01245403,
+            "ratedConsumption": 0.0,
+            "capacityUnit": "MB",
+            "updatedOn": "2026-05-04T08:14:02Z"
+          },
+          {
+            "capacityType": "FinOpsDatabase",
+            "actualConsumption": 0.0,
+            "ratedConsumption": 0.0,
+            "capacityUnit": "MB",
+            "updatedOn": "2026-05-04T08:14:02Z"
+          },
+          {
+            "capacityType": "FinOpsFile",
+            "actualConsumption": 0.0,
+            "ratedConsumption": 0.0,
+            "capacityUnit": "MB",
+            "updatedOn": "2026-05-04T08:14:02Z"
+          }
+        ],
+        "addons": [],
+        "runtimeEndpoints": {
+          "microsoft.BusinessAppPlatform": "https://australia.api.bap.microsoft.com",
+          "microsoft.CommonDataModel": "https://australia.api.cds.microsoft.com",
+          "microsoft.PowerApps": "https://australia.api.powerapps.com",
+          "microsoft.PowerAppsAdvisor": "https://australia.api.advisor.powerapps.com",
+          "microsoft.PowerVirtualAgents": "https://powervamg.au-il102.gateway.prod.island.powerapps.com",
+          "microsoft.ApiManagement": "https://management.AUSTRALIA.azure-apihub.net",
+          "microsoft.Flow": "https://australia.api.flow.microsoft.com"
+        },
+        "linkedEnvironmentMetadata": {
+          "type": "Dynamics365Instance",
+          "resourceId": "87d33aad-7c3c-f111-83fd-6045bd40bec0",
+          "friendlyName": "Flow Admin",
+          "uniqueName": "unq87d33aad7c3cf11183fd6045bd40b",
+          "domainName": "orgfd8e4f9d",
+          "version": "9.2.26035.200",
+          "instanceUrl": "https://orgfd8e4f9d.crm6.dynamics.com/",
+          "instanceApiUrl": "https://orgfd8e4f9d.api.crm6.dynamics.com",
+          "baseLanguage": 1033,
+          "instanceState": "Ready",
+          "createdTime": "2026-04-20T06:14:02.067Z",
+          "modifiedTime": "2026-04-20T06:14:02.067Z",
+          "hostNameSuffix": "crm6.dynamics.com",
+          "bapSolutionId": "00000001-0000-0000-0001-00000000009b",
+          "creationTemplates": [
+            "D365_CDS"
+          ],
+          "webApiVersion": "v9.0",
+          "backgroundOperationsState": "Enabled",
+          "scaleGroup": "OCECRMLIVESG615",
+          "crmGeo": "OCE",
+          "platformSku": "Standard",
+          "schemaType": "Standard",
+          "isDormant": false
+        },
+        "trialScenarioType": "None",
+        "notificationMetadata": {
+          "state": "NotSpecified",
+          "branding": "NotSpecific"
+        },
+        "retentionPeriod": "P7D",
+        "states": {
+          "management": {
+            "id": "Ready"
+          },
+          "runtime": {
+            "runtimeReasonCode": "NotSpecified",
+            "requestedBy": {
+              "displayName": "SYSTEM",
+              "type": "NotSpecified"
+            },
+            "id": "Enabled"
+          },
+          "disasterRecovery": {
+            "copyLocation": "NearCopy",
+            "id": "Unavailable"
+          }
+        },
+        "updateCadence": {
+          "id": "Frequent"
+        },
+        "retentionDetails": {
+          "retentionPeriod": "P7D",
+          "backupsAvailableFromDateTime": "2026-04-28T07:38:46.1727693Z"
+        },
+        "protectionStatus": {
+          "keyManagedBy": "Microsoft"
+        },
+        "cluster": {
+          "category": "Prod",
+          "number": "102",
+          "uriSuffix": "au-il102.gateway.prod.island",
+          "geoShortName": "AU",
+          "environment": "Prod",
+          "scaleGroupId": "713c92b8-0615-0000-0615-000000000000"
+        },
+        "connectedGroups": [],
+        "lifecycleOperationsEnforcement": {
+          "allowedOperations": [
+            {
+              "type": {
+                "id": "Move"
+              }
+            },
+            {
+              "type": {
+                "id": "Backup"
+              }
+            },
+            {
+              "type": {
+                "id": "Copy"
+              }
+            },
+            {
+              "type": {
+                "id": "Delete"
+              }
+            },
+            {
+              "type": {
+                "id": "Edit"
+              }
+            },
+            {
+              "type": {
+                "id": "Recover"
+              }
+            },
+            {
+              "type": {
+                "id": "Reset"
+              }
+            },
+            {
+              "type": {
+                "id": "Restore"
+              }
+            },
+            {
+              "type": {
+                "id": "NewCustomerManagedKey"
+              }
+            },
+            {
+              "type": {
+                "id": "NewNetworkInjection"
+              }
+            },
+            {
+              "type": {
+                "id": "SwapNetworkInjection"
+              }
+            },
+            {
+              "type": {
+                "id": "RevertNetworkInjection"
+              }
+            },
+            {
+              "type": {
+                "id": "NewIdentity"
+              }
+            },
+            {
+              "type": {
+                "id": "SwapIdentity"
+              }
+            },
+            {
+              "type": {
+                "id": "RevertIdentity"
+              }
+            },
+            {
+              "type": {
+                "id": "Enable"
+              }
+            },
+            {
+              "type": {
+                "id": "Disable"
+              }
+            },
+            {
+              "type": {
+                "id": "DisableGovernanceConfiguration"
+              }
+            },
+            {
+              "type": {
+                "id": "UpdateGovernanceConfiguration"
+              }
+            },
+            {
+              "type": {
+                "id": "PrepareTenantToTenant"
+              }
+            },
+            {
+              "type": {
+                "id": "MigrateTenantToTenant"
+              }
+            }
+          ],
+          "disallowedOperations": [
+            {
+              "type": {
+                "id": "Provision"
+              },
+              "reason": {
+                "message": "Provision cannot be performed because there is no linked CDS instance or the CDS instance version is not supported.",
+                "type": "CdsLink"
+              }
+            },
+            {
+              "type": {
+                "id": "Unlock"
+              },
+              "reason": {
+                "message": "Unlock cannot be performed because there is no linked CDS instance or the CDS instance version is not supported.",
+                "type": "CdsLink"
+              }
+            },
+            {
+              "type": {
+                "id": "Convert"
+              },
+              "reason": {
+                "message": "Convert cannot be performed on environment of type Developer.",
+                "type": "EnvironmentSkuType"
+              }
+            },
+            {
+              "type": {
+                "id": "Promote"
+              },
+              "reason": {
+                "message": "Promote cannot be performed on environment of type Developer.",
+                "type": "EnvironmentSkuType"
+              }
+            },
+            {
+              "type": {
+                "id": "UpdateProtectionStatus"
+              },
+              "reason": {
+                "message": "UpdateProtectionStatus cannot be performed on environment of type Developer.",
+                "type": "EnvironmentSkuType"
+              }
+            },
+            {
+              "type": {
+                "id": "ForceFailover"
+              },
+              "reason": {
+                "message": "ForceFailover cannot be performed on environment of type Developer.",
+                "type": "EnvironmentSkuType"
+              }
+            },
+            {
+              "type": {
+                "id": "DisasterRecoveryDrill"
+              },
+              "reason": {
+                "message": "DisasterRecoveryDrill cannot be performed on environment of type Developer.",
+                "type": "EnvironmentSkuType"
+              }
+            },
+            {
+              "type": {
+                "id": "FailbackToNearCopy"
+              },
+              "reason": {
+                "message": "FailbackToNearCopy cannot be performed on environment of type Developer.",
+                "type": "EnvironmentSkuType"
+              }
+            },
+            {
+              "type": {
+                "id": "RotateCustomerManagedKey"
+              },
+              "reason": {
+                "type": "EnvironmentCmkLinked"
+              }
+            },
+            {
+              "type": {
+                "id": "RevertToMicrosoftKey"
+              },
+              "reason": {
+                "type": "EnvironmentCmkLinked"
+              }
+            },
+            {
+              "type": {
+                "id": "EnableGovernanceConfiguration"
+              },
+              "reason": {
+                "message": "EnableGovernanceConfiguration cannot be performed on Power Platform environment because of the governance configuration.",
+                "type": "GovernanceConfig"
+              }
+            }
+          ]
+        },
+        "governanceConfiguration": {
+          "protectionLevel": "Standard",
+          "settings": {
+            "extendedSettings": {
+              "excludeEnvironmentFromAnalysis": "false",
+              "isGroupSharingDisabled": "true",
+              "maxLimitUserSharing": "5",
+              "includeOnHomepageInsights": "false",
+              "limitSharingMode": "excludeSharingToSecurityGroups",
+              "solutionCheckerMode": "warn",
+              "solutionCheckerRuleOverrides": ""
+            }
+          }
+        },
+        "bingChatEnabled": false,
+        "m365Enabled": false,
+        "parentEnvironmentGroup": {
+          "id": "00000000-0000-0000-0000-000000000000"
+        },
+        "appDraftingCopilotEnabled": false,
+        "enableAnalyticsForMakers": true
+      }
+    },
+    "InternalCds": null,
+    "OrganizationId": "87d33aad-7c3c-f111-83fd-6045bd40bec0",
+    "Capacity": [
+      {
+        "capacityType": "Database",
+        "actualConsumption": 141.25,
+        "ratedConsumption": 0.0,
+        "capacityUnit": "MB",
+        "updatedOn": "2026-05-04T08:14:02Z"
+      },
+      {
+        "capacityType": "File",
+        "actualConsumption": 2474.645,
+        "ratedConsumption": 0.0,
+        "capacityUnit": "MB",
+        "updatedOn": "2026-05-04T08:14:02Z"
+      },
+      {
+        "capacityType": "Log",
+        "actualConsumption": 0.01245403,
+        "ratedConsumption": 0.0,
+        "capacityUnit": "MB",
+        "updatedOn": "2026-05-04T08:14:02Z"
+      },
+      {
+        "capacityType": "FinOpsDatabase",
+        "actualConsumption": 0.0,
+        "ratedConsumption": 0.0,
+        "capacityUnit": "MB",
+        "updatedOn": "2026-05-04T08:14:02Z"
+      },
+      {
+        "capacityType": "FinOpsFile",
+        "actualConsumption": 0.0,
+        "ratedConsumption": 0.0,
+        "capacityUnit": "MB",
+        "updatedOn": "2026-05-04T08:14:02Z"
+      }
+    ],
+    "RetentionPeriod": 7
+  }
+]
