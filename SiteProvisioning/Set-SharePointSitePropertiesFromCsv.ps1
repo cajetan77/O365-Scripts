@@ -421,7 +421,7 @@ function SavePageTemplate {
         Connect-PnPOnline -Url $templatesiteCollection -ClientId $clientId -Tenant $tenantId -Thumbprint $thumbprint
         $siteTemplate = Get-PnPSiteTemplate -IncludeAllClientSidePages -Handlers Pages, PageContents -OutputInstance 
         
-         $pagesTemplate = New-PnPSiteTemplate
+        $pagesTemplate = New-PnPSiteTemplate
         foreach ($page in $siteTemplate.ClientSidePages) {
             if ($page.PromoteAsTemplate -eq $true) {
                 $pagesTemplate.ClientSidePages.Add($page)
@@ -666,18 +666,18 @@ try {
             Write-LogMessage -Message "[$index/$total] Site '$siteUrl'" -Level Info -siteName $siteName
             Connect-PnPOnline -Url $siteUrl -ClientId $clientId -Tenant $tenantId -Thumbprint $thumbprint -ErrorAction Stop
 
-            # Add-SiteToHubAssociation -SiteUrl $siteUrl -TargetHubSiteUrl $HubSiteUrl -SiteName $siteName
-            #Set-SiteRegionalSettings -SiteUrl $siteUrl -siteName $siteName
-            #Set-SearchSettings -SiteUrl $siteUrl -siteName $siteName
-            #Set-DocLibraryPermissions -SiteUrl $siteUrl -siteName $siteName
-            #Add-GroupstoSharePointGroups -SiteUrl $siteUrl -siteName $siteName
-            #Set-Branding -SiteUrl $siteUrl  -siteName $siteName
-            #Install-App -SiteUrl $SiteUrl -siteName $siteName
-            #Add-ContentTypes -SiteUrl $SiteUrl  -siteName $siteName
-            #Add-SiteColumns -SiteUrl $siteUrl   -siteName $siteName
+            Add-SiteToHubAssociation -SiteUrl $siteUrl -TargetHubSiteUrl $HubSiteUrl -SiteName $siteName
+            Set-SiteRegionalSettings -SiteUrl $siteUrl -siteName $siteName
+            Set-SearchSettings -SiteUrl $siteUrl -siteName $siteName
+            Set-DocLibraryPermissions -SiteUrl $siteUrl -siteName $siteName
+            Add-GroupstoSharePointGroups -SiteUrl $siteUrl -siteName $siteName
+            Set-Branding -SiteUrl $siteUrl  -siteName $siteName
+            Install-App -SiteUrl $SiteUrl -siteName $siteName
+            Add-ContentTypes -SiteUrl $SiteUrl  -siteName $siteName
+            Add-SiteColumns -SiteUrl $siteUrl   -siteName $siteName
             #Add-PageTemplates -SiteUrl $SiteUrl -siteName $siteName
-            #Set-Views -SiteUrl $siteUrl     -siteName $siteName
-            SavePageTemplate -SiteUrl $SiteUrl -siteName $siteName
+            Set-Views -SiteUrl $siteUrl     -siteName $siteName
+            #SavePageTemplate -SiteUrl $SiteUrl -siteName $siteName
         }
         catch {
             $failed++
