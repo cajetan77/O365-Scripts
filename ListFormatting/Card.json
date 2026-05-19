@@ -328,29 +328,6 @@
             {
               "elmType": "div",
               "attributes": {
-                "class": "sp-card-displayColumnContainer"
-              },
-              "children": [
-                {
-                  "elmType": "p",
-                  "attributes": {
-                    "class": "ms-fontColor-neutralSecondary sp-card-label"
-                  },
-                  "txtContent": "[!PageId.DisplayName]"
-                },
-                {
-                  "elmType": "p",
-                  "attributes": {
-                    "title": "=if ([$PageId.displayValue] == '', '–', [$PageId.displayValue])",
-                    "class": "ms-fontColor-neutralPrimary sp-card-content "
-                  },
-                  "txtContent": "=if ([$PageId.displayValue] == '', '–', [$PageId.displayValue])"
-                }
-              ]
-            },
-            {
-              "elmType": "div",
-              "attributes": {
                 "class": "sp-card-previewColumnContainer"
               },
               "children": [
