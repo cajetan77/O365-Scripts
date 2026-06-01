@@ -1,0 +1,6 @@
+@app_intra_poc_linux_HostAddress = http://localhost:5073
+
+GET {{app_intra_poc_linux_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
