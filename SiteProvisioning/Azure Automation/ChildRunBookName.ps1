@@ -300,7 +300,8 @@ Add-GroupstoSharePointGroups -SiteUrl $SiteUrl
 Set-SearchSettings -SiteUrl $SiteUrl 
 Install-App -SiteUrl $SiteUrl 
 Set-DocLibraryPermissions -SiteUrl $SiteUrl 
-Set-Branding -SiteUrl $SiteUrl 
+Set-Branding -SiteUrl $SiteUrl
+SavePageTemplate -SiteUrl $SiteUrl 
 
 $TargetParameters = @{
     SiteUrl = $SiteUrl
@@ -313,11 +314,11 @@ catch {
     Write-LogMessage "ERROR: Failed to start runbook: $($_.Exception.Message)" "Error"
 }
 
-if(Get-PnPContext) {
+if (Get-PnPContext) {
     Disconnect-PnPOnline
     Write-LogMessage "Disconnected from SharePoint" "Info"
 }
-if(Get-AzContext) {
+if (Get-AzContext) {
     Disconnect-AzAccount
     Write-LogMessage "Disconnected from Azure" "Info"
 }

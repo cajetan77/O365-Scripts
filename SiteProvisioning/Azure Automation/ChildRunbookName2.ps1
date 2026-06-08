@@ -5,9 +5,22 @@ param(
 
 $ListItemId = $SiteUrl.Split('/')[-1]
 
-$contentTypeName = "content category page"
+$pageContentTypeName = "Doogle content category page"
 $contentTypeList = @("Site Pages")
 $viewsList = @("Documents", "Site Pages")
+# Display name -> site column internal name (matches view field names).
+$siteColumnInternalNames = @{
+    "Main Category"       = "DoogleWFMainCategory"
+    "Review Date"         = "ReviewDate1"
+    "Notification Sent"   = "MSDNotificationSent"
+    "Sub Category"        = "DoogleWFSubCategory"
+    "Restricted Approval" = "DoogleWFRestrictedApproval"
+}
+$viewFieldInternalNames = @(
+    "DocIcon", "Title", "Modified", "Editor",
+    "ReviewDate1", "DoogleWFMainCategory", "MSDNotificationSent",
+    "DoogleWFRestrictedApproval", "DoogleWFSubCategory"
+)
 
 
 function Write-LogMessage {
@@ -50,81 +63,144 @@ catch {
     throw
 }
 
-function Get-ContentTypeHub {
+function Publish-ContentTypesFromHub {
     param(
-        [string]$ct,
-        [string]$siteName
+        [string[]]$ContentTypeNames
     )
-    Write-LogMessage "Adding Content Type from the Content Type Hub" "Info"
-    $contentTypesArray = $ct.Split(", ") | ForEach-Object { $_.Trim() }  
+    Write-LogMessage "Publishing content types from the Content Type Hub: $($ContentTypeNames -join ', ')" "Info"
     $contentTypeHubUrl = Get-PnPContentTypePublishingHubUrl
     Write-LogMessage "Content Type Hub URL: $contentTypeHubUrl" "Info"
+
     try {
-        $ctconnection = Connect-PnPOnline -Url $contentTypeHubUrl -ClientId $ClientId -Tenant $TenantId -Thumbprint $Thumbprint
-     
-        $ctHub = Get-PnPContentType -Connection $ctconnection
-        Disconnect-PnPOnline
+        Connect-PnPOnline -Url $contentTypeHubUrl -ClientId $ClientId -Tenant $TenantId -Thumbprint $Thumbprint -ErrorAction Stop
+        $ctHub = Get-PnPContentType -ErrorAction Stop
+        Disconnect-PnPOnline -ErrorAction SilentlyContinue
         Write-LogMessage "Disconnected from content type hub" "Success"
     }
-    
     catch {
         Write-LogMessage "Error connecting to Content Type Hub: $($_.Exception.Message)" "Error"
+        throw
     }
- 
-    try {
-        Connect-PnPOnline -Url $SiteUrl -ClientId $ClientId -Tenant $TenantId -Thumbprint $Thumbprint
-       
-        
-        foreach ($cts in $ctHub) {
-            if ($contentTypesArray -contains $cts.Name) {
-                Add-PnPContentTypesFromContentTypeHub -ContentTypes $cts.Id -Site $SiteUrl -Connection $siteconnection
-                Write-LogMessage -Message "Added content type '$($cts.Name)' to site: $SiteUrl" -Level Success -siteName $siteName
-            }
+
+    Connect-PnPOnline -Url $SiteUrl -ClientId $ClientId -Tenant $TenantId -Thumbprint $Thumbprint -ErrorAction Stop
+
+    foreach ($cts in $ctHub) {
+        if ($ContentTypeNames -contains $cts.Name) {
+            Add-PnPContentTypesFromContentTypeHub -ContentTypes $cts.Id -ErrorAction Stop
+            Write-LogMessage "Published content type '$($cts.Name)' to site: $SiteUrl" "Success"
         }
-     
     }
-    catch {
-        Write-LogMessage -Message "Error adding Content Types from Hub: $($_.Exception.Message)" -Level Error -siteName $siteName
-    }
-    
 }
 
+function Wait-ForSiteField {
+    param(
+        [string]$FieldDisplayName,
+        [string]$FieldInternalName,
+        [int]$MaxAttempts = 12,
+        [int]$DelaySeconds = 5
+    )
+
+    for ($attempt = 1; $attempt -le $MaxAttempts; $attempt++) {
+        $field = $null
+        if ($FieldInternalName) {
+            $field = Get-PnPField -Identity $FieldInternalName -ErrorAction SilentlyContinue
+        }
+        if (-not $field) {
+            $field = @(Get-PnPField -Identity $FieldDisplayName -ErrorAction SilentlyContinue) | Select-Object -First 1
+        }
+        if ($field) {
+            Write-LogMessage "Site column '$FieldDisplayName' ($FieldInternalName) is available" "Success"
+            return
+        }
+
+        Write-LogMessage "Waiting for site column '$FieldDisplayName' from content type hub (attempt $attempt/$MaxAttempts)..." "Info"
+        Start-Sleep -Seconds $DelaySeconds
+    }
+
+    throw "Site column '$FieldDisplayName' was not provisioned after $MaxAttempts attempts."
+}
+
+function Wait-ForListField {
+    param(
+        [string]$ListName,
+        [string]$FieldInternalName,
+        [int]$MaxAttempts = 12,
+        [int]$DelaySeconds = 5
+    )
+
+    for ($attempt = 1; $attempt -le $MaxAttempts; $attempt++) {
+        $field = Get-PnPField -List $ListName -Identity $FieldInternalName -ErrorAction SilentlyContinue
+        if ($field) {
+            Write-LogMessage "Field '$FieldInternalName' is available on '$ListName'" "Success"
+            return $field
+        }
+
+        Write-LogMessage "Waiting for field '$FieldInternalName' on '$ListName' (attempt $attempt/$MaxAttempts)..." "Info"
+        Start-Sleep -Seconds $DelaySeconds
+    }
+
+    throw "Field '$FieldInternalName' was not provisioned on '$ListName' after $MaxAttempts attempts."
+}
+
+function Test-FieldOnList {
+    param(
+        $List,
+        [string]$DisplayName,
+        [string]$InternalName
+    )
+
+    if (Get-PnPField -List $List -Identity $DisplayName -ErrorAction SilentlyContinue) {
+        return $true
+    }
+    if ($InternalName -and (Get-PnPField -List $List -Identity $InternalName -ErrorAction SilentlyContinue)) {
+        return $true
+    }
+    return $false
+}
+
+function Set-ListFieldDefaultFormula {
+    param(
+        $List,
+        [string]$FieldInternalName,
+        [string]$DefaultFormula
+    )
+
+    try {
+        $listField = Get-PnPField -List $List -Identity $FieldInternalName -ErrorAction Stop
+        $listField.DefaultFormula = $DefaultFormula
+        $listField.Update()
+        Invoke-PnPQuery
+        Write-LogMessage "Default formula set on '$FieldInternalName' in Documents library" "Success"
+    }
+    catch {
+        Write-LogMessage "Could not set default formula on '$FieldInternalName': $($_.Exception.Message)" "Warning"
+    }
+}
 
 function Add-ContentTypes {
     param(
-        [string]$SiteUrl,
-        [string]$siteName
+        [string]$SiteUrl
     )
     try {
+        $documentsLibrary = Get-PnPList -Identity "Documents" -ErrorAction Stop
+        $documentsLibrary.ContentTypesEnabled = $true
+        $documentsLibrary.Update()
+        Invoke-PnPQuery
+        Write-LogMessage "Content types enabled on $($documentsLibrary.Title)" "Success"
 
-        $library = Get-PnPList -Identity "Documents" -ErrorAction Stop
-        if (-not $library) {
-            Write-LogMessage "ERROR: DocLibrary not found on $SiteUrl" "Error"
-            
-            
-        }
-        else {
-            $library.ContentTypesEnabled = $true
-            $library.Update()
-            Invoke-PnPQuery
-            Write-LogMessage "Content types enabled on $($library.Title)" "Success"
-            Get-ContentTypeHub -ct $contentTypeName  -siteName $siteName
-            #Get the content type
-            $ContentType = Get-PnPContentType -Identity $contentTypeName
-            If ($ContentType) {
-                #Add Content Type to Library
-                foreach ($listName in $contentTypeList) {  
-                    Add-PnPContentTypeToList -List $listName -ContentType $ContentType
-                   
-                    Write-LogMessage "Added content type '$($ContentType.Name)' to list '$($listName)'" "Success"
-                    Set-DefaultContentType -SiteUrl $SiteUrl -ListName $listName -ContentTypeName $contentTypeName -siteName $siteName
-                }
-            }
+        # Page content type (with ReviewDate1) is applied to Site Pages only, not Documents.
+        Publish-ContentTypesFromHub -ContentTypeNames @($pageContentTypeName)
+
+        $contentType = Get-PnPContentType -Identity $pageContentTypeName -ErrorAction Stop
+        foreach ($listName in $contentTypeList) {
+            Add-PnPContentTypeToList -List $listName -ContentType $contentType -ErrorAction Stop
+            Write-LogMessage "Added content type '$($contentType.Name)' to list '$listName'" "Success"
+            Set-DefaultContentType -SiteUrl $SiteUrl -ListName $listName -ContentTypeName $pageContentTypeName
         }
     }
     catch {
         Write-LogMessage "ERROR: Failed to add content type: $($_.Exception.Message)" "Error"
-        
+        throw
     }
 }
 
@@ -132,8 +208,7 @@ function Set-DefaultContentType {
     param(
         [string]$SiteUrl,
         [string]$ListName,
-        [string]$ContentTypeName,
-        [string]$siteName
+        [string]$ContentTypeName
     )
 
     try {
@@ -142,7 +217,7 @@ function Set-DefaultContentType {
     }
     catch {
         Write-LogMessage "ERROR: Failed to set default content type '$ContentTypeName' on list '$ListName' ($SiteUrl): $($_.Exception.Message)" "Error"
-        
+        throw
     }
 }
 
@@ -153,58 +228,38 @@ function Add-SiteColumns {
     )
     try {
         $list = Get-PnPList -Identity "Documents"
+        # These site columns originate from the page content type hub publish but must be added to Documents manually.
         $columnNames = @("Main Category", "Review Date", "Notification Sent", "Sub Category", "Restricted Approval")
-        foreach ($ColumnName in $columnNames) {
-            $existingColumn = Get-PnPField -Identity $ColumnName -ErrorAction SilentlyContinue
-            if ($existingColumn) {
 
-                Write-LogMessage "Site column '$ColumnName'  exists on $($siteUrl). Skipping creation." "Warning"
-                switch ($columnName) {
-                    "Main Category" { 
-                        #Write-Host "Site column '$ColumnName' already exists on $($siteUrl). Skipping adding to list." -ForegroundColor Yellow
-                        #Add-PnPFieldFromXml -List $list -FieldXml $existingColumn.SchemaXml -ErrorAction Stop
-                        #Write-Host "Added site column '$columnName' to '$listTitle'"
-                    }
-                    "Review Date" {
-                        $existingColumn.DefaultFormula = "=TODAY()+365"
-                        $existingColumn.UpdateAndPushChanges($true)
-                        Invoke-PnPQuery
-                    }
-                }
-                $fieldInList = Get-PnPField -List $list -Identity $ColumnName -ErrorAction SilentlyContinue
-                if ($fieldInList) {
-                    Write-LogMessage -Message "Site column '$ColumnName' already exists in Documents library on $($siteUrl). Skipping." -Level Warning -siteName $siteName
-                }
-                else {
-                    switch ($columnName) {
-                        "Main Category" { 
-                            Add-PnPFieldFromXml -List $list -FieldXml $existingColumn.SchemaXml -ErrorAction Stop
-                            Write-LogMessage "Added site column '$columnName' to '$list'" "Success"
-                        }
-                        "Sub Category" { 
-                            Add-PnPFieldFromXml -List $list -FieldXml $existingColumn.SchemaXml -ErrorAction Stop
-                            Write-LogMessage "Added site column '$columnName' to '$list'" "Success"
-                        }
-                        Default {
-                            Add-PnPField -List $list -Field $existingColumn
-                            Write-LogMessage "Added site column '$columnName' to '$list'" "Success"
-                        }
-                    }
-                    
-                    Write-LogMessage "Added existing site column '$ColumnName' to Documents library on $($siteUrl)." "Success"
-                }
-            } 
-            else {
-                Write-LogMessage "Site column '$ColumnName' already exists in Documents library on $($siteUrl). Skipping." "Warning"
+        foreach ($ColumnName in $columnNames) {
+            $internalName = $siteColumnInternalNames[$ColumnName]
+            if ([string]::IsNullOrWhiteSpace($internalName)) {
+                throw "No internal name mapped for site column '$ColumnName'."
             }
 
+            Wait-ForSiteField -FieldDisplayName $ColumnName -FieldInternalName $internalName
+
+            if (Test-FieldOnList -List $list -DisplayName $ColumnName -InternalName $internalName) {
+                Write-LogMessage "Site column '$ColumnName' already exists in Documents library on $($siteUrl). Skipping." "Warning"
+                continue
+            }
+
+            # Add existing site column to the list by internal name (SchemaXml is not returned in Azure Automation PnP).
+            Add-PnPField -List $list -Field $internalName -ErrorAction Stop
+            Write-LogMessage "Added site column '$ColumnName' ($internalName) to Documents library on $($siteUrl)." "Success"
+
+            if ($ColumnName -eq "Review Date") {
+                Set-ListFieldDefaultFormula -List $list -FieldInternalName $internalName -DefaultFormula "=TODAY()+365"
+            }
         }
 
+        # Views reference the internal name ReviewDate1, not the display name.
+        Wait-ForListField -ListName "Documents" -FieldInternalName "ReviewDate1"
     }
     catch {
         Write-LogMessage "ERROR: Failed to add site column on $($siteUrl): $($_.Exception.Message)" "Error"
+        throw
     }
-    
 }
 
 function Set-Views {
@@ -220,10 +275,24 @@ function Set-Views {
                 Write-LogMessage "ERROR: DocLibrary not found on $SiteUrl" "Error"           
             }
             else {
-            
-                $view = Get-PnPView -List $library  | Where-Object { $_.DefaultView -eq $true }
-                Set-PnPView -List $library -Identity $view.Id -Fields "DocIcon", "Title", "Modified", "Editor", "ReviewDate1", "DoogleWFMainCategory", "MSDNotificationSent", "DoogleWFRestrictedApproval", "DoogleWFSubCategory" -ErrorAction Stop
-                Write-LogMessage "Custom view created and set as default on $($library.Title)" "Success"
+                $view = Get-PnPView -List $library | Where-Object { $_.DefaultView -eq $true }
+                $fieldsForView = @()
+                foreach ($fieldName in $viewFieldInternalNames) {
+                    $field = Get-PnPField -List $library -Identity $fieldName -ErrorAction SilentlyContinue
+                    if ($field) {
+                        $fieldsForView += $fieldName
+                    }
+                    else {
+                        Write-LogMessage "Field '$fieldName' not on $($library.Title); omitting from view" "Warning"
+                    }
+                }
+
+                if ($fieldsForView.Count -eq 0) {
+                    throw "No view fields are available on list '$list'."
+                }
+
+                Set-PnPView -List $library -Identity $view.Id -Fields $fieldsForView -ErrorAction Stop
+                Write-LogMessage "Custom view updated on $($library.Title) with fields: $($fieldsForView -join ', ')" "Success"
             }
         }
     }
