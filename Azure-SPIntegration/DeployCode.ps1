@@ -36,7 +36,7 @@ $cloudGovernanceToken = "Psalm87&6"
 $uri = "https://app-intra-poc-linux1.azurewebsites.net/caj/webhook"
 
 $body = @{
-    objectUrl   = "https://caje77sharepoint.sharepoint.com/sites/DMSInternalAwardsComm"
+    objectUrl   = "https://caje77sharepoint.sharepoint.com/sites/CajIntra"
     action      = "ProvisionDocumentLibraries"
     projectName = "Test"
 } | ConvertTo-Json
