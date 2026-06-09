@@ -1,22 +1,9 @@
 ﻿
 
-#requires -modules PnP.PowerShell
-Add-PnPStoredCredential -Name "Caje-App" -Username "dc223b11-5ab5-4a33-988a-3474b25eb9be" -Password (ConvertTo-SecureString -String "" -AsPlainText -Force)
+$ClientId = "dc223b11-5ab5-4a33-988a-3474b25eb9be"
+$Thumbprint = "2D2C9AD033452336BD161D4E8CA88E164398FC43"
+$Tenant = "caje77sharepoint.onmicrosoft.com"
 
-
-function Get-HelperSPOnline-AppCredential {
-    [cmdletbinding()]
-    param (
-        [Parameter(Mandatory = $true)][String]$StoredCredentialName
-    );
-
-    $Cred = (Get-PnPStoredCredential -Name $StoredCredentialName);
-    $appID = $Cred.UserName;
-    $appSecret = [System.Net.NetworkCredential]::new("", $Cred.Password).Password;
-   
-
-    return (New-Object PSCustomObject -Property @{ AppID = $appID; AppSecret = $appSecret; ClientID = $appID; ClientSecret = $appSecret; UserName = $appID; Password = $appSecret; });
-}
 
 function Display-ProcessingTime {
     [cmdletbinding()]
@@ -243,7 +230,6 @@ function Process-PermissionsForSite {
     [cmdletbinding()]
     param (                                
         [Parameter(Mandatory = $true)][String]$SiteUrl
-        , [Parameter(Mandatory = $true)][String]$StoredCredentialName
         , [Parameter(Mandatory = $true)][String]$ExportDirectoryAndName
         , [Parameter(Mandatory = $true)][String]$Delimiter        
         , [switch]$ProcessLists
@@ -272,8 +258,8 @@ function Process-PermissionsForSite {
     $ExcludedLists["Lists/DO_NOT_DELETE_SPLIST_SITECOLLECTION_AGGREGATED_CON"] = 1;
     $ExcludedLists["_catalogs/lt"] = 1;
     $ExcludedLists["Lists/SharePointHomeCacheList"] = 1;
-    $ExcludedLists["Lists/TaxonomyHiddenList"] = 1;    
-
+    $ExcludedLists["Lists/TaxonomyHiddenList"] = 1;
+    $ExcludedLists["_catalogs/wte"] = 1;  
     $thePermissions = @();
     $MAX_RETRY_CONNECTION = 5;
 
@@ -290,8 +276,8 @@ function Process-PermissionsForSite {
             
             $SitePermissions = @();
 
-            $AppCreds = (Get-HelperSPOnline-AppCredential -StoredCredentialName $StoredCredentialName);
-            Connect-PnPOnline -Url $SiteUrl -ClientId ($AppCreds.ClientID) -ClientSecret($AppCreds.ClientSecret) -ErrorAction Stop -WarningAction Ignore;
+            #AppCreds = (Get-HelperSPOnline-AppCredential -StoredCredentialName $StoredCredentialName);
+            Connect-PnPOnline -Url $SiteUrl -ClientId $ClientId -Thumbprint $Thumbprint -Tenant $Tenant
             Write-Host ("`t" + "Connected");
 
 
@@ -354,7 +340,7 @@ function Process-PermissionsForSite {
             
             $SiteRetryCounter++;
             Start-Sleep -Seconds 30;
-            Write-Host ("`t" + "Failed to Connect to Site (" + $SiteRetryCounter + ")") -ForegroundColor Red;
+            Write-Host ("`t" + "Faed to Connect to Site (" + $SiteRetryCounter + ")") -ForegroundColor Red;
         }
     }
 
@@ -515,6 +501,7 @@ function Process-PermissionsForSite {
     Disconnect-PnPOnline;
 
     $thePermissions | Out-File -LiteralPath $ExportDirectoryAndName -Encoding utf8 -Append;
+    
     Display-ProcessingTime -StartDate $StartTime -AdditionalText ("`t" + "Site Processed in: ");
 }
 
@@ -522,7 +509,6 @@ function Export-TenantPermissions {
     [cmdletbinding()]
     param (                                
         [Parameter(Mandatory = $true)][String]$TenantUrl
-        , [Parameter(Mandatory = $true)][String]$StoredCredentialName
         , [Parameter(Mandatory = $true)][String]$ExportDirectoryAndName
         , [Parameter(Mandatory = $true)][String]$Delimiter
         , [Parameter(Mandatory = $false)][String]$UrlContains
@@ -532,9 +518,9 @@ function Export-TenantPermissions {
     );
 
 
-    $AppCreds = (Get-HelperSPOnline-AppCredential -StoredCredentialName $StoredCredentialName);
-    Connect-PnPOnline -Url $TenantUrl -ClientId ($AppCreds.ClientID) -ClientSecret($AppCreds.ClientSecret) -ErrorAction Stop -WarningAction Ignore;
-    $AllSites = (Get-PnPTenantSite | Where Template -ne "REDIRECTSITE#0");
+    #$AppCreds = (Get-HelperSPOnline-AppCredential -StoredCredentialName $StoredCredentialName);
+    Connect-PnPOnline -Url $TenantUrl -ClientId $ClientId -Thumbprint $Thumbprint -Tenant $Tenant
+    $AllSites = (Get-PnPTenantSite | Where-Object { $_.Url -eq $UrlContains });
 
     if (-not [String]::IsNullOrEmpty($UrlContains)) {
         $UrlContains = ($UrlContains.ToLower());
@@ -566,7 +552,6 @@ function Export-TenantPermissions {
         
         $ProcessSiteParams = @{
             SiteUrl                = ($currSite.Url);
-            StoredCredentialName   = $StoredCredentialName; 
             ExportDirectoryAndName = $ExportDirectoryAndName;
             Delimiter              = $Delimiter;
             ProcessLists           = $ProcessLists;
@@ -580,12 +565,12 @@ function Export-TenantPermissions {
 
 $TenantProcessParams = @{
     TenantUrl              = "https://caje77sharepoint.sharepoint.com";
-    StoredCredentialName   = "Caje-App"; 
-    ExportDirectoryAndName = ".\Caje - Permission Export.csv"; 
-    Delimiter              = "{#]";
-    UrlContains            = "/sites/"; 
+  
+    ExportDirectoryAndName = ".\Caje - Permission Export.csv"; #Location on your PC where script wl save report. Should end in .CSV
+    Delimiter              = "{#]"; #Used to separate columns in each row of the output. You'll need to separate columns via this value when formatting the report.
+    UrlContains            = "https://caje77sharepoint.sharepoint.com/sites/App-3"; #Optional site fter. Comment out this line to run across whole tenancy.
     ProcessLists           = $true;
-    ProcessItems           = $true; 
+    ProcessItems           = $true; #Note: ProcessLists must be true for this to work
 };
 
 Export-TenantPermissions @TenantProcessParams;
