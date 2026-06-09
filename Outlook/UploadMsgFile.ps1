@@ -72,26 +72,68 @@ if (-not $msgFiles) {
     throw "No .msg files were found in '$PSScriptRoot'."
 }
 
-Connect-PnPOnline -Url "https://caje77sharepoint.sharepoint.com/sites/App-4" -Interactive -ClientId "66a1852a-1f21-46a2-ad58-35fc4c3f1530"
+$SiteUrl = "https://caje77sharepoint.sharepoint.com/sites/App-4"
+Connect-PnPOnline -Url $SiteUrl -Interactive -ClientId "66a1852a-1f21-46a2-ad58-35fc4c3f1530"
 
 $outlook = $null
-
+$LibraryName = "ArchiveEmails"
 try {
     $outlook = New-Object -ComObject Outlook.Application
 
-    foreach ($msgFile in $msgFiles) {
-        Write-Host "Uploading $($msgFile.Name)"
+    #foreach ($msgFile in $msgFiles) {
+    #   Write-Host "Uploading $($msgFile.Name)"
 
-        $metadata = Get-MsgMetadata `
-            -MsgFile $msgFile.FullName `
-            -Outlook $outlook
+    # $metadata = Get-MsgMetadata `
+    #    -MsgFile $msgFile.FullName `
+    #  -Outlook $outlook
 
-        Add-PnPFile `
-            -Path $msgFile.FullName `
-            -Folder "ArchiveEmails" `
-            -Values $metadata
+    # Add-PnPFile `
+    # -Path $msgFile.FullName `
+    #  -Folder "ArchiveEmails" `
+    #  -Values $metadata
+    #}#
+    Write-Host "Fetching all files from '$LibraryName'..." -ForegroundColor Cyan
+    $ListItems = Get-PnPListItem -List $LibraryName -PageSize 500 -Fields "FileRef", "FileLeafRef", "Created", "FSObjType", "DateRecieved"
+    foreach ($item in $ListItems) {
+     
+        if ($item.FieldValues.FSObjType -eq 0) {
+            Write-Progress -Activity "Processing files" -Status "Processing file: $($item.FieldValues.FileLeafRef)" -PercentComplete ($item.Index / $ListItems.Count * 100)
+            $FileRef = $Item.FieldValues.FileRef      # Complete relative URL of the file
+            $FileName = $Item.FieldValues.FileLeafRef  # Just the file name
+            $CreatedDate = [datetime]$Item.FieldValues.DateRecieved
+
+            $YearStr = $CreatedDate.ToString("yyyy")
+            $MonthStr = $CreatedDate.ToString("MM")
+            $MonthStr = [DateTime]::ParseExact($MonthStr, "MM", $null).ToString("MMMM")
+            
+            # Build the exact target folder structure relative to the library root
+            $TargetFolderPath = "$LibraryName/$YearStr/$MonthStr"
+            $TargetFileRef = "/sites/" + $SiteUrl.Split('/sites/')[1] + "/$TargetFolderPath/$FileName"
+            if ($FileRef -like "*/$YearStr/$MonthStr/$FileName") {
+                Write-Host "Skipping '$FileName' - already in correct folder." -ForegroundColor Yellow
+                continue
+            }
+            try {
+                Write-Host "Processing file: $FileName (Created: $($CreatedDate.ToString('yyyy-MM-dd')))" -ForegroundColor White
+                
+                # 4. Dynamically provision the missing Year/Month folders if needed
+                # Resolve-PnPFolder will return the folder or generate it safely if missing
+                $Folder = Resolve-PnPFolder -SiteRelativePath $TargetFolderPath
+
+                $TargetFileRef = "/sites/" + $SiteUrl.Split('/sites/')[1] + "/$TargetFolderPath"
+                
+                # 5. Relocate the file into the target directory
+                Move-PnPFile -SourceUrl $FileRef -TargetUrl "$TargetFileRef" -Force
+                Write-Host "Successfully moved '$FileName' to '$TargetFolderPath'" -ForegroundColor Green
+            }
+            catch {
+                Write-Error "Failed to process file '$FileName'. Error: $_"
+            }
+        }
+   
     }
 }
+
 finally {
     if ($outlook) {
         Remove-ComObject -ComObject $outlook
