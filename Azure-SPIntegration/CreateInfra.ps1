@@ -1,7 +1,7 @@
 $RESOURCE_GROUP = "SPO-Automation"
 $LOCATION = "australiasoutheast" 
 $STORAGE_ACCOUNT_NAME = "spostoragecaj134" # Your target storage account name
-$FUNCTION_APP_NAME = "func-secure-processor02" # Must be globally unique across Azure
+$FUNCTION_APP_NAME = "func-secure-processor03" # Must be globally unique across Azure
 $RUNTIME = "powershell" 
 $RUNTIME_VERSION = "7.4"
 $subscription = "Azure subscription 1"
