@@ -1,0 +1,79 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/sp/v2/view-formatting.schema.json",
+  "groupProps": {
+    "headerFormatter": {
+      "elmType": "div",
+      "style": {
+        "flex-direction": "row",
+        "margin": "12px 0 8px 0"
+      },
+      "children": [
+        {
+          "elmType": "div",
+          "attributes": {
+            "class": "=if(@group.fieldData == 'Booked', 'sp-css-backgroundColor-BgCornflowerBlue', if(@group.fieldData == 'Available', 'sp-css-backgroundColor-BgMintGreen', 'sp-field-borderAllRegular sp-field-borderAllSolid sp-css-borderColor-neutralSecondary'))"
+          },
+          "style": {
+            "display": "inline-flex",
+            "height": "28px",
+            "border-radius": "15px",
+            "padding-left": "10px",
+            "padding-top": "6px"
+          },
+          "children": [
+            {
+              "elmType": "span",
+              "attributes": {
+                "iconName": "=if(@group.fieldData == 'Booked', 'Calendar', if(@group.fieldData == 'Available', 'SkypeCircleCheck', 'StatusCircleQuestionMark'))"
+              },
+              "style": {
+                "padding-right": "6px",
+                "padding-top": "2px"
+              }
+            },
+            {
+              "elmType": "div",
+              "style": {
+                "display": "inline-flex",
+                "padding-right": "10px"
+              },
+              "children": [
+                {
+                  "elmType": "div",
+                  "attributes": {
+                    "class": "ms-fontWeight-bold"
+                  },
+                  "style": {
+                    "padding-left": "4px"
+                  },
+                  "txtContent": "=@group.count"
+                },
+                {
+                  "elmType": "div",
+                  "attributes": {
+                    "class": "ms-fontWeight-normal"
+                  },
+                  "style": {
+                    "padding-left": "5px"
+                  },
+                  "txtContent": "=if(@group.count != 1, 'desks are', 'desk is')"
+                },
+                {
+                  "elmType": "div",
+                  "txtContent": "=@group.fieldData",
+                  "attributes": {
+                    "title": "=@group.fieldData",
+                    "class": "ms-fontWeight-bold"
+                  },
+                  "style": {
+                    "padding-left": "5px"
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  }
+}
