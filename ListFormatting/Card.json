@@ -4,13 +4,89 @@
   "width": 280,
   "hideSelection": false,
   "fillHorizontally": true,
+  "groupProps": {
+    "headerFormatter": {
+      "elmType": "div",
+      "style": {
+        "flex-direction": "row",
+        "margin": "12px 0 8px 0"
+      },
+      "children": [
+        {
+          "elmType": "div",
+          "attributes": {
+            "class": "=if(@group.fieldData == 'Booked', 'sp-css-backgroundColor-BgCornflowerBlue', if(@group.fieldData == 'Available', 'sp-css-backgroundColor-BgMintGreen', 'sp-field-borderAllRegular sp-field-borderAllSolid sp-css-borderColor-neutralSecondary'))"
+          },
+          "style": {
+            "display": "inline-flex",
+            "height": "28px",
+            "border-radius": "15px",
+            "padding-left": "10px",
+            "padding-top": "6px"
+          },
+          "children": [
+            {
+              "elmType": "span",
+              "attributes": {
+                "iconName": "=if(@group.fieldData == 'Booked', 'Calendar', if(@group.fieldData == 'Available', 'SkypeCircleCheck', 'StatusCircleQuestionMark'))"
+              },
+              "style": {
+                "padding-right": "6px",
+                "padding-top": "2px"
+              }
+            },
+            {
+              "elmType": "div",
+              "style": {
+                "display": "inline-flex",
+                "padding-right": "10px"
+              },
+              "children": [
+                {
+                  "elmType": "div",
+                  "attributes": {
+                    "class": "ms-fontWeight-bold"
+                  },
+                  "style": {
+                    "padding-left": "4px"
+                  },
+                  "txtContent": "=@group.count"
+                },
+                {
+                  "elmType": "div",
+                  "attributes": {
+                    "class": "ms-fontWeight-normal"
+                  },
+                  "style": {
+                    "padding-left": "5px"
+                  },
+                  "txtContent": "=if(@group.count != 1, 'desks are', 'desk is')"
+                },
+                {
+                  "elmType": "div",
+                  "txtContent": "=@group.fieldData",
+                  "attributes": {
+                    "title": "=@group.fieldData",
+                    "class": "ms-fontWeight-bold"
+                  },
+                  "style": {
+                    "padding-left": "5px"
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  },
   "formatter": {
     "elmType": "div",
     "attributes": {
       "class": "sp-card-container"
     },
     "style": {
-      "pointer-events": "=if(length([$Booked_x0020_By]) > 0, 'none', 'auto')",
+      "pointer-events": "=if(length([$Booked_x0020_By]) > 0, if(toLowerCase(@me) != 'caje77@keiratheapp.com', 'none', 'auto'), 'auto')",
       "cursor": "=if(length([$Booked_x0020_By]) > 0, 'default', 'auto')"
     },
     "children": [
@@ -34,7 +110,7 @@
         },
         "style": {
           "border-left": "=if(length([$Booked_x0020_By]) > 0, '4px solid #0078d4', '4px solid #107c10')",
-          "pointer-events": "=if(length([$Booked_x0020_By]) > 0, 'none', 'auto')",
+          "pointer-events": "=if(length([$Booked_x0020_By]) > 0, if(toLowerCase(@me) != 'caje77@keiratheapp.com', 'none', 'auto'), 'auto')",
           "opacity": "=if(length([$Booked_x0020_By]) > 0, '0.85', '1')",
           "cursor": "=if(length([$Booked_x0020_By]) > 0, 'default', 'auto')",
           "user-select": "=if(length([$Booked_x0020_By]) > 0, 'none', 'auto')",
@@ -119,6 +195,31 @@
                   "cursor": "pointer",
                   "font-weight": "600",
                   "font-size": "13px"
+                }
+              },
+              {
+                "elmType": "button",
+                "txtContent": "Cancel",
+                "customRowAction": {
+                  "action": "setValue",
+                  "actionInput": {
+                    "Booked_x0020_By": "",
+                    "DeskStatus_x003a_": "Available"
+                  }
+                },
+                "attributes": {
+                  "class": "ms-bgColor-sharedRed ms-fontColor-white",
+                  "title": "Cancel booking"
+                },
+                "style": {
+                  "display": "=if(length([$Booked_x0020_By]) > 0, if(toLowerCase(@me) == 'caje77@keiratheapp.com', 'inline-block', 'none'), 'none')",
+                  "border": "none",
+                  "border-radius": "4px",
+                  "padding": "6px 16px",
+                  "cursor": "pointer",
+                  "font-weight": "600",
+                  "font-size": "13px",
+                  "pointer-events": "auto"
                 }
               }
             ]
