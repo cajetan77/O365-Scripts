@@ -1,0 +1,252 @@
+{
+    "$schema": "https://developer.microsoft.com/json-schemas/sp/v2/tile-formatting.schema.json",
+    "height": 220,
+    "width": 280,
+    "hideSelection": false,
+    "fillHorizontally": true,
+    "groupProps": {
+        "headerFormatter": {
+            "elmType": "div",
+            "style": {
+                "flex-direction": "row",
+                "margin": "12px 0 8px 0"
+            },
+            "children": [
+                {
+                    "elmType": "div",
+                    "attributes": {
+                        "class": "=if(@group.fieldData == 'Booked', 'sp-css-backgroundColor-BgCornflowerBlue', if(@group.fieldData == 'Available', 'sp-css-backgroundColor-BgMintGreen', if(@group.fieldData == 'Cancelled', 'sp-css-backgroundColor-BgOrange', 'sp-field-borderAllRegular sp-field-borderAllSolid sp-css-borderColor-neutralSecondary'))))"
+                    },
+                    "style": {
+                        "display": "inline-flex",
+                        "height": "28px",
+                        "border-radius": "15px",
+                        "padding-left": "10px",
+                        "padding-top": "6px"
+                    },
+                    "children": [
+                        {
+                            "elmType": "span",
+                            "attributes": {
+                                "iconName": "=if(@group.fieldData == 'Booked', 'Calendar', if(@group.fieldData == 'Available', 'SkypeCircleCheck', if(@group.fieldData == 'Cancelled', 'Cancel', 'StatusCircleQuestionMark'))))"
+                            },
+                            "style": {
+                                "padding-right": "6px",
+                                "padding-top": "2px"
+                            }
+                        },
+                        {
+                            "elmType": "div",
+                            "style": {
+                                "display": "inline-flex",
+                                "padding-right": "10px"
+                            },
+                            "children": [
+                                {
+                                    "elmType": "div",
+                                    "attributes": {
+                                        "class": "ms-fontWeight-bold"
+                                    },
+                                    "style": {
+                                        "padding-left": "4px"
+                                    },
+                                    "txtContent": "=@group.count"
+                                },
+                                {
+                                    "elmType": "div",
+                                    "attributes": {
+                                        "class": "ms-fontWeight-normal"
+                                    },
+                                    "style": {
+                                        "padding-left": "5px"
+                                    },
+                                    "txtContent": "=if(@group.count != 1, 'desks are', 'desk is')"
+                                },
+                                {
+                                    "elmType": "div",
+                                    "txtContent": "=@group.fieldData",
+                                    "attributes": {
+                                        "title": "=@group.fieldData",
+                                        "class": "ms-fontWeight-bold"
+                                    },
+                                    "style": {
+                                        "padding-left": "5px"
+                                    }
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        }
+    },
+    "formatter": {
+        "elmType": "div",
+        "attributes": {
+            "class": "sp-card-container"
+        },
+        "style": {
+            "pointer-events": "auto",
+            "cursor": "=if([$DeskStatus_x003a_] == 'Booked', 'default', if(length([$Booked_x0020_By]) > 0, 'default', 'auto'))"
+        },
+        "children": [
+            {
+                "elmType": "div",
+                "attributes": {
+                    "class": "sp-card-defaultClickButton"
+                },
+                "style": {
+                    "display": "=if([$DeskStatus_x003a_] == 'Available', if(length([$Booked_x0020_By]) == 0, '', 'none'), 'none')",
+                    "pointer-events": "=if([$DeskStatus_x003a_] == 'Available', if(length([$Booked_x0020_By]) == 0, 'auto', 'none'), 'none')"
+                },
+                "customRowAction": {
+                    "action": "defaultClick"
+                }
+            },
+            {
+                "elmType": "div",
+                "attributes": {
+                    "class": "=if([$DeskStatus_x003a_] == 'Cancelled', 'ms-bgColor-neutralLighter sp-css-borderColor-neutralLight sp-card-subContainer', if([$DeskStatus_x003a_] == 'Booked', 'ms-bgColor-neutralLighter sp-css-borderColor-neutralLight sp-card-subContainer', if(length([$Booked_x0020_By]) > 0, 'ms-bgColor-neutralLighter sp-css-borderColor-neutralLight sp-card-subContainer', 'ms-bgColor-white sp-css-borderColor-neutralLight sp-card-borderHighlight sp-card-subContainer')))"
+                },
+                "style": {
+                    "border-left": "=if([$DeskStatus_x003a_] == 'Cancelled', '4px solid #d83b01', if([$DeskStatus_x003a_] == 'Booked', '4px solid #0078d4', if(length([$Booked_x0020_By]) > 0, '4px solid #0078d4', '4px solid #107c10')))",
+                    "pointer-events": "auto",
+                    "opacity": "=if([$DeskStatus_x003a_] == 'Booked', '0.85', if(length([$Booked_x0020_By]) > 0, '0.85', '1'))",
+                    "cursor": "=if([$DeskStatus_x003a_] == 'Booked', 'default', if(length([$Booked_x0020_By]) > 0, 'default', 'auto'))",
+                    "user-select": "=if([$DeskStatus_x003a_] == 'Booked', 'none', if(length([$Booked_x0020_By]) > 0, 'none', 'auto'))",
+                    "filter": "=if([$DeskStatus_x003a_] == 'Booked', 'grayscale(20%)', if(length([$Booked_x0020_By]) > 0, 'grayscale(20%)', 'none'))"
+                },
+                "children": [
+                    {
+                        "elmType": "div",
+                        "attributes": {
+                            "class": "sp-card-displayColumnContainer"
+                        },
+                        "children": [
+                            {
+                                "elmType": "p",
+                                "attributes": {
+                                    "class": "ms-fontColor-neutralSecondary sp-card-label"
+                                },
+                                "txtContent": "[!Booked_x0020_By.DisplayName]"
+                            },
+                            {
+                                "elmType": "p",
+                                "attributes": {
+                                    "title": "=if(length([$Booked_x0020_By]) == 0, '–', [$Booked_x0020_By.title])",
+                                    "class": "ms-fontColor-neutralPrimary sp-card-content sp-card-highlightedContent",
+                                    "role": "heading",
+                                    "aria-level": "3"
+                                },
+                                "txtContent": "=if(length([$Booked_x0020_By]) == 0, '–', [$Booked_x0020_By.title])"
+                            }
+                        ]
+                    },
+                    {
+                        "elmType": "div",
+                        "attributes": {
+                            "class": "sp-card-displayColumnContainer"
+                        },
+                        "children": [
+                            {
+                                "elmType": "p",
+                                "attributes": {
+                                    "class": "ms-fontColor-neutralSecondary sp-card-label"
+                                },
+                                "txtContent": "[!Desk.DisplayName]"
+                            },
+                            {
+                                "elmType": "div",
+                                "attributes": {
+                                    "class": "sp-card-content sp-card-formatterRef"
+                                },
+                                "children": [
+                                    {
+                                        "columnFormatterReference": "[$Desk]"
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "elmType": "div",
+                        "attributes": {
+                            "class": "sp-card-displayColumnContainer"
+                        },
+                        "children": [
+                            {
+                                "elmType": "p",
+                                "txtContent": "Admin to Approve",
+                                "attributes": {
+                                    "class": "ms-fontWeight-semibold"
+                                },
+                                "style": {
+                                    "display": "=if([$DeskStatus_x003a_] == 'Cancelled', 'block', 'none')",
+                                    "font-size": "13px",
+                                    "color": "#d83b01",
+                                    "margin": "4px 0 0 0"
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "elmType": "div",
+                        "attributes": {
+                            "class": "sp-card-lastTextColumnContainer"
+                        },
+                        "style": {
+                            "padding-top": "8px"
+                        },
+                        "children": [
+                            {
+                                "elmType": "button",
+                                "txtContent": "Book",
+                                "customRowAction": {
+                                    "action": "editProps"
+                                },
+                                "attributes": {
+                                    "class": "ms-bgColor-themePrimary ms-fontColor-white",
+                                    "title": "Book this desk"
+                                },
+                                "style": {
+                                    "display": "=if([$DeskStatus_x003a_] == 'Available', if(length([$Booked_x0020_By]) == 0, 'inline-block', 'none'), 'none')",
+                                    "border": "none",
+                                    "border-radius": "4px",
+                                    "padding": "6px 16px",
+                                    "cursor": "pointer",
+                                    "font-weight": "600",
+                                    "font-size": "13px"
+                                }
+                            },
+                            {
+                                "elmType": "button",
+                                "txtContent": "Cancel",
+                                "customRowAction": {
+                                    "action": "setValue",
+                                    "actionInput": {
+                                        "DeskStatus_x003a_": "Cancelled"
+                                    }
+                                },
+                                "attributes": {
+                                    "class": "ms-bgColor-sharedRed ms-fontColor-white",
+                                    "title": "Cancel booking"
+                                },
+                                "style": {
+                                    "display": "=if([$DeskStatus_x003a_] == 'Cancelled', 'none', if([$DeskStatus_x003a_] == 'Booked', 'inline-block', if(length([$Booked_x0020_By]) > 0, 'inline-block', 'none')))",
+                                    "border": "none",
+                                    "border-radius": "4px",
+                                    "padding": "6px 16px",
+                                    "cursor": "pointer",
+                                    "font-weight": "600",
+                                    "font-size": "13px",
+                                    "pointer-events": "auto",
+                                    "color": "#d83b01"
+                                }
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+}

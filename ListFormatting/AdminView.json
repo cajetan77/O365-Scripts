@@ -1,0 +1,329 @@
+{
+    "$schema": "https://developer.microsoft.com/json-schemas/sp/v2/tile-formatting.schema.json",
+    "height": 235,
+    "width": 280,
+    "hideSelection": false,
+    "fillHorizontally": true,
+    "groupProps": {
+        "headerFormatter": {
+            "elmType": "div",
+            "style": {
+                "flex-direction": "row",
+                "margin": "12px 0 8px 0"
+            },
+            "children": [
+                {
+                    "elmType": "div",
+                    "attributes": {
+                        "class": "= if(@group.fieldData == 'Cancelled', 'sp-css-backgroundColor-BgOrange', 'sp-field-borderAllRegular sp-field-borderAllSolid sp-css-borderColor-neutralSecondary'))))"
+                    },
+                    "style": {
+                        "display": "inline-flex",
+                        "height": "28px",
+                        "border-radius": "15px",
+                        "padding-left": "10px",
+                        "padding-top": "6px"
+                    },
+                    "children": [
+                        {
+                            "elmType": "span",
+                            "attributes": {
+                                "iconName": "=if(@group.fieldData == 'Booked', 'Calendar', if(@group.fieldData == 'Available', 'SkypeCircleCheck', if(@group.fieldData == 'Cancelled', 'Cancel', 'StatusCircleQuestionMark'))))"
+                            },
+                            "style": {
+                                "padding-right": "6px",
+                                "padding-top": "2px"
+                            }
+                        },
+                        {
+                            "elmType": "div",
+                            "style": {
+                                "display": "inline-flex",
+                                "padding-right": "10px"
+                            },
+                            "children": [
+                                {
+                                    "elmType": "div",
+                                    "attributes": {
+                                        "class": "ms-fontWeight-bold"
+                                    },
+                                    "style": {
+                                        "padding-left": "4px"
+                                    },
+                                    "txtContent": "=@group.count"
+                                },
+                                {
+                                    "elmType": "div",
+                                    "attributes": {
+                                        "class": "ms-fontWeight-normal"
+                                    },
+                                    "style": {
+                                        "padding-left": "5px"
+                                    },
+                                    "txtContent": "=if(@group.count != 1, 'desks are', 'desk is')"
+                                },
+                                {
+                                    "elmType": "div",
+                                    "txtContent": "=@group.fieldData",
+                                    "attributes": {
+                                        "title": "=@group.fieldData",
+                                        "class": "ms-fontWeight-bold"
+                                    },
+                                    "style": {
+                                        "padding-left": "5px"
+                                    }
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        }
+    },
+    "formatter": {
+        "elmType": "div",
+        "attributes": {
+            "class": "sp-card-container"
+        },
+        "style": {
+            "pointer-events": "=if([$DeskStatus_x003a_] == 'Available', 'auto', if(toLowerCase(@me) == 'caje77@keiratheapp.com', 'auto', 'none'))",
+            "cursor": "=if([$DeskStatus_x003a_] == 'Booked', 'default', 'auto')"
+        },
+        "children": [
+            {
+                "elmType": "div",
+                "attributes": {
+                    "class": "sp-card-defaultClickButton"
+                },
+                "style": {
+                    "display": "=if([$DeskStatus_x003a_] == 'Available', '', 'none')",
+                    "pointer-events": "=if([$DeskStatus_x003a_] == 'Available', 'auto', 'none')"
+                },
+                "customRowAction": {
+                    "action": "defaultClick"
+                }
+            },
+            {
+                "elmType": "div",
+                "attributes": {
+                    "class": "=if([$DeskStatus_x003a_] == 'Available', 'ms-bgColor-white sp-css-borderColor-neutralLight sp-card-borderHighlight sp-card-subContainer', 'ms-bgColor-neutralLighter sp-css-borderColor-neutralLight sp-card-subContainer')"
+                },
+                "style": {
+                    "border-left": "=if([$DeskStatus_x003a_] == 'Available' && length([$Booked_x0020_By]) == 1, '4px solid #0078d4', if([$DeskStatus_x003a_] == 'Booked', '4px solid #0078d4', '4px solid BgMintGreen'))",
+                    "pointer-events": "=if([$DeskStatus_x003a_] == 'Available', 'auto')",
+                    "opacity": "=if([$DeskStatus_x003a_] == 'Booked', '0.85', '1')",
+                    "cursor": "=if([$DeskStatus_x003a_] == 'Booked', 'default', 'auto')",
+                    "user-select": "=if([$DeskStatus_x003a_] == 'Booked', 'none', 'auto')",
+                    "filter": "=if([$DeskStatus_x003a_] == 'Booked', 'grayscale(20%)', 'none')"
+                },
+                "children": [
+                    {
+                        "elmType": "div",
+                        "attributes": {
+                            "class": "sp-card-displayColumnContainer"
+                        },
+                        "children": [
+                            {
+                                "elmType": "p",
+                                "attributes": {
+                                    "class": "ms-fontColor-neutralSecondary sp-card-label"
+                                },
+                                "txtContent": "[!Booked_x0020_By.DisplayName]"
+                            },
+                            {
+                                "elmType": "p",
+                                "attributes": {
+                                    "title": "=if(length([$Booked_x0020_By]) == 0, '–', [$Booked_x0020_By.title])",
+                                    "class": "ms-fontColor-neutralPrimary sp-card-content sp-card-highlightedContent",
+                                    "role": "heading",
+                                    "aria-level": "3"
+                                },
+                                "txtContent": "=if(length([$Booked_x0020_By]) == 0, '–', [$Booked_x0020_By.title])"
+                            }
+                        ]
+                    },
+                    {
+                        "elmType": "div",
+                        "attributes": {
+                            "class": "sp-card-displayColumnContainer"
+                        },
+                        "children": [
+                            {
+                                "elmType": "p",
+                                "attributes": {
+                                    "class": "ms-fontColor-neutralSecondary sp-card-label"
+                                },
+                                "txtContent": "[!Desk.DisplayName]"
+                            },
+                            {
+                                "elmType": "div",
+                                "attributes": {
+                                    "class": "sp-card-content sp-card-formatterRef"
+                                },
+                                "children": [
+                                    {
+                                        "columnFormatterReference": "[$Desk]"
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "elmType": "div",
+                        "attributes": {
+                            "class": "sp-card-displayColumnContainer"
+                        },
+                        "children": [
+                            {
+                                "elmType": "p",
+                                "txtContent": "Waiting for your approval to release desk",
+                                "attributes": {
+                                    "class": "ms-fontWeight-semibold"
+                                },
+                                "style": {
+                                    "display": "=if([$DeskStatus_x003a_] == 'Cancelled', 'block', 'none')",
+                                    "font-size": "13px",
+                                    "color": "#d83b01",
+                                    "margin": "4px 0 0 0"
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "elmType": "div",
+                        "attributes": {
+                            "class": "sp-card-lastTextColumnContainer"
+                        },
+                        "style": {
+                            "padding-top": "8px"
+                        },
+                        "children": [
+                            {
+                                "elmType": "button",
+                                "txtContent": "Book",
+                                "customRowAction": {
+                                    "action": "editProps"
+                                },
+                                "attributes": {
+                                    "class": "ms-bgColor-themePrimary ms-fontColor-white",
+                                    "title": "Book this desk"
+                                },
+                                "style": {
+                                    "display": "none",
+                                    "border": "none",
+                                    "border-radius": "4px",
+                                    "padding": "6px 16px",
+                                    "cursor": "pointer",
+                                    "font-weight": "600",
+                                    "font-size": "13px"
+                                }
+                            },
+                            {
+                                "elmType": "button",
+                                "txtContent": "Cancel",
+                                "attributes": {
+                                    "class": "ms-bgColor-sharedRed ms-fontColor-white",
+                                    "title": "Cancel booking"
+                                },
+                                "style": {
+                                    "display": "=if([$DeskStatus_x003a_] == 'Booked', if(toLowerCase(@me) == 'caje77@keiratheapp.com', 'inline-block', 'none'), 'none')",
+                                    "border": "none",
+                                    "border-radius": "4px",
+                                    "padding": "6px 16px",
+                                    "cursor": "pointer",
+                                    "font-weight": "600",
+                                    "font-size": "13px",
+                                    "pointer-events": "auto"
+                                },
+                                "customCardProps": {
+                                    "openOnEvent": "click",
+                                    "directionalHint": "topCenter",
+                                    "isBeakVisible": true,
+                                    "formatter": {
+                                        "elmType": "div",
+                                        "style": {
+                                            "padding": "16px",
+                                            "min-width": "240px",
+                                            "max-width": "280px"
+                                        },
+                                        "children": [
+                                            {
+                                                "elmType": "div",
+                                                "txtContent": "Cancel booking?",
+                                                "attributes": {
+                                                    "class": "ms-fontWeight-semibold"
+                                                },
+                                                "style": {
+                                                    "font-size": "15px",
+                                                    "margin-bottom": "8px"
+                                                }
+                                            },
+                                            {
+                                                "elmType": "div",
+                                                "txtContent": "=if(length([$Booked_x0020_By]) > 0, 'Release ' + [$Desk] + ' booked by ' + [$Booked_x0020_By.title] + '?', 'Release ' + [$Desk] + '?')",
+                                                "style": {
+                                                    "font-size": "13px",
+                                                    "color": "#605e5c",
+                                                    "margin-bottom": "16px",
+                                                    "line-height": "1.4"
+                                                }
+                                            },
+                                            {
+                                                "elmType": "button",
+                                                "txtContent": "Yes, cancel booking",
+                                                "customRowAction": {
+                                                    "action": "setValue",
+                                                    "actionInput": {
+                                                        "DeskStatus_x003a_": "Cancelled"
+                                                    }
+                                                },
+                                                "attributes": {
+                                                    "class": "ms-bgColor-sharedRed ms-fontColor-white",
+                                                    "title": "Confirm cancel"
+                                                },
+                                                "style": {
+                                                    "border": "none",
+                                                    "border-radius": "4px",
+                                                    "padding": "8px 16px",
+                                                    "cursor": "pointer",
+                                                    "font-weight": "600",
+                                                    "font-size": "13px",
+                                                    "width": "100%"
+                                                }
+                                            }
+                                        ]
+                                    }
+                                }
+                            },
+                            {
+                                "elmType": "button",
+                                "txtContent": "Approve",
+                                "customRowAction": {
+                                    "action": "setValue",
+                                    "actionInput": {
+                                        "DeskStatus_x003a_": "Available",
+                                        "Booked_x0020_By": ""
+                                    }
+                                },
+                                "attributes": {
+                                    "class": "ms-bgColor-themePrimary ms-fontColor-white",
+                                    "title": "Approve and make desk available"
+                                },
+                                "style": {
+                                    "display": "=if([$DeskStatus_x003a_] == 'Cancelled', if(toLowerCase(@me) == 'caje77@keiratheapp.com', 'inline-block', 'none'), 'none')",
+                                    "border": "none",
+                                    "border-radius": "4px",
+                                    "padding": "6px 16px",
+                                    "cursor": "pointer",
+                                    "font-weight": "600",
+                                    "font-size": "13px",
+                                    "pointer-events": "auto"
+                                }
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+}
