@@ -1,0 +1,301 @@
+// =============================================================================
+// REVIEW SET EXPLORER RULES (read before running)
+// =============================================================================
+// Run ONE query block at a time in Purview → Review set → Advanced review set explorer.
+// Do NOT paste the whole file — // comments and multiple ReviewSetTable blocks will fail.
+// Keep summarize on ONE line:  | summarize count() by ColumnName
+// Avoid: countif(), make_set(), min(), max(), startofmonth(), has_any(), multi-line summarize
+// Sentinel queries at the bottom use full KQL — run those in Log Analytics, not eDiscovery.
+
+// --- All Copilot interaction items in the review set ---
+ReviewSetTable
+| where ItemClass startswith "IPM.SkypeTeams.Message.Copilot."
+| project Date, Custodian, SenderAuthor, SubjectTitle, ItemClass, FileClass, InternetMessageId
+| sort by Date desc
+
+// --- Copilot interactions by application (ItemClass) ---
+ReviewSetTable
+| where ItemClass startswith "IPM.SkypeTeams.Message.Copilot."
+| summarize InteractionCount = count() by ItemClass
+| sort by InteractionCount desc
+| render piechart
+
+// --- Microsoft 365 Chat / BizChat only ---
+ReviewSetTable
+| where ItemClass == "IPM.SkypeTeams.Message.Copilot.BizChat"
+| project Date, Custodian, SenderAuthor, SubjectTitle, Participants, Keywords
+| sort by Date desc
+
+// --- Copilot activity per custodian ---
+ReviewSetTable
+| where ItemClass startswith "IPM.SkypeTeams.Message.Copilot."
+| summarize InteractionCount = count() by Custodian
+| sort by InteractionCount desc
+
+// --- Copilot interactions over time (weekly buckets) ---
+ReviewSetTable
+| where ItemClass startswith "IPM.SkypeTeams.Message.Copilot."
+| summarize InteractionCount = count() by bin(Date, 7d), ItemClass
+| sort by bin_Date asc
+| render columnchart
+
+// --- Include third-party / connected AI apps (optional) ---
+ReviewSetTable
+| where ItemClass startswith "IPM.SkypeTeams.Message.Copilot." or ItemClass startswith "IPM.SkypeTeams.Message.ConnectedAIApp." or ItemClass startswith "IPM.SkypeTeams.Message.CloudAIApp."
+| project Date, Custodian, SenderAuthor, SubjectTitle, ItemClass
+| sort by Date desc
+
+// --- Filter one user (replace UPN) ---
+ReviewSetTable
+| where ItemClass startswith "IPM.SkypeTeams.Message.Copilot."
+| where Custodian == "user@contoso.com" or SenderAuthor contains "user@contoso.com"
+| project Date, SenderAuthor, SubjectTitle, ItemClass, Keywords
+| sort by Date desc
+
+// --- Spot-check first 25 rows ---
+ReviewSetTable
+| where ItemClass startswith "IPM.SkypeTeams.Message.Copilot."
+| project Date, Custodian, SenderAuthor, SubjectTitle, ItemClass
+| take 25
+
+// =============================================================================
+// COPILOT PROMPTS & RESPONSES — ReviewSetTable
+// =============================================================================
+// Prompt text is in Keywords (indexed body). Audit logs do NOT store prompt text.
+// Microsoft stores each interaction as a mailbox item:
+//   User prompt  → From = user (Custodian), To = Copilot app
+//   AI response  → From = Copilot app, To = user
+// Click a result row in the review set UI to read the full message body.
+// For CSV export with full prompts: use Get-CopilotInteractions.ps1 -Mode Detailed
+
+// --- User prompts only (Sender is the custodian / user) ---
+ReviewSetTable
+| where ItemClass startswith "IPM.SkypeTeams.Message.Copilot."
+| where SenderAuthor == Custodian
+| project Date, Custodian, PromptText = Keywords, SubjectTitle, ItemClass, Recipients, ConversationId, FamilyId, InternetMessageId
+| sort by Date desc
+
+// --- User prompts for one user (replace UPN in SenderAuthor or Custodian filter) ---
+ReviewSetTable
+| where ItemClass startswith "IPM.SkypeTeams.Message.Copilot."
+| where Custodian == "user@contoso.com"
+| where SenderAuthor == Custodian
+| project Date, PromptText = Keywords, SubjectTitle, ItemClass, Recipients, ConversationId
+| sort by Date desc
+
+// --- Copilot responses only (Sender is the Copilot app, not the user) ---
+ReviewSetTable
+| where ItemClass startswith "IPM.SkypeTeams.Message.Copilot."
+| where SenderAuthor != Custodian
+| project Date, Custodian, ResponseText = Keywords, SenderAuthor, SubjectTitle, ItemClass, Recipients, ConversationId
+| sort by Date desc
+
+// --- Prompts and responses in one conversation (replace ConversationId) ---
+ReviewSetTable
+| where ConversationId == "00000000-0000-0000-0000-000000000000"
+| where ItemClass startswith "IPM.SkypeTeams.Message.Copilot."
+| extend MessageType = case(SenderAuthor == Custodian, "Prompt", "Response")
+| project Date, MessageType, Custodian, SenderAuthor, Text = Keywords, SubjectTitle, ItemClass
+| sort by Date asc
+
+// --- Search prompts containing specific text ---
+ReviewSetTable
+| where ItemClass startswith "IPM.SkypeTeams.Message.Copilot."
+| where SenderAuthor == Custodian
+| where Keywords has "budget"
+| project Date, Custodian, PromptText = Keywords, SubjectTitle, ItemClass
+| sort by Date desc
+
+// --- BizChat prompts only ---
+ReviewSetTable
+| where ItemClass == "IPM.SkypeTeams.Message.Copilot.BizChat"
+| where SenderAuthor == Custodian
+| project Date, Custodian, PromptText = Keywords, SubjectTitle, Recipients
+| sort by Date desc
+
+// --- Distinct user prompts (unique prompt text across review set) ---
+ReviewSetTable
+| where ItemClass startswith "IPM.SkypeTeams.Message.Copilot."
+| where SenderAuthor == Custodian
+| where isnotempty(Keywords)
+| project PromptText = Keywords
+| distinct PromptText
+| sort by PromptText asc
+
+// --- Distinct prompts with usage count (most repeated first) ---
+ReviewSetTable
+| where ItemClass startswith "IPM.SkypeTeams.Message.Copilot."
+| where SenderAuthor == Custodian
+| where isnotempty(Keywords)
+| summarize TimesUsed = count() by PromptText = Keywords
+| sort by TimesUsed desc
+
+// --- Distinct prompts per user ---
+ReviewSetTable
+| where ItemClass startswith "IPM.SkypeTeams.Message.Copilot."
+| where SenderAuthor == Custodian
+| where isnotempty(Keywords)
+| project Custodian, PromptText = Keywords
+| distinct Custodian, PromptText
+| sort by Custodian asc, PromptText asc
+
+// --- Distinct prompts per user with count ---
+ReviewSetTable
+| where ItemClass startswith "IPM.SkypeTeams.Message.Copilot."
+| where SenderAuthor == Custodian
+| where isnotempty(Keywords)
+| summarize TimesUsed = count() by Custodian, PromptText = Keywords
+| sort by Custodian asc, TimesUsed desc
+
+// --- Distinct prompts for one user (replace UPN) ---
+ReviewSetTable
+| where ItemClass startswith "IPM.SkypeTeams.Message.Copilot."
+| where Custodian == "user@contoso.com"
+| where SenderAuthor == Custodian
+| where isnotempty(Keywords)
+| project PromptText = Keywords
+| distinct PromptText
+| sort by PromptText asc
+
+// =============================================================================
+// ATTACHMENTS IN A CONVERSATION — ReviewSetTable
+// =============================================================================
+
+// --- All attachments in the review set ---
+ReviewSetTable
+| where FileClass == "Attachment"
+| project Date, Custodian, NativeFileName, SubjectTitle, SenderAuthor, FamilyId, ParentId, ConversationId, ThreadId, Size, NativeExtension
+| sort by Date desc
+
+// --- All attachments in one conversation (replace ConversationId) ---
+ReviewSetTable
+| where ConversationId == "00000000-0000-0000-0000-000000000000"
+| where FileClass == "Attachment" or isnotempty(ParentId)
+| project Date, Custodian, NativeFileName, SubjectTitle, FileClass, FamilyId, ParentId, SenderAuthor, Size, NativeExtension
+| sort by Date asc
+
+// --- Attachments for one message/family (replace FamilyId) ---
+ReviewSetTable
+| where FamilyId == "00000000-0000-0000-0000-000000000000"
+| where FileClass == "Attachment" or isnotempty(ParentId)
+| project Date, NativeFileName, SubjectTitle, FileClass, ParentId, SenderAuthor, Size, NativeExtension, CompoundPath
+| sort by Date asc
+
+// --- Parent messages plus their attachments (full family) ---
+ReviewSetTable
+| where FamilyId == "00000000-0000-0000-0000-000000000000"
+| project Date, NativeFileName, SubjectTitle, FileClass, SenderAuthor, ParentId, Size, ItemClass
+| sort by ParentId asc, Date asc
+
+// --- Count attachments per conversation (single-line summarize) ---
+ReviewSetTable
+| where isnotempty(ConversationId)
+| where FileClass == "Attachment" or isnotempty(ParentId)
+| summarize AttachmentCount = count() by ConversationId
+| sort by AttachmentCount desc
+
+// --- Email threads flagged as having attachments ---
+ReviewSetTable
+| where EmailHasAttachment == true
+| project Date, Custodian, SubjectTitle, SenderAuthor, ConversationId, FamilyId, ThreadId, FileClass
+| sort by Date desc
+
+// --- Teams: attachment count by conversation ---
+ReviewSetTable
+| where isnotempty(ConversationId)
+| where FileClass == "Attachment" or isnotempty(ParentId)
+| summarize Attachments = count() by ConversationId, TeamName, Channel
+| sort by Attachments desc
+
+// =============================================================================
+// SENSITIVE CONTENT — ReviewSetTable
+// =============================================================================
+
+// --- Copilot messages that carry a sensitivity label ---
+ReviewSetTable
+| where ItemClass startswith "IPM.SkypeTeams.Message.Copilot."
+| where isnotempty(SensitivityLabel)
+| project Date, Custodian, SenderAuthor, SubjectTitle, ItemClass, SensitivityLabel, ComplianceLabels
+| sort by Date desc
+
+// --- Copilot messages mentioning confidential terms in indexed text ---
+ReviewSetTable
+| where ItemClass startswith "IPM.SkypeTeams.Message.Copilot."
+| where Keywords has "Confidential" or Keywords has "Highly Confidential" or Keywords has "Restricted"
+| project Date, Custodian, SenderAuthor, SubjectTitle, ItemClass, Keywords
+| sort by Date desc
+
+// --- Copilot with Exchange email-sensitivity flag (3 = CompanyConfidential) ---
+ReviewSetTable
+| where ItemClass startswith "IPM.SkypeTeams.Message.Copilot."
+| where EmailSensitivity == 3
+| project Date, Custodian, SenderAuthor, SubjectTitle, ItemClass, EmailSensitivity
+| sort by Date desc
+
+// --- Count Copilot items by sensitivity label ---
+ReviewSetTable
+| where ItemClass startswith "IPM.SkypeTeams.Message.Copilot."
+| where isnotempty(SensitivityLabel)
+| summarize ItemCount = count() by SensitivityLabel
+| sort by ItemCount desc
+| render piechart
+
+// --- Labeled SharePoint/OneDrive documents in the review set ---
+ReviewSetTable
+| where isnotempty(SensitivityLabel)
+| where FileClass == "Document" or Source == "SharePoint" or Source == "OneDrive"
+| project Date, Custodian, NativeFileName, SubjectTitle, SensitivityLabel, LocationName, CompoundPath
+| sort by Date desc
+
+// =============================================================================
+// SENSITIVE CONTENT — CopilotActivity (Sentinel / Log Analytics ONLY)
+// =============================================================================
+
+CopilotActivity
+| where TimeGenerated >= ago(30d)
+| where RecordType == "CopilotInteraction"
+| extend AccessedResources = LLMEventData.AccessedResources
+| mv-expand AccessedResources
+| extend SensitivityLabelId = tostring(AccessedResources.SensitivityLabelId)
+| where isnotempty(SensitivityLabelId)
+| project TimeGenerated, User = ActorName, Application = AppHost, ResourceName = tostring(AccessedResources.Name), ResourceUrl = tostring(AccessedResources.SiteUrl), SensitivityLabelId, Action = tostring(AccessedResources.Action)
+| sort by TimeGenerated desc
+
+CopilotActivity
+| where TimeGenerated >= ago(30d)
+| where RecordType == "CopilotInteraction"
+| extend AccessedResources = LLMEventData.AccessedResources
+| mv-expand AccessedResources
+| where isnotempty(tostring(AccessedResources.SensitivityLabelId))
+| summarize LabeledResourceAccessCount = count() by ActorName
+| sort by LabeledResourceAccessCount desc
+
+OfficeActivity
+| where TimeGenerated >= ago(30d)
+| where Operation == "CopilotInteraction"
+| extend Audit = parse_json(AuditData)
+| extend Event = Audit.CopilotEventData
+| extend AccessedResources = Event.AccessedResources
+| mv-expand AccessedResources
+| extend SensitivityLabelId = tostring(AccessedResources.SensitivityLabelId)
+| where isnotempty(SensitivityLabelId)
+| project TimeGenerated, User = UserId, ResourceName = tostring(AccessedResources.Name), ResourceUrl = tostring(AccessedResources.SiteUrl), SensitivityLabelId
+| sort by TimeGenerated desc
+
+
+
+ReviewSetTable
+| where ItemClass startswith "IPM.SkypeTeams.Message.Copilot."
+| where Custodian == "sydelletrin@cajesharepoint.onmicrosoft.com"
+| project SubjectTitle ,Custodian ,FileClass ,Recipients ,ConversationFamilyId
+
+
+
+
+ReviewSetTable
+| where isnotempty(ConversationId)
+| where FileClass == "Attachment" or isnotempty(ParentId)
+| where Custodian =="sydelletrin@cajesharepoint.onmicrosoft.com"
+| where FileExtension in ("docx", "xlsx", "pptx")
+|project SubjectTitle , Subject ,ConversationFamilyId ,SensitiveType ,SensitivityLabel,PreservationOriginalUrl,ConversationId ,ConversationTopic ,CompoundPath 
+

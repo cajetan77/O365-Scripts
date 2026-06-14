@@ -92,8 +92,23 @@ try {
     #  -Folder "ArchiveEmails" `
     #  -Values $metadata
     #}#
+    $FolderRelativeUrl = "/sites/" + $SiteUrl.Split('/sites/')[1] + "/$LibraryName"
+
+    $Query = @"
+    <View Scope="FilesOnly">
+        <Query>
+            <Where>
+                <Eq>
+                    <FieldRef Name="FileDirRef" />
+                    <Value Type="Text">$FolderRelativeUrl</Value>
+                </Eq>
+            </Where>
+        </Query>
+    </View>
+"@
+
     Write-Host "Fetching all files from '$LibraryName'..." -ForegroundColor Cyan
-    $ListItems = Get-PnPListItem -List $LibraryName -PageSize 500 -Fields "FileRef", "FileLeafRef", "Created", "FSObjType", "DateRecieved"
+    $ListItems = Get-PnPListItem -List $LibraryName -Query $Query -PageSize 500
     foreach ($item in $ListItems) {
      
         if ($item.FieldValues.FSObjType -eq 0) {
