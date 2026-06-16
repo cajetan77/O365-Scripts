@@ -32,6 +32,19 @@ $script:ViewFields = @(
 $script:SiteColumnNames = @(
     'Main Category', 'Review Date', 'Notification Sent', 'Sub Category', 'Restricted Approval'
 )
+$script:SiteColumnInternalNames = @{
+    'Main Category'       = 'DoogleWFMainCategory'
+    'Review Date'         = 'ReviewDate1'
+    'Notification Sent'   = 'MSDNotificationSent'
+    'Sub Category'        = 'DoogleWFSubCategory'
+    'Restricted Approval' = 'DoogleWFRestrictedApproval'
+}
+
+$script:CurrentProvisionStep = 'Start'
+
+function Get-CurrentProvisionStep {
+    return $script:CurrentProvisionStep
+}
 
 function Write-ProvisionLog {
     param(
@@ -65,6 +78,7 @@ function Invoke-ProvisionStep {
         [scriptblock]$Action
     )
 
+    $script:CurrentProvisionStep = $Step
     Write-ProvisionLog "Starting $Step" -Properties @{ Step = $Step }
 
     try {
@@ -394,6 +408,7 @@ function Set-SiteRegionalSettings {
         Write-ProvisionLog "Updating regional settings for $SiteUrl" -Properties @{ Step = 'Set-SiteRegionalSettings' }
 
         $web = Get-PnPWeb -Includes RegionalSettings
+        Invoke-PnPQuery
         $localeId = 5129
         $web.RegionalSettings.LocaleId = $localeId
         $web.Update()
@@ -831,16 +846,8 @@ function Add-ContentTypes {
     try {
         Write-ProvisionLog "Adding content types on $SiteUrl"
 
-        $library = Get-PnPList -Identity 'Documents' -ErrorAction Stop
-        if (-not $library) {
-            Write-ProvisionLog "ERROR: Documents library not found on $SiteUrl"
-            return
-        }
-
-        $library.ContentTypesEnabled = $true
-        $library.Update()
-        Invoke-PnPQuery
-        Write-ProvisionLog "Content types enabled on $($library.Title)"
+        Set-PnPList -Identity 'Documents' -EnableContentTypes $true -ErrorAction Stop
+        Write-ProvisionLog 'Content types enabled on Documents'
 
         Get-ContentTypeHub -SiteUrl $SiteUrl -ContentTypeNames $ContentTypeName
 
@@ -878,113 +885,68 @@ function Set-DefaultContentType {
 }
 
 
-function Add-SiteColumnToList {
-    param(
-        [Parameter(Mandatory)]
-        $List,
-
-        [Parameter(Mandatory)]
-        [string]$ListName,
-
-        [Parameter(Mandatory)]
-        [string]$SiteUrl,
-
-        [Parameter(Mandatory)]
-        $ExistingColumn,
-
-        [Parameter(Mandatory)]
-        [string]$ColumnName
-    )
-
-    $fieldInList = Get-PnPField -List $List -Identity $ColumnName -ErrorAction SilentlyContinue
-    if ($fieldInList) {
-        Write-ProvisionLog "Site column '$ColumnName' already exists in '$ListName' on $SiteUrl. Skipping."
-        return
-    }
-
-    $schemaXml = (Get-PnPProperty -ClientObject $ExistingColumn -Property SchemaXml).SchemaXml
-
-    switch ($ColumnName) {
-        'Main Category' {
-            Add-PnPFieldFromXml -List $List -FieldXml $schemaXml -ErrorAction Stop
-        }
-        'Sub Category' {
-            Add-PnPFieldFromXml -List $List -FieldXml $schemaXml -ErrorAction Stop
-        }
-        Default {
-            Add-PnPField -List $List -Field $ExistingColumn -ErrorAction Stop
-        }
-    }
-
-    Write-ProvisionLog "Added site column '$ColumnName' to '$ListName' on $SiteUrl"
-}
-
 function Add-SiteColumns {
     param (
         [string]$SiteUrl,
-        [string[]]$TargetLists = @('Documents', 'Site Pages')
+        [string[]]$TargetLists = @('Documents')
     )
 
-    try {
-        Write-ProvisionLog "Adding site columns on $SiteUrl"
+    Write-ProvisionLog "Adding site columns on $SiteUrl"
 
-        foreach ($columnName in $script:SiteColumnNames) {
-            $existingColumn = Get-PnPField -Identity $columnName -Includes SchemaXml -ErrorAction SilentlyContinue
-            if (-not $existingColumn) {
-                Write-ProvisionLog "Site column '$columnName' not found on $SiteUrl. Skipping."
-                continue
+    foreach ($columnName in $script:SiteColumnNames) {
+        $internalName = $script:SiteColumnInternalNames[$columnName]
+
+        if ($columnName -eq 'Review Date') {
+            try {
+                Set-PnPField -Identity $internalName -Values @{ DefaultFormula = '=TODAY()+365' } -ErrorAction Stop
+                Write-ProvisionLog 'Set Review Date site column default value to TODAY()+365'
             }
-
-            Write-ProvisionLog "Site column '$columnName' exists on $SiteUrl"
-
-            if ($columnName -eq 'Review Date') {
-                $existingColumn.DefaultFormula = '=TODAY()+365'
-                $existingColumn.UpdateAndPushChanges($true)
-                Invoke-PnPQuery
-            }
-
-            foreach ($listName in $TargetLists) {
-                $list = Get-PnPList -Identity $listName -ErrorAction Stop
-                Add-SiteColumnToList -List $list -ListName $listName -SiteUrl $SiteUrl -ExistingColumn $existingColumn -ColumnName $columnName
+            catch {
+                Write-ProvisionLog "Could not set Review Date default value: $($_.Exception.Message)" -Level Warning
             }
         }
-    }
-    catch {
-        Write-ProvisionLog "ERROR: Failed to add site column on $($SiteUrl): $($_.Exception.Message)" -Level Error
-        throw
+
+        foreach ($listName in $TargetLists) {
+            try {
+                Add-PnPField -List $listName -Field $internalName -ErrorAction Stop
+                Write-ProvisionLog "Added '$internalName' to '$listName'"
+            }
+            catch {
+                Write-ProvisionLog "Could not add '$internalName' to '$listName': $($_.Exception.Message)" -Level Warning
+            }
+        }
     }
 }
 
 function Set-DocumentsViews {
     param(
         [Parameter(Mandatory)]
-        $List
+        [string]$ListName
     )
 
-    $viewFields = $script:ViewFields
-    $viewsToUpdate = @(
-        Get-PnPView -List $List | Where-Object { $_.DefaultView -eq $true }
-    )
+    $listFieldNames = @(Get-PnPField -List $ListName -ErrorAction Stop | ForEach-Object { $_.InternalName })
+    $viewFields = @(Resolve-AvailableViewFields -DesiredFields $script:ViewFields -ListFieldNames $listFieldNames)
 
-    if ($viewsToUpdate.Count -lt 1) {
-        $viewsToUpdate = @(Get-PnPView -List $List | Where-Object { $_.Title -eq 'All Documents' })
+    if ($viewFields.Count -lt 1) {
+        throw "No configured Documents view fields exist on list '$ListName'."
     }
 
+    $viewNames = @('All Documents')
     $updatedViews = 0
-    foreach ($view in $viewsToUpdate) {
-        Write-ProvisionLog "Updating Documents view '$($view.Title)'" -Properties @{
+    foreach ($viewName in $viewNames) {
+        Write-ProvisionLog "Updating Documents view '$viewName'" -Properties @{
             Step   = 'Set-Views'
-            View   = $view.Title
+            View   = $viewName
             Fields = ($viewFields -join ', ')
         }
 
         try {
-            Set-PnPView -List $List -Identity $view.Title -Fields $viewFields -ErrorAction Stop
+            Set-PnPView -List $ListName -Identity $viewName -Fields $viewFields -ErrorAction Stop
             $updatedViews++
-            Write-ProvisionLog "Updated Documents view '$($view.Title)'" -Properties @{ Step = 'Set-Views' }
+            Write-ProvisionLog "Updated Documents view '$viewName'" -Properties @{ Step = 'Set-Views' }
         }
         catch {
-            Write-ProvisionLog "Skipping Documents view '$($view.Title)': $($_.Exception.Message)" -Level Warning -Properties @{ Step = 'Set-Views' }
+            Write-ProvisionLog "Skipping Documents view '$viewName': $($_.Exception.Message)" -Level Warning -Properties @{ Step = 'Set-Views' }
         }
     }
 
@@ -996,10 +958,9 @@ function Set-DocumentsViews {
 function Set-SitePagesViews {
     param(
         [Parameter(Mandatory)]
-        $List
+        [string]$ListName
     )
 
-    # Hardcoded Site Pages views and SharePoint internal field names.
     $viewNames = @(
         'All Pages',
         'By Editor',
@@ -1021,31 +982,21 @@ function Set-SitePagesViews {
         'DoogleWFSubCategory'
     )
 
-    $viewsToUpdate = @(
-        Get-PnPView -List $List | Where-Object { $_.DefaultView -eq $true }
-    )
-
-    if ($viewsToUpdate.Count -lt 1) {
-        $viewsToUpdate = @($viewNames | ForEach-Object {
-                Get-PnPView -List $List -Identity $_ -ErrorAction SilentlyContinue
-            } | Where-Object { $null -ne $_ })
-    }
-
     $updatedViews = 0
-    foreach ($view in $viewsToUpdate) {
-        Write-ProvisionLog "Updating Site Pages view '$($view.Title)'" -Properties @{
+    foreach ($viewName in $viewNames) {
+        Write-ProvisionLog "Updating Site Pages view '$viewName'" -Properties @{
             Step   = 'Set-Views'
-            View   = $view.Title
+            View   = $viewName
             Fields = ($viewFields -join ', ')
         }
 
         try {
-            Set-PnPView -List $List -Identity $view.Title -Fields $viewFields -ErrorAction Stop
+            Set-PnPView -List $ListName -Identity $viewName -Fields $viewFields -ErrorAction Stop
             $updatedViews++
-            Write-ProvisionLog "Updated Site Pages view '$($view.Title)'" -Properties @{ Step = 'Set-Views' }
+            Write-ProvisionLog "Updated Site Pages view '$viewName'" -Properties @{ Step = 'Set-Views' }
         }
         catch {
-            Write-ProvisionLog "Skipping Site Pages view '$($view.Title)': $($_.Exception.Message)" -Level Warning -Properties @{ Step = 'Set-Views' }
+            Write-ProvisionLog "Skipping Site Pages view '$viewName': $($_.Exception.Message)" -Level Warning -Properties @{ Step = 'Set-Views' }
         }
     }
 
@@ -1167,12 +1118,6 @@ function Get-DefaultListViewIdentity {
         $Views = @(Get-PnPView -List $ListName -ErrorAction Stop)
     }
 
-    $defaultView = @($Views | Where-Object { $_.DefaultView -eq $true } | Select-Object -First 1)[0]
-
-    if ($null -ne $defaultView -and -not [string]::IsNullOrWhiteSpace($defaultView.Title)) {
-        return $defaultView.Title
-    }
-
     $fallbackViewNames = @{
         'Documents'  = @('All Documents')
         'Site Pages' = @('All Pages', 'By Editor', 'Recent')
@@ -1205,25 +1150,24 @@ function Set-Views {
     Write-ProvisionLog 'Setting views' -Properties @{ Step = 'Set-Views' }
 
     foreach ($listName in $Lists) {
-        $library = Get-PnPList -Identity $listName -ErrorAction Stop
-        if (-not $library) {
+        if (-not (Get-PnPList -Identity $listName -ErrorAction SilentlyContinue)) {
             throw "List '$listName' not found on $SiteUrl"
         }
 
         if ($listName -eq 'Site Pages') {
-            Set-SitePagesViews -List $library
+            Set-SitePagesViews -ListName $listName
             continue
         }
 
         if ($listName -eq 'Documents') {
-            Set-DocumentsViews -List $library
+            Set-DocumentsViews -ListName $listName
             continue
         }
 
         $viewIdentities = @(Get-ListViewIdentitiesToUpdate -ListName $listName -SiteUrl $SiteUrl)
         $desiredFields = Get-ViewFieldsForList -ListName $listName
 
-        $listFieldNames = @(Get-PnPField -List $library -ErrorAction Stop | ForEach-Object { $_.InternalName })
+        $listFieldNames = @(Get-PnPField -List $listName -ErrorAction Stop | ForEach-Object { $_.InternalName })
         $availableFields = Resolve-AvailableViewFields -DesiredFields $desiredFields -ListFieldNames $listFieldNames
 
         if ($availableFields.Count -lt 1) {
@@ -1237,7 +1181,7 @@ function Set-Views {
                 Fields = ($availableFields -join ', ')
             }
 
-            Set-PnPView -List $library -Identity $viewIdentity -Fields $availableFields -ErrorAction Stop
+            Set-PnPView -List $listName -Identity $viewIdentity -Fields $availableFields -ErrorAction Stop
             Write-ProvisionLog "Updated view '$viewIdentity' on '$listName'" -Properties @{ Step = 'Set-Views' }
         }
     }
@@ -1269,12 +1213,16 @@ function Add-HubSites {
         }
     }
     catch {
-        Write-ProvisionLog "Failed to associate hub site on $SiteUrl : $($_.Exception.Message)" -Level Error -Properties @{ Step = 'Add-HubSites' }
-        throw
+        Write-ProvisionLog "Failed to associate hub site on $SiteUrl : $($_.Exception.Message)" -Level Warning -Properties @{ Step = 'Add-HubSites' }
+        return @{
+            status  = 'Skipped'
+            message = "Hub site association skipped: $($_.Exception.Message)"
+            siteUrl = $SiteUrl
+        }
     }
 
 }
 
 
 
-Export-ModuleMember -Function Invoke-SharePointProvisioning, Set-SiteRegionalSettings, Set-SearchSettings, Install-App, Add-GroupstoSharePointGroups, Set-DocLibraryPermissions, Set-Branding, Add-ContentTypes, Add-SiteColumns, Set-Views, Add-HubSites
+Export-ModuleMember -Function Invoke-SharePointProvisioning, Get-CurrentProvisionStep, Set-SiteRegionalSettings, Set-SearchSettings, Install-App, Add-GroupstoSharePointGroups, Set-DocLibraryPermissions, Set-Branding, Add-ContentTypes, Add-SiteColumns, Set-Views, Add-HubSites

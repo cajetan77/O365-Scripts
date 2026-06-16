@@ -121,11 +121,34 @@ try {
 }
 catch {
     $failedStep = 'Unknown'
-    if ($_.Exception.Message -match '\[([^\]]+)\]') {
-        $failedStep = $matches[1]
+    $errorMessage = $_.Exception.Message
+    $currentException = $_.Exception
+
+    while ($null -ne $currentException) {
+        if ($currentException.Message -match '\[([^\]]+)\]') {
+            $failedStep = $matches[1]
+            $errorMessage = $currentException.Message
+            break
+        }
+
+        $currentException = $currentException.InnerException
     }
 
-    Write-ProvisionTrace -Message $_.Exception.Message -Level Error -Properties @{
+    if ($failedStep -eq 'Unknown' -and -not [string]::IsNullOrWhiteSpace($_.ErrorDetails.Message)) {
+        $errorMessage = $_.ErrorDetails.Message
+        if ($errorMessage -match '\[([^\]]+)\]') {
+            $failedStep = $matches[1]
+        }
+    }
+
+    if ($failedStep -eq 'Unknown' -and (Get-Command Get-CurrentProvisionStep -ErrorAction SilentlyContinue)) {
+        $currentStep = Get-CurrentProvisionStep
+        if (-not [string]::IsNullOrWhiteSpace($currentStep) -and $currentStep -ne 'Start') {
+            $failedStep = $currentStep
+        }
+    }
+
+    Write-ProvisionTrace -Message $errorMessage -Level Error -Properties @{
         Step       = $failedStep
         ScriptLine = $_.InvocationInfo.ScriptLineNumber
         ScriptName = $_.InvocationInfo.ScriptName
@@ -134,7 +157,7 @@ catch {
     $errorBody = @{
         status  = 'Error'
         step    = $failedStep
-        message = $_.Exception.Message
+        message = $errorMessage
     } | ConvertTo-Json
 
     Push-OutputBinding -Name Response -Value ([HttpResponseContext]@{
