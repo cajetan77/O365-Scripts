@@ -3,8 +3,8 @@ using namespace System.Net
 
 param($Request, $TriggerMetadata)
 
-Import-Module "$PSScriptRoot\..\Modules\Telemetry.psm1" -Force
-Import-Module "$PSScriptRoot\..\Modules\Provisioning.psm1" -Force
+Import-Module "$PSScriptRoot\..\FunctionModules\Telemetry.psm1" -Force
+Import-Module "$PSScriptRoot\..\FunctionModules\Provisioning.psm1" -Force
 
 function Test-SecureHeaderMatch {
     param(
