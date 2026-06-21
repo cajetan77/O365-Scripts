@@ -191,6 +191,7 @@ function Get-ManagedAndDataverseStatus {
 
 $timestamp = Get-Date -Format "yyyyMMddHHmmss"
 $csvPath = Join-Path $OutputDirectory "PowerPlatform-Environments-$timestamp.csv"
+$fullJsonPath = Join-Path $OutputDirectory "PowerPlatform-Environments-Full-$timestamp.json"
 
 Write-Host "Retrieving Power Platform environments..." -ForegroundColor Cyan
 $environments = @(Get-AdminPowerAppEnvironment -Capacity)
