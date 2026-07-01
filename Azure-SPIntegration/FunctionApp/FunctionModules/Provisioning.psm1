@@ -11,6 +11,9 @@ if ([string]::IsNullOrEmpty($script:ModuleRoot)) {
     $script:ModuleRoot = Join-Path $PWD.Path "FunctionModules"
 }
 $script:AppRoot = Split-Path $script:ModuleRoot -Parent
+$script:DefaultTemplateFile = if ($env:PNP_TEMPLATE_FILE) { $env:PNP_TEMPLATE_FILE } else { 'SiteProvisioningtemplate.xml' }
+$script:DefaultBrandingFile = if ($env:PNP_BRANDING_FILE) { $env:PNP_BRANDING_FILE } else { 'Default.jpg' }
+$script:DefaultHeaderFile = if ($env:PNP_HEADER_FILE) { $env:PNP_HEADER_FILE } else { 'pexels-padrinan-255379 (1).jpg' }
 
 $script:ContentTypeName = if ($env:PNP_CONTENT_TYPE_NAME) { $env:PNP_CONTENT_TYPE_NAME } else { 'content category page' }
 $script:ContentTypeList = if ($env:PNP_CONTENT_TYPE_LIST) {
@@ -89,6 +92,71 @@ function Invoke-ProvisionStep {
     catch {
         Write-ProvisionLog "Failed $Step : $($_.Exception.Message)" -Level Error -Properties @{ Step = $Step }
         throw "[${Step}] $($_.Exception.Message)"
+    }
+}
+
+function Connect-PnPManagedIdentity {
+    param(
+        [Parameter(Mandatory)]
+        [string]$SiteUrl
+    )
+
+    if (-not (Test-AzureHostedEnvironment)) {
+        throw 'Managed identity auth only works on Azure (Function App, Automation, Cloud Shell). Use certificate auth locally.'
+    }
+
+    $connectParams = @{
+        Url             = $SiteUrl
+        ManagedIdentity = $true
+        ErrorAction     = 'Stop'
+    }
+
+    if (-not [string]::IsNullOrWhiteSpace($env:SPO_TENANT_ID)) {
+        $connectParams.Tenant = $env:SPO_TENANT_ID
+    }
+
+    Connect-PnPOnline @connectParams
+    Write-ProvisionLog 'Connected to SharePoint using managed identity' -Properties @{ Step = 'Connect-PnPManagedIdentity' }
+
+    try {
+        $web = Get-PnPWeb -ErrorAction Stop
+        Write-ProvisionLog "SharePoint connection verified (site: $($web.Title))" -Properties @{ Step = 'Connect-PnPManagedIdentity' }
+    }
+    catch {
+        throw @"
+Managed identity connected but SharePoint returned Unauthorized for $SiteUrl.
+Ensure the Function App system-assigned identity has SharePoint application permission 'Sites.FullControl.All' on Office 365 SharePoint Online (not Microsoft Graph). Run Set-SystemManagedId.ps1, wait a few minutes, then restart the Function App.
+Error: $($_.Exception.Message)
+"@
+    }
+}
+
+function Connect-PnPForProvisioning {
+    param(
+        [Parameter(Mandatory)]
+        [string]$SiteUrl
+    )
+
+    $authMethod = if (-not [string]::IsNullOrWhiteSpace($env:SPO_AUTH_METHOD)) {
+        $env:SPO_AUTH_METHOD
+    }
+    elseif (-not [string]::IsNullOrWhiteSpace($env:SPO_CERT_THUMBPRINT)) {
+        'Certificate'
+    }
+    else {
+        'ManagedIdentity'
+    }
+
+    switch ($authMethod) {
+        'Certificate' {
+            Connect-PnPWithCertificate -Url $SiteUrl
+        }
+        'ManagedIdentity' {
+            Connect-PnPManagedIdentity -SiteUrl $SiteUrl
+        }
+        default {
+            throw "SPO_AUTH_METHOD must be 'Certificate' or 'ManagedIdentity'. Current value: $authMethod"
+        }
     }
 }
 
@@ -285,8 +353,7 @@ function Connect-PnPWithCertificate {
 function Invoke-SharePointProvisioning {
     param(
         [Parameter(Mandatory)]
-        [string]$SiteUrl,
-        [string]$BlobUrl = $env:PNP_TEMPLATE_BLOB_URL
+        [string]$SiteUrl
     )
     #Import-Module (Get-ChildItem "$externalModules\Az.Accounts" -Recurse -Filter "*.psd1" | Select-Object -First 1).FullName -Force
     #Import-Module (Get-ChildItem "$externalModules\Az.Storage" -Recurse -Filter "*.psd1" | Select-Object -First 1).FullName -Force
@@ -303,31 +370,20 @@ function Invoke-SharePointProvisioning {
     }
 
     # 3. Explicitly target the exact nested structure
-    $azAccountsPath = Join-Path $modulesFolder "Az.Accounts/3.0.1/Az.Accounts.psd1"
-    $pnpPath = Join-Path $modulesFolder "PnP.PowerShell/3.2.0/PnP.PowerShell.psd1" # Update version string to match your layout
+    $pnpPath = Join-Path $modulesFolder "PnP.PowerShell/3.2.0/PnP.PowerShell.psd1"
 
-    # 4. Import using forward slashes (Linux preferred)
-    Import-Module $azAccountsPath -Force -ErrorAction Stop
     Import-Module $pnpPath -Force -ErrorAction Stop
-
-    if (-not (Get-Command Connect-AzAccount -ErrorAction SilentlyContinue)) {
-        throw "Az.Accounts loaded but Connect-AzAccount not found"
-    }
-
-    if ([string]::IsNullOrWhiteSpace($BlobUrl)) {
-        throw "PNP_TEMPLATE_BLOB_URL is required (full blob URL, with SAS if the blob is not public)"
-    }
 
     if (-not (Get-Command Connect-PnPOnline -ErrorAction SilentlyContinue)) {
         throw "PnP.PowerShell loaded but Connect-PnPOnline not found"
     }
 
     Invoke-ProvisionStep -Step 'Connect-PnP' {
-        Connect-PnPWithCertificate -Url $SiteUrl
+        Connect-PnPForProvisioning -SiteUrl $SiteUrl
     }
 
-    $templatePath = Invoke-ProvisionStep -Step 'DownloadTemplate' {
-        Get-AssetFromStorage -BlobUrl $BlobUrl
+    $templatePath = Invoke-ProvisionStep -Step 'LoadTemplate' {
+        Get-AssetFilePath -FileName $script:DefaultTemplateFile
     }
 
     Invoke-ProvisionStep -Step 'Set-SiteRegionalSettings' {
@@ -425,7 +481,7 @@ function Set-SiteRegionalSettings {
     }
     catch {
         Write-ProvisionLog "Error updating regional settings for $SiteUrl : $($_.Exception.Message)" -Level Error -Properties @{ Step = 'Set-SiteRegionalSettings' }
-        throw
+        #throw
     }
 }
 
@@ -487,7 +543,7 @@ function Install-App {
     }
     catch {
         Write-ProvisionLog "Failed to install app on $SiteUrl : $($_.Exception.Message)" -Level Error -Properties @{ Step = 'Install-App' }
-        throw
+        #throw
     }
 }
 
@@ -574,94 +630,28 @@ function Set-DocLibraryPermissions {
 
 
 
-function Get-StorageAccessToken {
-    Connect-AzAccount -Identity -ErrorAction Stop | Out-Null
-
-    $token = (Get-AzAccessToken -ResourceUrl 'https://storage.azure.com' -ErrorAction Stop).Token
-    if ($token -is [SecureString]) {
-        $bstr = [System.Runtime.InteropServices.Marshal]::SecureStringToBSTR($token)
-        try {
-            return [System.Runtime.InteropServices.Marshal]::PtrToStringAuto($bstr)
-        }
-        finally {
-            [System.Runtime.InteropServices.Marshal]::ZeroFreeBSTR($bstr)
-        }
+function Get-AppAssetsPath {
+    $assetsRoot = Join-Path (Get-AppRootPath) 'Assets'
+    if (-not (Test-Path $assetsRoot)) {
+        throw "Assets folder not found at $assetsRoot"
     }
 
-    return [string]$token
+    return $assetsRoot
 }
 
-function Get-AssetFromStorage {
+function Get-AssetFilePath {
     param(
         [Parameter(Mandatory)]
-        [string]$BlobUrl
+        [string]$FileName
     )
 
-    $uri = [Uri]$BlobUrl
-    $fileName = [System.IO.Path]::GetFileName($uri.LocalPath)
-
-    if ([string]::IsNullOrWhiteSpace($fileName)) {
-        throw "Could not determine file name from blob URL: $BlobUrl"
+    $assetPath = Join-Path (Get-AppAssetsPath) $FileName
+    if (-not (Test-Path $assetPath)) {
+        throw "Asset file not found: $assetPath"
     }
 
-    $tempRoot = if ([string]::IsNullOrWhiteSpace($env:TEMP)) { '/tmp' } else { $env:TEMP }
-    $tempFolder = Join-Path $tempRoot "PnPTemplates"
-
-    if (-not (Test-Path $tempFolder)) {
-        New-Item -ItemType Directory -Path $tempFolder -Force | Out-Null
-    }
-
-    $localPath = Join-Path $tempFolder $fileName
-    $downloadUrl = $BlobUrl
-
-    if ($uri.Query -notmatch '(^|[?&])sig=' -and -not [string]::IsNullOrWhiteSpace($env:PNP_STORAGE_BLOB_SAS)) {
-        $sas = $env:PNP_STORAGE_BLOB_SAS.Trim()
-        if (-not $sas.StartsWith('?')) {
-            $sas = "?$sas"
-        }
-        $downloadUrl = "$BlobUrl$sas"
-        $uri = [Uri]$downloadUrl
-    }
-
-    Write-ProvisionLog "Downloading blob from $downloadUrl"
-
-    try {
-        if ($uri.Query -match '(^|[?&])sig=') {
-            Invoke-WebRequest -Uri $downloadUrl -OutFile $localPath -UseBasicParsing -ErrorAction Stop
-        }
-        else {
-            Write-ProvisionLog 'Authenticating to Azure Storage with managed identity' -Properties @{ Step = 'DownloadTemplate' }
-
-            $accessToken = Get-StorageAccessToken
-            $headers = @{
-                Authorization  = "Bearer $accessToken"
-                'x-ms-version' = '2021-08-06'
-            }
-
-            Invoke-WebRequest -Uri $downloadUrl -Headers $headers -OutFile $localPath -UseBasicParsing -ErrorAction Stop
-        }
-    }
-    catch {
-        $statusCode = $null
-        if ($null -ne $_.Exception.Response) {
-            $statusCode = [int]$_.Exception.Response.StatusCode
-        }
-        elseif ($null -ne $_.Exception.StatusCode) {
-            $statusCode = [int]$_.Exception.StatusCode
-        }
-
-        if ($statusCode -eq 401) {
-            throw "Azure Storage returned 401 for '$BlobUrl'. Ensure the Function App managed identity has 'Storage Blob Data Reader' (or Contributor) on the storage account, or set PNP_STORAGE_BLOB_SAS / include a SAS token in the blob URL."
-        }
-
-        throw
-    }
-
-    if (-not (Test-Path $localPath)) {
-        throw "Blob download failed; file not found at $localPath"
-    }
-
-    return $localPath
+    Write-ProvisionLog "Using asset file: $assetPath"
+    return $assetPath
 }
 
 
@@ -725,16 +715,9 @@ function Resolve-UploadedFileServerRelativeUrl {
 function Set-Branding {
     param (
         [string]$SiteUrl,
-        [string]$BlobUrl = $env:PNP_BRANDING_BLOB_URL,
-        [string]$HeadeBlobUrl = $env:PNP_HEADER_BLOB_URL
+        [string]$BrandingFile = $script:DefaultBrandingFile,
+        [string]$HeaderFile = $script:DefaultHeaderFile
     )
-
-    if ([string]::IsNullOrWhiteSpace($BlobUrl)) {
-        throw 'PNP_BRANDING_BLOB_URL is required (full blob URL, with SAS if the blob is not public)'
-    }
-    if ([string]::IsNullOrWhiteSpace($HeadeBlobUrl)) {
-        throw 'PNP_HEADER_BLOB_URL is required (full blob URL, with SAS if the blob is not public)'
-    }
 
     Write-ProvisionLog 'Setting branding' -Properties @{ Step = 'Set-Branding' }
 
@@ -745,8 +728,8 @@ function Set-Branding {
 
     Set-PnPWebHeader -HeaderLayout Extended -ErrorAction Stop
 
-    $imagePath = Get-AssetFromStorage -BlobUrl $BlobUrl
-    $headerImagePath = Get-AssetFromStorage -BlobUrl $HeadeBlobUrl  
+    $imagePath = Get-AssetFilePath -FileName $BrandingFile
+    $headerImagePath = Get-AssetFilePath -FileName $HeaderFile
     $headerFileName = [System.IO.Path]::GetFileName($headerImagePath)
     $spFile = Add-PnPFile -Path $headerImagePath -Folder 'SiteAssets' -NewFileName $headerFileName -ErrorAction Stop
     $headerFileUrl = Resolve-UploadedFileServerRelativeUrl -LocalFilePath $headerImagePath -FolderName 'SiteAssets' -UploadedFile $spFile
@@ -755,7 +738,13 @@ function Set-Branding {
     $fileUrl = Resolve-UploadedFileServerRelativeUrl -LocalFilePath $imagePath -FolderName 'SiteAssets' -UploadedFile $spFile
 
     if ([string]::IsNullOrWhiteSpace($fileUrl)) {
-        throw "Uploaded file URL could not be resolved for '$fileName'"
+        Write-ProvisionLog "Uploaded file URL could not be resolved for '$fileName'" -Level Error -Properties @{ Step = 'Set-Branding' }
+        return @{
+            status          = 'Error'
+            message         = "Uploaded file URL could not be resolved for '$fileName'"
+            siteUrl         = $SiteUrl
+            backgroundImage = $null
+        }
     }
 
     $backgroundUrl = [System.Uri]::EscapeUriString($fileUrl)
@@ -813,7 +802,8 @@ function Get-ContentTypeHub {
         $contentTypeHubUrl = Get-PnPContentTypePublishingHubUrl
         Write-ProvisionLog "Content Type Hub URL: $contentTypeHubUrl"
 
-        Connect-PnPWithCertificate -Url $contentTypeHubUrl
+        #Connect-PnPWithCertificate -Url $contentTypeHubUrl
+        Connect-PnPManagedIdentity -SiteUrl $contentTypeHubUrl
         $contentTypesToAdd = @(Get-PnPContentType |
             Where-Object { $contentTypesArray -contains $_.Name } |
             ForEach-Object {
@@ -823,7 +813,7 @@ function Get-ContentTypeHub {
                 }
             })
 
-        Connect-PnPWithCertificate -Url $SiteUrl
+        Connect-PnPManagedIdentity -SiteUrl $SiteUrl
 
         foreach ($contentType in $contentTypesToAdd) {
             Add-PnPContentTypesFromContentTypeHub -ContentTypes $contentType.StringId -ErrorAction Stop
@@ -924,9 +914,22 @@ function Set-DocumentsViews {
         [string]$ListName
     )
 
-    $listFieldNames = @(Get-PnPField -List $ListName -ErrorAction Stop | ForEach-Object { $_.InternalName })
-    $viewFields = @(Resolve-AvailableViewFields -DesiredFields $script:ViewFields -ListFieldNames $listFieldNames)
+    #$listFieldNames = @(Get-PnPField -List $ListName -ErrorAction Stop | ForEach-Object { $_.InternalName })
+    # $viewFields = @(Resolve-AvailableViewFields -DesiredFields $script:ViewFields -ListFieldNames $listFieldNames)
 
+    $viewFields = @(
+        'DocIcon',
+        'LinkFilename',
+        'Editor',
+        'Modified',
+        'Author',
+        'Created',
+        'ReviewDate1',
+        'DoogleWFMainCategory',
+        'MSDNotificationSent',
+        'DoogleWFRestrictedApproval',
+        'DoogleWFSubCategory'
+    )
     if ($viewFields.Count -lt 1) {
         throw "No configured Documents view fields exist on list '$ListName'."
     }
@@ -951,7 +954,13 @@ function Set-DocumentsViews {
     }
 
     if ($updatedViews -lt 1) {
-        throw 'No Documents views could be updated.'
+        Write-ProvisionLog "No Documents views could be updated." -Level Error -Properties @{ Step = 'Set-Views' }
+        return @{
+            status       = 'Error'
+            message      = 'No Documents views could be updated.'
+            siteUrl      = $SiteUrl
+            updatedViews = $updatedViews
+        }
     }
 }
 
@@ -961,12 +970,16 @@ function Set-SitePagesViews {
         [string]$ListName
     )
 
-    $viewNames = @(
+    <#$viewNames = @(
         'All Pages',
         'By Editor',
         'By Author',
         'Created By Me'
-    )
+    )#>
+    # Retrieve the default view object for a specific list
+    $viewNames = Get-PnPView -List $ListName | Where-Object { $_.DefaultView -eq $true }
+    $viewNames = $viewNames.Title
+    Write-ProvisionLog "Default view name for list $($ListName): $($viewNames -join ', ')"
 
     $viewFields = @(
         'DocIcon',
@@ -1001,11 +1014,38 @@ function Set-SitePagesViews {
     }
 
     if ($updatedViews -lt 1) {
-        throw 'No Site Pages views could be updated.'
+        Write-ProvisionLog "No Site Pages views could be updated." -Level Error -Properties @{ Step = 'Set-Views' }
+        return @{
+            status       = 'Error'
+            message      = 'No Site Pages views could be updated.'
+            siteUrl      = $SiteUrl
+            updatedViews = $updatedViews
+        }
     }
 }
 
-function Get-ViewFieldsForList {
+<#function Resolve-AvailableViewFields {
+    param(
+        [Parameter(Mandatory)]
+        [string[]]$DesiredFields,
+
+        [Parameter(Mandatory)]
+        [string[]]$ListFieldNames
+    )
+
+    $availableFields = @()
+    foreach ($field in $DesiredFields) {
+        $resolvedField = Resolve-ViewFieldName -Field $field -ListFieldNames $ListFieldNames
+        if (-not [string]::IsNullOrWhiteSpace($resolvedField)) {
+            $availableFields += $resolvedField
+        }
+    }
+
+    return $availableFields
+}
+#>
+
+<#function Get-ViewFieldsForList {
     param(
         [Parameter(Mandatory)]
         [string]$ListName
@@ -1014,7 +1054,7 @@ function Get-ViewFieldsForList {
     return $script:ViewFields
 }
 
-function Resolve-ViewFieldName {
+<#function Resolve-ViewFieldName {
     param(
         [Parameter(Mandatory)]
         [string]$Field,
@@ -1069,27 +1109,8 @@ function Resolve-ViewFieldName {
     return $null
 }
 
-function Resolve-AvailableViewFields {
-    param(
-        [Parameter(Mandatory)]
-        [string[]]$DesiredFields,
 
-        [Parameter(Mandatory)]
-        [string[]]$ListFieldNames
-    )
-
-    $availableFields = @()
-    foreach ($field in $DesiredFields) {
-        $resolvedField = Resolve-ViewFieldName -Field $field -ListFieldNames $ListFieldNames
-        if (-not [string]::IsNullOrWhiteSpace($resolvedField)) {
-            $availableFields += $resolvedField
-        }
-    }
-
-    return $availableFields
-}
-
-function Get-ListViewIdentitiesToUpdate {
+<#function Get-ListViewIdentitiesToUpdate {
     param(
         [Parameter(Mandatory)]
         [string]$ListName,
@@ -1103,7 +1124,7 @@ function Get-ListViewIdentitiesToUpdate {
     return @(Get-DefaultListViewIdentity -ListName $ListName -SiteUrl $SiteUrl -Views $views)
 }
 
-function Get-DefaultListViewIdentity {
+<#function Get-DefaultListViewIdentity {
     param(
         [Parameter(Mandatory)]
         [string]$ListName,
@@ -1138,7 +1159,7 @@ function Get-DefaultListViewIdentity {
     }
 
     throw "Default view identity could not be resolved for list '$ListName' ($SiteUrl)"
-}
+}#>
 
 function Set-Views {
     param(
@@ -1164,7 +1185,7 @@ function Set-Views {
             continue
         }
 
-        $viewIdentities = @(Get-ListViewIdentitiesToUpdate -ListName $listName -SiteUrl $SiteUrl)
+        <#$viewIdentities = @(Get-ListViewIdentitiesToUpdate -ListName $listName -SiteUrl $SiteUrl)
         $desiredFields = Get-ViewFieldsForList -ListName $listName
 
         $listFieldNames = @(Get-PnPField -List $listName -ErrorAction Stop | ForEach-Object { $_.InternalName })
@@ -1182,10 +1203,10 @@ function Set-Views {
             }
 
             Set-PnPView -List $listName -Identity $viewIdentity -Fields $availableFields -ErrorAction Stop
-            Write-ProvisionLog "Updated view '$viewIdentity' on '$listName'" -Properties @{ Step = 'Set-Views' }
-        }
+            Write-ProvisionLog "Updated view '$viewIdentity' on '$listName'" -Properties @{ Step = 'Set-Views' }#>
     }
 }
+
 
 
 function Add-HubSites {
@@ -1202,9 +1223,19 @@ function Add-HubSites {
 
         Write-ProvisionLog "Associating $SiteUrl with hub site $hubSite" -Properties @{ Step = 'Add-HubSites' }
 
-        Add-PnPHubSiteAssociation -Site $SiteUrl -HubSite $hubSite -ErrorAction Stop
-        Write-ProvisionLog "Hub site associated with $SiteUrl" -Properties @{ Step = 'Add-HubSites' }
-
+        try {
+            Add-PnPHubSiteAssociation -Site $SiteUrl -HubSite $hubSite -ErrorAction Stop
+            Write-ProvisionLog "Hub site associated with $SiteUrl" -Properties @{ Step = 'Add-HubSites' }
+        }
+        catch {
+            Write-ProvisionLog "Failed to associate hub site on $SiteUrl : $($_.Exception.Message)" -Level Warning -Properties @{ Step = 'Add-HubSites' }
+            return @{
+                status  = 'Skipped'
+                message = "Hub site association failed: $($_.Exception.Message)"
+                siteUrl = $SiteUrl
+            }
+        }
+       
         return @{
             status  = 'Success'
             message = "Hub site associated with $SiteUrl"
