@@ -795,36 +795,31 @@ function Get-ContentTypeHub {
         [string]$ContentTypeNames = $script:ContentTypeName
     )
 
-    try {
-        Write-ProvisionLog "Adding content types from Content Type Hub for $SiteUrl"
+    Write-ProvisionLog "Adding content types from Content Type Hub for $SiteUrl"
 
-        $contentTypesArray = $ContentTypeNames.Split(',') | ForEach-Object { $_.Trim() } | Where-Object { $_ }
-        $contentTypeHubUrl = Get-PnPContentTypePublishingHubUrl
-        Write-ProvisionLog "Content Type Hub URL: $contentTypeHubUrl"
+    $contentTypesArray = $ContentTypeNames.Split(',') | ForEach-Object { $_.Trim() } | Where-Object { $_ }
+    $contentTypeHubUrl = Get-PnPContentTypePublishingHubUrl
+    Write-ProvisionLog "Content Type Hub URL: $contentTypeHubUrl"
 
-        #Connect-PnPWithCertificate -Url $contentTypeHubUrl
-        Connect-PnPManagedIdentity -SiteUrl $contentTypeHubUrl
-        $contentTypesToAdd = @(Get-PnPContentType |
-            Where-Object { $contentTypesArray -contains $_.Name } |
-            ForEach-Object {
-                [PSCustomObject]@{
-                    Name     = $_.Name
-                    StringId = if ($_.StringId) { $_.StringId } else { $_.Id.StringValue }
-                }
-            })
+    Connect-PnPForProvisioning -SiteUrl $contentTypeHubUrl
 
-        Connect-PnPManagedIdentity -SiteUrl $SiteUrl
+    $contentTypeIds = @(Get-PnPContentType |
+        Where-Object { $contentTypesArray -contains $_.Name } |
+        ForEach-Object {
+            if ($_.StringId) { $_.StringId } else { $_.Id.StringValue }
+        })
 
-        foreach ($contentType in $contentTypesToAdd) {
-            Add-PnPContentTypesFromContentTypeHub -ContentTypes $contentType.StringId -ErrorAction Stop
-            Write-ProvisionLog "Added content type '$($contentType.Name)' from hub to site: $SiteUrl"
-        }
+    if ($contentTypeIds.Count -lt 1) {
+        throw "No matching content types found in hub for: $($contentTypesArray -join ', ')"
     }
-    catch {
-        Write-ProvisionLog "ERROR: Failed to add content types from hub on $($SiteUrl): $($_.Exception.Message)"
+
+    foreach ($contentTypeId in $contentTypeIds) {
+        Add-PnPContentTypesFromContentTypeHub -ContentTypes $contentTypeId -Site $SiteUrl -ErrorAction Stop
+        Write-ProvisionLog "Added content type '$contentTypeId' from hub to site: $SiteUrl"
     }
+
+    Connect-PnPForProvisioning -SiteUrl $SiteUrl
 }
-
 
 function Add-ContentTypes {
     param(
