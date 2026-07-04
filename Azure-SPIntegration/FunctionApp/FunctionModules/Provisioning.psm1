@@ -883,7 +883,7 @@ function Add-SiteColumns {
 
         if ($columnName -eq 'Review Date') {
             try {
-                Set-PnPField -Identity $internalName -Values @{ DefaultFormula = '=TODAY()+365' } -ErrorAction Stop
+                Set-PnPField -Identity $internalName -Values @{ DefaultFormula = '=TODAY[]+365' } -ErrorAction Stop
                 Write-ProvisionLog 'Set Review Date site column default value to TODAY()+365'
             }
             catch {
