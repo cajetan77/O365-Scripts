@@ -137,6 +137,8 @@ function Connect-PnPForProvisioning {
         [string]$SiteUrl
     )
 
+    Write-ProvisionLog "Connecting to SharePoint using $SiteUrl and $authMethod" -Properties @{ Step = 'Connect-PnPForProvisioning' }
+
     $authMethod = if (-not [string]::IsNullOrWhiteSpace($env:SPO_AUTH_METHOD)) {
         $env:SPO_AUTH_METHOD
     }
@@ -863,12 +865,21 @@ function Set-DefaultContentType {
     try {
         Set-PnPDefaultContentTypeToList -List $ListName -ContentType $ContentTypeName -ErrorAction Stop
         Write-ProvisionLog "Default content type set to '$ContentTypeName' on list '$ListName' ($SiteUrl)"
+        
+        $field = Get-PnPField -List $ListName | Where-Object { $_.InternalName -eq 'ReviewDate1' } -ErrorAction Stop
+        if ($field) {
+            $field.DefaultFormula = "=TODAY()+365"
+
+            # 3. Save the changes back to SharePoint
+            $field.Update()
+            Invoke-PnPQuery
+            Write-ProvisionLog "Set Review Date site column default value to =TODAY()+365 for field $($field.Title)"
+        }
     }
     catch {
         Write-ProvisionLog "ERROR: Failed to set default content type '$ContentTypeName' on list '$ListName' ($SiteUrl): $($_.Exception.Message)"
     }
 }
-
 
 function Add-SiteColumns {
     param (
