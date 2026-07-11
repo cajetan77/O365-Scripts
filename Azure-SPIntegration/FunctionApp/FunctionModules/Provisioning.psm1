@@ -115,7 +115,7 @@ function Connect-PnPManagedIdentity {
         $connectParams.Tenant = $env:SPO_TENANT_ID
     }
 
-    Connect-PnPOnline @connectParams
+    Connect-PnPOnline -Url $SiteUrl -ManagedIdentity
     Write-ProvisionLog 'Connected to SharePoint using managed identity' -Properties @{ Step = 'Connect-PnPManagedIdentity' }
 
     try {
@@ -144,9 +144,11 @@ function Connect-PnPForProvisioning {
     }
     elseif (-not [string]::IsNullOrWhiteSpace($env:SPO_CERT_THUMBPRINT)) {
         'Certificate'
+        Write-ProvisionLog "Connecting to SharePoint using certificate" -Properties @{ Step = 'Connect-PnPForProvisioning' }
     }
     else {
         'ManagedIdentity'
+        Write-ProvisionLog "Connecting to SharePoint using managed identity" -Properties @{ Step = 'Connect-PnPForProvisioning' }
     }
 
     switch ($authMethod) {
@@ -865,8 +867,8 @@ function Set-DefaultContentType {
     try {
         Set-PnPDefaultContentTypeToList -List $ListName -ContentType $ContentTypeName -ErrorAction Stop
         Write-ProvisionLog "Default content type set to '$ContentTypeName' on list '$ListName' ($SiteUrl)"
-        
-        $field = Get-PnPField -List $ListName | Where-Object { $_.InternalName -eq 'ReviewDate1' } -ErrorAction Stop
+        $reviewDateField = "ReviewDate1"
+        $field = Get-PnPField -List $ListName | Where-Object { $_.InternalName -eq $reviewDateField } -ErrorAction SilentlyContinue
         if ($field) {
             $field.DefaultFormula = "=TODAY()+365"
 
@@ -874,6 +876,9 @@ function Set-DefaultContentType {
             $field.Update()
             Invoke-PnPQuery
             Write-ProvisionLog "Set Review Date site column default value to =TODAY()+365 for field $($field.Title)"
+        }
+        else {
+            Write-ProvisionLog "Review Date site column not found on list '$ListName'"
         }
     }
     catch {
