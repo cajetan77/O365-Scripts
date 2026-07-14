@@ -62,7 +62,10 @@ try {
         return
     }
 
-    $siteUrl = [string]$Request.Body.objectUrl
+    $siteUrl = [string]$Request.Body.ObjectUrl
+    if ([string]::IsNullOrWhiteSpace($siteUrl)) {
+        $siteUrl = [string]$Request.Body.objectUrl
+    }
 
     if ([string]::IsNullOrWhiteSpace($siteUrl)) {
         Push-OutputBinding -Name Response -Value ([HttpResponseContext]@{
