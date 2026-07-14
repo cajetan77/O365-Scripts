@@ -18,7 +18,7 @@ var app = builder.Build();
 
 app.MapGet("/", () => "CAJ Webhook API Running");
 
-app.MapPost("/caj/webhook", async (HttpRequest request, IHttpClientFactory httpClientFactory) =>
+app.MapPost("/caj/webhook", async (HttpRequest request, IHttpClientFactory httpClientFactory, ILogger<Program> logger) =>
 {
     if (!WebhookConfiguration.TryLoad(out var config, out var configError))
     {
@@ -53,10 +53,13 @@ app.MapPost("/caj/webhook", async (HttpRequest request, IHttpClientFactory httpC
     }
     catch (JsonException)
     {
+        logger.LogError("Request body must be valid JSON. {Body}", body);
         return Results.Json(
             new { status = "BadRequest", message = "Request body must be valid JSON." },
             statusCode: StatusCodes.Status400BadRequest);
     }
+
+    logger.LogInformation("Received webhook payload: {Payload}", body);
 
     var httpClient = httpClientFactory.CreateClient("FunctionForwarder");
     using var httpRequest = new HttpRequestMessage(HttpMethod.Post, config.FunctionEndpoint);
@@ -70,6 +73,8 @@ app.MapPost("/caj/webhook", async (HttpRequest request, IHttpClientFactory httpC
 
     using var response = await httpClient.SendAsync(httpRequest);
     var result = await response.Content.ReadAsStringAsync();
+
+    logger.LogInformation("Function responded {StatusCode}: {Result}", (int)response.StatusCode, result);
 
     return Results.Content(
         result,
