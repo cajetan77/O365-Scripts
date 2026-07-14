@@ -61,7 +61,7 @@ try {
             })
         return
     }
-
+    Write-Host ($Request.Body | ConvertTo-Json)
     $siteUrl = [string]$Request.Body.ObjectUrl
     if ([string]::IsNullOrWhiteSpace($siteUrl)) {
         $siteUrl = [string]$Request.Body.objectUrl
