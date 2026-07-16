@@ -1,21 +1,20 @@
 <#
 .SYNOPSIS
-    Exports all Entra ID devices using Get-MgDevice, including assigned users.
+    Exports Entra devices with RegisteredOwners and compliance status.
 
 .DESCRIPTION
-    Read-only inventory of directory devices via Microsoft Graph v1.0.
-    Uses device list with registeredOwners / registeredUsers expanded so each
-    device shows who it is assigned to.
+    Uses Get-MgDevice -All, resolves RegisteredOwners via Get-MgUser,
+    and exports DisplayName, owners, and IsCompliant.
 
 .NOTES
     Application permissions (admin consent):
       Device.Read.All
-      User.Read.All   (recommended so owner UPN/displayName are returned)
+      User.Read.All
 #>
 [CmdletBinding()]
 Param(
-    [switch]$EnabledDevicesOnly,
-    [int]$StaleDays = 30,
+    [int]$BatchSize = 20,
+    [int]$BatchDelayMs = 200,
     [int]$GraphRetries = 5,
     [int]$GraphRetryDelaySeconds = 10,
 
@@ -41,6 +40,7 @@ function Write-ReportLog {
 function Connect-MgGraphApp {
     Import-Module Microsoft.Graph.Authentication -ErrorAction Stop
     Import-Module Microsoft.Graph.Identity.DirectoryManagement -ErrorAction Stop
+    Import-Module Microsoft.Graph.Users -ErrorAction Stop
 
     Write-ReportLog 'Connecting to Microsoft Graph...'
     if ($Thumbprint) {
@@ -57,79 +57,122 @@ function Connect-MgGraphApp {
     Set-MgRequestContext -Retries $GraphRetries -RetryDelay $GraphRetryDelaySeconds | Out-Null
 }
 
-function Get-DirectoryUserLabel {
-    param($Person)
+function Invoke-MgGraphBatch {
+    param([array]$Requests, [int]$MaxRetries = 6)
 
-    if (-not $Person) { return $null }
-
-    $upn = $Person.userPrincipalName
-    $name = $Person.displayName
-    $id = $Person.id
-
-    if ($upn -and $name) { return "$name <$upn>" }
-    if ($upn) { return $upn }
-    if ($name) { return $name }
-    if ($id) { return $id }
-    return $null
-}
-
-function Get-AssignmentInfo {
-    param($Device)
-
-    $owners = @($Device.registeredOwners)
-    $users = @($Device.registeredUsers)
-
-    $ownerLabels = @(
-        $owners | ForEach-Object { Get-DirectoryUserLabel -Person $_ } | Where-Object { $_ }
-    )
-    $userLabels = @(
-        $users | ForEach-Object { Get-DirectoryUserLabel -Person $_ } | Where-Object { $_ }
-    )
-
-    $primary = if ($ownerLabels.Count -gt 0) {
-        $ownerLabels[0]
-    }
-    elseif ($userLabels.Count -gt 0) {
-        $userLabels[0]
-    }
-    else {
-        ''
-    }
-
-    return [PSCustomObject]@{
-        AssignedTo             = $primary
-        RegisteredOwners       = ($ownerLabels -join '; ')
-        RegisteredOwnerUPNs    = (($owners | ForEach-Object { $_.userPrincipalName } | Where-Object { $_ }) -join '; ')
-        RegisteredUsers        = ($userLabels -join '; ')
-        RegisteredUserUPNs     = (($users | ForEach-Object { $_.userPrincipalName } | Where-Object { $_ }) -join '; ')
-        HasAssignment          = [bool]($primary)
-    }
-}
-
-function Get-AllDevicesWithAssignment {
-    param([int]$PageSize = 100)
-
-    # Keep page size modest when expanding owners/users (Graph payload size).
-    $devices = [System.Collections.Generic.List[object]]::new()
-    $select = 'id,deviceId,displayName,accountEnabled,operatingSystem,operatingSystemVersion,trustType,isManaged,isCompliant,profileType,deviceOwnership,enrollmentType,managementType,manufacturer,model,approximateLastSignInDateTime,registrationDateTime,createdDateTime,deviceCategory'
-    $expand = 'registeredOwners($select=id,displayName,userPrincipalName),registeredUsers($select=id,displayName,userPrincipalName)'
-    $uri = "https://graph.microsoft.com/v1.0/devices?`$top=$PageSize&`$select=$select&`$expand=$expand"
-
-    do {
-        $page = Invoke-MgGraphRequest -Uri $uri -Method GET
-        if ($page.value) {
-            $devices.AddRange(@($page.value))
+    $body = @{ requests = $Requests } | ConvertTo-Json -Depth 6
+    for ($attempt = 1; $attempt -le $MaxRetries; $attempt++) {
+        try {
+            $result = Invoke-MgGraphRequest -Method POST -Uri 'https://graph.microsoft.com/v1.0/$batch' -Body $body
+            return @($result.responses)
         }
+        catch {
+            $status = $null
+            if ($_.Exception.Response) { $status = [int]$_.Exception.Response.StatusCode }
+            if ($status -eq 429 -and $attempt -lt $MaxRetries) {
+                Start-Sleep -Seconds ([Math]::Min(60, 5 * $attempt))
+                continue
+            }
+            throw
+        }
+    }
+}
 
-        Write-Progress -Activity 'Retrieving devices (Get-MgDevice /devices)' `
-            -Status "$($devices.Count) device(s) retrieved" `
-            -PercentComplete $(if ($page.'@odata.nextLink') { -1 } else { 100 })
+function Invoke-MgGraphBatchPages {
+    param(
+        [array]$AllRequests,
+        [int]$Size = 20,
+        [int]$DelayMs = 200,
+        [string]$Activity = 'Graph batch'
+    )
 
-        $uri = $page.'@odata.nextLink'
-    } while ($uri)
+    $allResponses = [System.Collections.Generic.List[object]]::new()
+    if ($AllRequests.Count -eq 0) { return @() }
 
-    Write-Progress -Activity 'Retrieving devices (Get-MgDevice /devices)' -Completed
-    return @($devices)
+    $totalBatches = [Math]::Ceiling($AllRequests.Count / [double]$Size)
+    for ($i = 0; $i -lt $AllRequests.Count; $i += $Size) {
+        $batchNum = [int]($i / $Size) + 1
+        $end = [Math]::Min($i + $Size - 1, $AllRequests.Count - 1)
+        $chunk = @($AllRequests[$i..$end])
+
+        Write-Progress -Activity $Activity -Status "Batch $batchNum of $totalBatches" `
+            -PercentComplete (($batchNum / $totalBatches) * 100)
+
+        $allResponses.AddRange((Invoke-MgGraphBatch -Requests $chunk))
+
+        if ($DelayMs -gt 0 -and ($i + $Size) -lt $AllRequests.Count) {
+            Start-Sleep -Milliseconds $DelayMs
+        }
+    }
+
+    Write-Progress -Activity $Activity -Completed
+    return @($allResponses)
+}
+
+function Get-DeviceRegisteredOwnerIds {
+    param(
+        [array]$Devices,
+        [int]$Size,
+        [int]$DelayMs
+    )
+
+    $map = @{}
+    foreach ($d in $Devices) {
+        $map[$d.Id] = [System.Collections.Generic.List[string]]::new()
+    }
+
+    $requests = for ($i = 0; $i -lt $Devices.Count; $i++) {
+        @{ id = "$i"; method = 'GET'; url = "/devices/$($Devices[$i].Id)/registeredOwners?`$select=id" }
+    }
+
+    Write-ReportLog "Loading RegisteredOwners for $($Devices.Count) device(s)..."
+    $responses = Invoke-MgGraphBatchPages -AllRequests $requests -Size $Size -DelayMs $DelayMs -Activity 'RegisteredOwners'
+    foreach ($response in $responses) {
+        $index = [int]$response.id
+        $deviceId = $Devices[$index].Id
+        if ($response.status -eq 200) {
+            foreach ($obj in @($response.body.value)) {
+                if ($obj.id) { $map[$deviceId].Add([string]$obj.id) }
+            }
+        }
+    }
+
+    return $map
+}
+
+function Import-UsersById {
+    param(
+        [string[]]$UserIds,
+        [int]$Size,
+        [int]$DelayMs
+    )
+
+    $cache = @{}
+    $unique = @($UserIds | Where-Object { $_ } | Select-Object -Unique)
+    if ($unique.Count -eq 0) { return $cache }
+
+    Write-ReportLog "Resolving $($unique.Count) RegisteredOwner(s) with Get-MgUser..."
+    $requests = for ($i = 0; $i -lt $unique.Count; $i++) {
+        @{
+            id     = "$i"
+            method = 'GET'
+            url    = "/users/$($unique[$i])?`$select=id,displayName,userPrincipalName"
+        }
+    }
+
+    $responses = Invoke-MgGraphBatchPages -AllRequests $requests -Size $Size -DelayMs $DelayMs -Activity 'Get-MgUser'
+    foreach ($response in $responses) {
+        $index = [int]$response.id
+        $userId = $unique[$index]
+        if ($response.status -eq 200) {
+            $cache[$userId] = [PSCustomObject]@{
+                DisplayName       = $response.body.displayName
+                UserPrincipalName = $response.body.userPrincipalName
+            }
+        }
+    }
+
+    return $cache
 }
 
 function Export-ReportCsv {
@@ -155,27 +198,30 @@ try {
 
     $devicesPath = Join-Path $exportRoot "Devices-$timestamp.csv"
     $summaryPath = Join-Path $exportRoot "DeviceSummary-$timestamp.csv"
-    $runLogPath = Join-Path $exportRoot "RunLog-$timestamp.csv"
     $script:LogPath = Join-Path $exportRoot "RunLog-$timestamp.log"
 
     Write-ReportLog "Starting device report (TenantId: $TenantId)"
     Connect-MgGraphApp
 
-    Write-ReportLog 'Retrieving devices with owners/users (Graph /devices + expand)...'
-    $allDevices = Get-AllDevicesWithAssignment
-    Write-ReportLog "Retrieved $($allDevices.Count) device(s)."
+    Write-ReportLog 'Retrieving devices with Get-MgDevice -All...'
+    $allDevices = @(Get-MgDevice -All -Property Id, DeviceId, DisplayName, IsCompliant, AccountEnabled, OperatingSystem)
+    Write-ReportLog "Get-MgDevice returned $($allDevices.Count) device(s)."
 
-    if ($EnabledDevicesOnly) {
-        $allDevices = @($allDevices | Where-Object { $_.accountEnabled -eq $true })
-        Write-ReportLog "Enabled devices: $($allDevices.Count)"
+    $ownerMap = Get-DeviceRegisteredOwnerIds -Devices $allDevices -Size $BatchSize -DelayMs $BatchDelayMs
+
+    $allOwnerIds = [System.Collections.Generic.HashSet[string]]::new([StringComparer]::OrdinalIgnoreCase)
+    foreach ($entry in $ownerMap.GetEnumerator()) {
+        foreach ($id in $entry.Value) { [void]$allOwnerIds.Add($id) }
     }
 
+    $userCache = Import-UsersById -UserIds @($allOwnerIds) -Size $BatchSize -DelayMs $BatchDelayMs
+    Write-ReportLog "Resolved $($userCache.Count) owner(s)."
+
     $deviceRows = [System.Collections.Generic.List[object]]::new()
-    $osCounts = @{}
-    $trustCounts = @{}
-    $staleCount = 0
-    $disabledCount = 0
-    $unassignedCount = 0
+    $compliantCount = 0
+    $nonCompliantCount = 0
+    $unknownComplianceCount = 0
+    $noOwnerCount = 0
     $processed = 0
 
     foreach ($d in $allDevices) {
@@ -185,103 +231,59 @@ try {
                 -PercentComplete (($processed / [Math]::Max($allDevices.Count, 1)) * 100)
         }
 
-        $assignment = Get-AssignmentInfo -Device $d
+        $ownerIds = @($ownerMap[$d.Id])
+        $owners = @($ownerIds | ForEach-Object { $userCache[$_] } | Where-Object { $_ })
+        $ownerNames = @($owners | ForEach-Object { $_.DisplayName })
+        $ownerUpns = @($owners | ForEach-Object { $_.UserPrincipalName })
 
-        $lastSignIn = $null
-        if ($d.approximateLastSignInDateTime) {
-            $lastSignIn = [datetime]$d.approximateLastSignInDateTime
+        $compliance = if ($null -eq $d.IsCompliant) {
+            'Unknown'
+        }
+        elseif ($d.IsCompliant) {
+            'Compliant'
+        }
+        else {
+            'NonCompliant'
         }
 
-        $daysSinceSignIn = if ($lastSignIn) {
-            [int](New-TimeSpan -Start $lastSignIn -End (Get-Date)).TotalDays
-        }
-        else { $null }
+        if ($compliance -eq 'Compliant') { $compliantCount++ }
+        elseif ($compliance -eq 'NonCompliant') { $nonCompliantCount++ }
+        else { $unknownComplianceCount++ }
 
-        $os = if ($d.operatingSystem) { [string]$d.operatingSystem } else { 'Unknown' }
-        $trust = if ($d.trustType) { [string]$d.trustType } else { 'unknown' }
-
-        if ($d.accountEnabled -eq $false) { $disabledCount++ }
-        if (-not $assignment.HasAssignment) { $unassignedCount++ }
-        if ($daysSinceSignIn -ne $null -and $daysSinceSignIn -gt $StaleDays) { $staleCount++ }
-
-        if (-not $osCounts.ContainsKey($os)) { $osCounts[$os] = 0 }
-        if (-not $trustCounts.ContainsKey($trust)) { $trustCounts[$trust] = 0 }
-        $osCounts[$os]++
-        $trustCounts[$trust]++
+        if ($owners.Count -eq 0) { $noOwnerCount++ }
 
         $deviceRows.Add([PSCustomObject]@{
-            DisplayName                   = $d.displayName
-            AssignedTo                    = $assignment.AssignedTo
-            RegisteredOwners              = $assignment.RegisteredOwners
-            RegisteredOwnerUPNs           = $assignment.RegisteredOwnerUPNs
-            RegisteredUsers               = $assignment.RegisteredUsers
-            RegisteredUserUPNs            = $assignment.RegisteredUserUPNs
-            DeviceId                      = $d.deviceId
-            ObjectId                      = $d.id
-            AccountEnabled                = $d.accountEnabled
-            OperatingSystem               = $d.operatingSystem
-            OperatingSystemVersion        = $d.operatingSystemVersion
-            TrustType                     = $d.trustType
-            IsManaged                     = $d.isManaged
-            IsCompliant                   = $d.isCompliant
-            ProfileType                   = $d.profileType
-            DeviceOwnership               = $d.deviceOwnership
-            EnrollmentType                = $d.enrollmentType
-            ManagementType                = $d.managementType
-            Manufacturer                  = $d.manufacturer
-            Model                         = $d.model
-            ApproximateLastSignInDateTime = $d.approximateLastSignInDateTime
-            DaysSinceLastSignIn           = $daysSinceSignIn
-            RegistrationDateTime          = $d.registrationDateTime
-            CreatedDateTime               = $d.createdDateTime
-            DeviceCategory                = $d.deviceCategory
+            DisplayName        = $d.DisplayName
+            DeviceId           = $d.DeviceId
+            ObjectId           = $d.Id
+            OperatingSystem    = $d.OperatingSystem
+            AccountEnabled     = $d.AccountEnabled
+            IsCompliant        = $d.IsCompliant
+            ComplianceStatus   = $compliance
+            RegisteredOwners   = ($ownerNames -join '; ')
+            RegisteredOwnerUPN = ($ownerUpns -join '; ')
         })
     }
 
     Write-Progress -Activity 'Building report' -Completed
 
-    $summaryRows = [System.Collections.Generic.List[object]]::new()
-    $summaryRows.Add([PSCustomObject]@{ Metric = 'ReportGeneratedUtc'; Value = (Get-Date).ToUniversalTime().ToString('o') })
-    $summaryRows.Add([PSCustomObject]@{ Metric = 'TenantId'; Value = $TenantId })
-    $summaryRows.Add([PSCustomObject]@{ Metric = 'Source'; Value = 'Get-MgDevice (/devices with registeredOwners/Users)' })
-    $summaryRows.Add([PSCustomObject]@{ Metric = 'TotalDevices'; Value = $deviceRows.Count })
-    $summaryRows.Add([PSCustomObject]@{ Metric = 'AssignedDevices'; Value = ($deviceRows.Count - $unassignedCount) })
-    $summaryRows.Add([PSCustomObject]@{ Metric = 'UnassignedDevices'; Value = $unassignedCount })
-    $summaryRows.Add([PSCustomObject]@{ Metric = 'DisabledDevices'; Value = $disabledCount })
-    $summaryRows.Add([PSCustomObject]@{ Metric = "StaleOver${StaleDays}Days"; Value = $staleCount })
-
-    foreach ($entry in ($osCounts.GetEnumerator() | Sort-Object Name)) {
-        $summaryRows.Add([PSCustomObject]@{ Metric = "OS:$($entry.Key)"; Value = $entry.Value })
-    }
-    foreach ($entry in ($trustCounts.GetEnumerator() | Sort-Object Name)) {
-        $summaryRows.Add([PSCustomObject]@{ Metric = "TrustType:$($entry.Key)"; Value = $entry.Value })
-    }
+    $summaryRows = @(
+        [PSCustomObject]@{ Metric = 'TotalDevices'; Value = $deviceRows.Count }
+        [PSCustomObject]@{ Metric = 'Compliant'; Value = $compliantCount }
+        [PSCustomObject]@{ Metric = 'NonCompliant'; Value = $nonCompliantCount }
+        [PSCustomObject]@{ Metric = 'ComplianceUnknown'; Value = $unknownComplianceCount }
+        [PSCustomObject]@{ Metric = 'NoRegisteredOwner'; Value = $noOwnerCount }
+        [PSCustomObject]@{ Metric = 'ResolvedOwners'; Value = $userCache.Count }
+    )
 
     Export-ReportCsv -Data $deviceRows -Path $devicesPath
     Export-ReportCsv -Data $summaryRows -Path $summaryPath
 
     $duration = (Get-Date) - $runStart
-    $runMeta = [PSCustomObject]@{
-        ReportGeneratedUtc = (Get-Date).ToUniversalTime().ToString('o')
-        TenantId           = $TenantId
-        TotalDevices       = $deviceRows.Count
-        AssignedDevices    = ($deviceRows.Count - $unassignedCount)
-        UnassignedDevices  = $unassignedCount
-        DurationMinutes    = [Math]::Round($duration.TotalMinutes, 2)
-        Status             = 'Success'
-        DevicesCsv         = $devicesPath
-        SummaryCsv         = $summaryPath
-    }
-    Export-ReportCsv -Data $runMeta -Path $runLogPath
-
     Write-ReportLog 'Report complete.'
     Write-ReportLog "  Devices : $($deviceRows.Count) -> $devicesPath"
     Write-ReportLog "  Summary : $($summaryRows.Count) -> $summaryPath"
     Write-ReportLog ("Duration: {0:N1} minute(s)" -f $duration.TotalMinutes)
-
-    if ($deviceRows.Count -eq 0) {
-        Write-ReportLog 'WARNING: No devices returned. Confirm Device.Read.All (+ User.Read.All) with admin consent.'
-    }
 }
 catch {
     Write-ReportLog "ERROR: $($_.Exception.Message)"
