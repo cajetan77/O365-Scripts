@@ -35,3 +35,6 @@ Modules/
 
 #Report
 *.csv
+# Large Outlook files
+*.pst
+*.ost
