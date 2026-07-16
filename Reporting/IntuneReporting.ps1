@@ -1,14 +1,16 @@
 <#
 .SYNOPSIS
-    Exports all Entra ID devices using Get-MgDevice.
+    Exports all Entra ID devices using Get-MgDevice, including assigned users.
 
 .DESCRIPTION
     Read-only inventory of directory devices via Microsoft Graph v1.0.
-    Uses Get-MgDevice -All only (no Intune managedDevices calls).
+    Uses device list with registeredOwners / registeredUsers expanded so each
+    device shows who it is assigned to.
 
 .NOTES
-    Application permission required (admin consent):
+    Application permissions (admin consent):
       Device.Read.All
+      User.Read.All   (recommended so owner UPN/displayName are returned)
 #>
 [CmdletBinding()]
 Param(
@@ -55,6 +57,81 @@ function Connect-MgGraphApp {
     Set-MgRequestContext -Retries $GraphRetries -RetryDelay $GraphRetryDelaySeconds | Out-Null
 }
 
+function Get-DirectoryUserLabel {
+    param($Person)
+
+    if (-not $Person) { return $null }
+
+    $upn = $Person.userPrincipalName
+    $name = $Person.displayName
+    $id = $Person.id
+
+    if ($upn -and $name) { return "$name <$upn>" }
+    if ($upn) { return $upn }
+    if ($name) { return $name }
+    if ($id) { return $id }
+    return $null
+}
+
+function Get-AssignmentInfo {
+    param($Device)
+
+    $owners = @($Device.registeredOwners)
+    $users = @($Device.registeredUsers)
+
+    $ownerLabels = @(
+        $owners | ForEach-Object { Get-DirectoryUserLabel -Person $_ } | Where-Object { $_ }
+    )
+    $userLabels = @(
+        $users | ForEach-Object { Get-DirectoryUserLabel -Person $_ } | Where-Object { $_ }
+    )
+
+    $primary = if ($ownerLabels.Count -gt 0) {
+        $ownerLabels[0]
+    }
+    elseif ($userLabels.Count -gt 0) {
+        $userLabels[0]
+    }
+    else {
+        ''
+    }
+
+    return [PSCustomObject]@{
+        AssignedTo             = $primary
+        RegisteredOwners       = ($ownerLabels -join '; ')
+        RegisteredOwnerUPNs    = (($owners | ForEach-Object { $_.userPrincipalName } | Where-Object { $_ }) -join '; ')
+        RegisteredUsers        = ($userLabels -join '; ')
+        RegisteredUserUPNs     = (($users | ForEach-Object { $_.userPrincipalName } | Where-Object { $_ }) -join '; ')
+        HasAssignment          = [bool]($primary)
+    }
+}
+
+function Get-AllDevicesWithAssignment {
+    param([int]$PageSize = 100)
+
+    # Keep page size modest when expanding owners/users (Graph payload size).
+    $devices = [System.Collections.Generic.List[object]]::new()
+    $select = 'id,deviceId,displayName,accountEnabled,operatingSystem,operatingSystemVersion,trustType,isManaged,isCompliant,profileType,deviceOwnership,enrollmentType,managementType,manufacturer,model,approximateLastSignInDateTime,registrationDateTime,createdDateTime,deviceCategory'
+    $expand = 'registeredOwners($select=id,displayName,userPrincipalName),registeredUsers($select=id,displayName,userPrincipalName)'
+    $uri = "https://graph.microsoft.com/v1.0/devices?`$top=$PageSize&`$select=$select&`$expand=$expand"
+
+    do {
+        $page = Invoke-MgGraphRequest -Uri $uri -Method GET
+        if ($page.value) {
+            $devices.AddRange(@($page.value))
+        }
+
+        Write-Progress -Activity 'Retrieving devices (Get-MgDevice /devices)' `
+            -Status "$($devices.Count) device(s) retrieved" `
+            -PercentComplete $(if ($page.'@odata.nextLink') { -1 } else { 100 })
+
+        $uri = $page.'@odata.nextLink'
+    } while ($uri)
+
+    Write-Progress -Activity 'Retrieving devices (Get-MgDevice /devices)' -Completed
+    return @($devices)
+}
+
 function Export-ReportCsv {
     param(
         [Parameter(Mandatory)]$Data,
@@ -84,12 +161,12 @@ try {
     Write-ReportLog "Starting device report (TenantId: $TenantId)"
     Connect-MgGraphApp
 
-    Write-ReportLog 'Retrieving devices with Get-MgDevice -All...'
-    $allDevices = @(Get-MgDevice -All)
-    Write-ReportLog "Get-MgDevice returned $($allDevices.Count) device(s)."
+    Write-ReportLog 'Retrieving devices with owners/users (Graph /devices + expand)...'
+    $allDevices = Get-AllDevicesWithAssignment
+    Write-ReportLog "Retrieved $($allDevices.Count) device(s)."
 
     if ($EnabledDevicesOnly) {
-        $allDevices = @($allDevices | Where-Object { $_.AccountEnabled -eq $true })
+        $allDevices = @($allDevices | Where-Object { $_.accountEnabled -eq $true })
         Write-ReportLog "Enabled devices: $($allDevices.Count)"
     }
 
@@ -98,6 +175,7 @@ try {
     $trustCounts = @{}
     $staleCount = 0
     $disabledCount = 0
+    $unassignedCount = 0
     $processed = 0
 
     foreach ($d in $allDevices) {
@@ -107,9 +185,11 @@ try {
                 -PercentComplete (($processed / [Math]::Max($allDevices.Count, 1)) * 100)
         }
 
+        $assignment = Get-AssignmentInfo -Device $d
+
         $lastSignIn = $null
-        if ($d.ApproximateLastSignInDateTime) {
-            $lastSignIn = [datetime]$d.ApproximateLastSignInDateTime
+        if ($d.approximateLastSignInDateTime) {
+            $lastSignIn = [datetime]$d.approximateLastSignInDateTime
         }
 
         $daysSinceSignIn = if ($lastSignIn) {
@@ -117,10 +197,11 @@ try {
         }
         else { $null }
 
-        $os = if ($d.OperatingSystem) { [string]$d.OperatingSystem } else { 'Unknown' }
-        $trust = if ($d.TrustType) { [string]$d.TrustType } else { 'unknown' }
+        $os = if ($d.operatingSystem) { [string]$d.operatingSystem } else { 'Unknown' }
+        $trust = if ($d.trustType) { [string]$d.trustType } else { 'unknown' }
 
-        if ($d.AccountEnabled -eq $false) { $disabledCount++ }
+        if ($d.accountEnabled -eq $false) { $disabledCount++ }
+        if (-not $assignment.HasAssignment) { $unassignedCount++ }
         if ($daysSinceSignIn -ne $null -and $daysSinceSignIn -gt $StaleDays) { $staleCount++ }
 
         if (-not $osCounts.ContainsKey($os)) { $osCounts[$os] = 0 }
@@ -129,26 +210,31 @@ try {
         $trustCounts[$trust]++
 
         $deviceRows.Add([PSCustomObject]@{
-            DisplayName                  = $d.DisplayName
-            DeviceId                     = $d.DeviceId
-            ObjectId                     = $d.Id
-            AccountEnabled               = $d.AccountEnabled
-            OperatingSystem              = $d.OperatingSystem
-            OperatingSystemVersion       = $d.OperatingSystemVersion
-            TrustType                    = $d.TrustType
-            IsManaged                    = $d.IsManaged
-            IsCompliant                  = $d.IsCompliant
-            ProfileType                  = $d.ProfileType
-            DeviceOwnership              = $d.DeviceOwnership
-            EnrollmentType               = $d.EnrollmentType
-            ManagementType               = $d.ManagementType
-            Manufacturer                 = $d.Manufacturer
-            Model                        = $d.Model
-            ApproximateLastSignInDateTime = $d.ApproximateLastSignInDateTime
-            DaysSinceLastSignIn          = $daysSinceSignIn
-            RegistrationDateTime         = $d.RegistrationDateTime
-            CreatedDateTime              = $d.CreatedDateTime
-            DeviceCategory               = $d.DeviceCategory
+            DisplayName                   = $d.displayName
+            AssignedTo                    = $assignment.AssignedTo
+            RegisteredOwners              = $assignment.RegisteredOwners
+            RegisteredOwnerUPNs           = $assignment.RegisteredOwnerUPNs
+            RegisteredUsers               = $assignment.RegisteredUsers
+            RegisteredUserUPNs            = $assignment.RegisteredUserUPNs
+            DeviceId                      = $d.deviceId
+            ObjectId                      = $d.id
+            AccountEnabled                = $d.accountEnabled
+            OperatingSystem               = $d.operatingSystem
+            OperatingSystemVersion        = $d.operatingSystemVersion
+            TrustType                     = $d.trustType
+            IsManaged                     = $d.isManaged
+            IsCompliant                   = $d.isCompliant
+            ProfileType                   = $d.profileType
+            DeviceOwnership               = $d.deviceOwnership
+            EnrollmentType                = $d.enrollmentType
+            ManagementType                = $d.managementType
+            Manufacturer                  = $d.manufacturer
+            Model                         = $d.model
+            ApproximateLastSignInDateTime = $d.approximateLastSignInDateTime
+            DaysSinceLastSignIn           = $daysSinceSignIn
+            RegistrationDateTime          = $d.registrationDateTime
+            CreatedDateTime               = $d.createdDateTime
+            DeviceCategory                = $d.deviceCategory
         })
     }
 
@@ -157,8 +243,10 @@ try {
     $summaryRows = [System.Collections.Generic.List[object]]::new()
     $summaryRows.Add([PSCustomObject]@{ Metric = 'ReportGeneratedUtc'; Value = (Get-Date).ToUniversalTime().ToString('o') })
     $summaryRows.Add([PSCustomObject]@{ Metric = 'TenantId'; Value = $TenantId })
-    $summaryRows.Add([PSCustomObject]@{ Metric = 'Source'; Value = 'Get-MgDevice -All' })
+    $summaryRows.Add([PSCustomObject]@{ Metric = 'Source'; Value = 'Get-MgDevice (/devices with registeredOwners/Users)' })
     $summaryRows.Add([PSCustomObject]@{ Metric = 'TotalDevices'; Value = $deviceRows.Count })
+    $summaryRows.Add([PSCustomObject]@{ Metric = 'AssignedDevices'; Value = ($deviceRows.Count - $unassignedCount) })
+    $summaryRows.Add([PSCustomObject]@{ Metric = 'UnassignedDevices'; Value = $unassignedCount })
     $summaryRows.Add([PSCustomObject]@{ Metric = 'DisabledDevices'; Value = $disabledCount })
     $summaryRows.Add([PSCustomObject]@{ Metric = "StaleOver${StaleDays}Days"; Value = $staleCount })
 
@@ -177,6 +265,8 @@ try {
         ReportGeneratedUtc = (Get-Date).ToUniversalTime().ToString('o')
         TenantId           = $TenantId
         TotalDevices       = $deviceRows.Count
+        AssignedDevices    = ($deviceRows.Count - $unassignedCount)
+        UnassignedDevices  = $unassignedCount
         DurationMinutes    = [Math]::Round($duration.TotalMinutes, 2)
         Status             = 'Success'
         DevicesCsv         = $devicesPath
@@ -190,7 +280,7 @@ try {
     Write-ReportLog ("Duration: {0:N1} minute(s)" -f $duration.TotalMinutes)
 
     if ($deviceRows.Count -eq 0) {
-        Write-ReportLog 'WARNING: Get-MgDevice returned 0 devices. Confirm Device.Read.All is granted with admin consent.'
+        Write-ReportLog 'WARNING: No devices returned. Confirm Device.Read.All (+ User.Read.All) with admin consent.'
     }
 }
 catch {
