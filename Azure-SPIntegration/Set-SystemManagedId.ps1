@@ -1,54 +1,53 @@
-# Grants the Function App managed identity SharePoint Sites.FullControl.All.
-# Required for Connect-PnPOnline -ManagedIdentity (SharePoint API, NOT Microsoft Graph).
+# Grants Graph + SharePoint app roles to a system-assigned Managed Identity.
+# Set $PrincipalId to the MI object (principal) id from Azure portal.
 
-$RESOURCE_GROUP = 'SPO-Automation'
-$FUNCTION_APP_NAME = 'func-secure-processor02'
-$PermissionName = 'Sites.FullControl.All'
+$PrincipalId = 'a99d2497-e8d9-4a56-9474-0be25075367b'
 
-# Office 365 SharePoint Online
-$SharePointResourceAppId = '00000003-0000-0ff1-ce00-000000000000'
+$GraphAppId = '00000003-0000-0000-c000-000000000000'      # Microsoft Graph
+$SharePointAppId = '00000003-0000-0ff1-ce00-000000000000' # SharePoint Online
+
+$Permissions = @(
+    @{ AppId = $GraphAppId;      Name = 'User.Read.All' }
+    @{ AppId = $GraphAppId;      Name = 'Group.Read.All' }
+    @{ AppId = $GraphAppId;      Name = 'GroupMember.Read.All' }
+    @{ AppId = $GraphAppId;      Name = 'AuditLog.Read.All' }
+    @{ AppId = $GraphAppId;      Name = 'Organization.Read.All' }
+    @{ AppId = $GraphAppId;      Name = 'Sites.ReadWrite.All' }
+    @{ AppId = $SharePointAppId; Name = 'Sites.FullControl.All' }
+)
 
 Connect-MgGraph -Scopes 'AppRoleAssignment.ReadWrite.All', 'Application.Read.All' -NoWelcome
 
-$principalId = az functionapp identity show `
-    --name $FUNCTION_APP_NAME `
-    --resource-group $RESOURCE_GROUP `
-    --query principalId `
-    --output tsv
+$mi = Get-MgServicePrincipal -Filter "Id eq '$PrincipalId'"
+if (-not $mi) { throw "Managed identity not found: $PrincipalId" }
 
-if ([string]::IsNullOrWhiteSpace($principalId)) {
-    throw "Managed identity not found on '$FUNCTION_APP_NAME'. Enable system-assigned identity first."
-}
+Write-Host "Assigning permissions to $PrincipalId ($($mi.DisplayName))"
 
-Write-Host "Function App: $FUNCTION_APP_NAME"
-Write-Host "Managed identity object id: $principalId"
+foreach ($permission in $Permissions) {
+    $resource = Get-MgServicePrincipal -Filter "AppId eq '$($permission.AppId)'"
+    $role = $resource.AppRoles |
+        Where-Object { $_.Value -eq $permission.Name -and $_.AllowedMemberTypes -contains 'Application' } |
+        Select-Object -First 1
 
-$managedIdentitySp = Get-MgServicePrincipal -Filter "Id eq '$principalId'"
-$sharePointSp = Get-MgServicePrincipal -Filter "AppId eq '$SharePointResourceAppId'"
+    if (-not $role) {
+        throw "Permission '$($permission.Name)' not found."
+    }
 
-$appRole = $sharePointSp.AppRoles |
-    Where-Object { $_.Value -eq $PermissionName -and $_.AllowedMemberTypes -contains 'Application' } |
-    Select-Object -First 1
+    $exists = Get-MgServicePrincipalAppRoleAssignedTo -ServicePrincipalId $mi.Id -All |
+        Where-Object { $_.ResourceId -eq $resource.Id -and $_.AppRoleId -eq $role.Id }
 
-if (-not $appRole) {
-    throw "App role '$PermissionName' not found on SharePoint Online"
-}
+    if ($exists) {
+        Write-Host "  Already assigned: $($permission.Name)"
+        continue
+    }
 
-$existing = Get-MgServicePrincipalAppRoleAssignedTo -ServicePrincipalId $managedIdentitySp.Id -All |
-    Where-Object { $_.ResourceId -eq $sharePointSp.Id -and $_.AppRoleId -eq $appRole.Id }
-
-if ($existing) {
-    Write-Host "Already assigned: SharePoint $PermissionName"
-}
-else {
     New-MgServicePrincipalAppRoleAssignment `
-        -ServicePrincipalId $managedIdentitySp.Id `
-        -PrincipalId $managedIdentitySp.Id `
-        -ResourceId $sharePointSp.Id `
-        -AppRoleId $appRole.Id
+        -ServicePrincipalId $mi.Id `
+        -PrincipalId $mi.Id `
+        -ResourceId $resource.Id `
+        -AppRoleId $role.Id | Out-Null
 
-    Write-Host "Assigned SharePoint $PermissionName to $principalId"
+    Write-Host "  Assigned: $($permission.Name)"
 }
 
-Write-Host ''
-Write-Host 'Restart the Function App after assigning permissions, then wait a few minutes for tokens to refresh.'
+Write-Host 'Done. Wait a few minutes for token refresh before testing.'
