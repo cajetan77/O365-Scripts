@@ -14,6 +14,7 @@ $Permissions = @(
     @{ AppId = $GraphAppId;      Name = 'Organization.Read.All' }
     @{ AppId = $GraphAppId;      Name = 'Device.Read.All' }
     @{ AppId = $GraphAppId;      Name = 'Directory.Read.All' }
+    @{ AppId = $GraphAppId;      Name = 'Reports.Read.All' }
     @{ AppId = $GraphAppId;      Name = 'Sites.ReadWrite.All' }
     @{ AppId = $SharePointAppId; Name = 'Sites.FullControl.All' }
 )
