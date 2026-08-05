@@ -5,11 +5,13 @@ $PrincipalId = 'a99d2497-e8d9-4a56-9474-0be25075367b'
 
 $GraphAppId = '00000003-0000-0000-c000-000000000000'      # Microsoft Graph
 $SharePointAppId = '00000003-0000-0ff1-ce00-000000000000' # SharePoint Online
+$ExchangeAppId = '00000002-0000-0ff1-ce00-000000000000'   # Office 365 Exchange Online
 
 $Permissions = @(
     @{ AppId = $GraphAppId;      Name = 'User.Read.All' }
     @{ AppId = $GraphAppId;      Name = 'Group.Read.All' }
     @{ AppId = $GraphAppId;      Name = 'GroupMember.Read.All' }
+    @{ AppId = $GraphAppId;      Name = 'GroupMember.ReadWrite.All' }
     @{ AppId = $GraphAppId;      Name = 'AuditLog.Read.All' }
     @{ AppId = $GraphAppId;      Name = 'Organization.Read.All' }
     @{ AppId = $GraphAppId;      Name = 'Device.Read.All' }
@@ -17,6 +19,7 @@ $Permissions = @(
     @{ AppId = $GraphAppId;      Name = 'Reports.Read.All' }
     @{ AppId = $GraphAppId;      Name = 'Sites.ReadWrite.All' }
     @{ AppId = $SharePointAppId; Name = 'Sites.FullControl.All' }
+    @{ AppId = $ExchangeAppId;   Name = 'Exchange.ManageAsApp' }
 )
 
 Connect-MgGraph -Scopes 'AppRoleAssignment.ReadWrite.All', 'Application.Read.All' -NoWelcome
@@ -54,3 +57,7 @@ foreach ($permission in $Permissions) {
 }
 
 Write-Host 'Done. Wait a few minutes for token refresh before testing.'
+Write-Host ''
+Write-Host 'For classic distribution list membership (Exchange app-only), also assign the'
+Write-Host 'Managed Identity the Entra role: Exchange Administrator'
+Write-Host '(Entra ID > Roles and administrators > Exchange Administrator > Add assignments).'
