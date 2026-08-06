@@ -67,6 +67,14 @@ if (-not [string]::IsNullOrWhiteSpace($VersionVariable)) {
     $Version = $VersionVariable.Trim().ToLowerInvariant()
 }
 
+function Write-RunbookLog {
+    param([string]$Message)
+    $stamp = Get-Date -Format 'yyyy-MM-dd HH:mm:ss'
+    Write-Output "[$stamp] $Message"
+}
+
+
+
 if ($Period -notin @('D7', 'D30', 'D90', 'D180', 'ALL')) {
     throw "Invalid COPILOT_REPORT_PERIOD '$Period'. Use D7, D30, D90, D180, or ALL."
 }
@@ -83,11 +91,6 @@ if ([string]::IsNullOrWhiteSpace($SharePointSiteUrl)) {
     throw 'Automation variable SHAREPOINT_SITE_URL is required (e.g. https://contoso.sharepoint.com/sites/IT).'
 }
 
-function Write-RunbookLog {
-    param([string]$Message)
-    $stamp = Get-Date -Format 'yyyy-MM-dd HH:mm:ss'
-    Write-Output "[$stamp] $Message"
-}
 
 function Test-GraphThrottleError {
     param($ErrorRecord)
@@ -372,29 +375,29 @@ function Get-CopilotUsageUserDetailRows {
 
             # Column names match Microsoft 365 Admin Center > Reports > Copilot usage details.
             $rows.Add([PSCustomObject]@{
-                    'Username'                                         = Get-GraphProp -Object $item -Name 'userPrincipalName'
-                    'Display name'                                     = Get-GraphProp -Object $item -Name 'displayName'
-                    'Prompts submitted'                                = Get-GraphProp -Object $item -Name 'promptsSubmitted'
-                    'Prompts submitted in Copilot Chat (work)'         = Get-GraphProp -Object $item -Name 'copilotChatWorkPromptsSubmitted'
-                    'Prompts submitted in Copilot Chat (web)'          = Get-GraphProp -Object $item -Name 'copilotChatWebPromptsSubmitted'
-                    'Active days'                                      = Get-GraphProp -Object $item -Name 'activeUsageDays'
-                    'Last activity date (UTC)'                         = Get-GraphProp -Object $item -Name 'lastActivityDate'
-                    'Last activity date of Copilot Chat'               = Get-GraphProp -Object $item -Name 'copilotChatLastActivityDate'
-                    'Last activity date of Copilot Chat (work)'        = Get-GraphProp -Object $item -Name 'copilotChatWorkLastActivityDate'
-                    'Last activity date of Copilot Chat (web)'         = Get-GraphProp -Object $item -Name 'copilotChatWebLastActivityDate'
-                    'Last activity date of Microsoft Teams Copilot'    = Get-GraphProp -Object $item -Name 'microsoftTeamsCopilotLastActivityDate'
-                    'Last activity date of Word Copilot'               = Get-GraphProp -Object $item -Name 'wordCopilotLastActivityDate'
-                    'Last activity date of Excel Copilot'              = Get-GraphProp -Object $item -Name 'excelCopilotLastActivityDate'
-                    'Last activity date of PowerPoint Copilot'         = Get-GraphProp -Object $item -Name 'powerPointCopilotLastActivityDate'
-                    'Last activity date of Outlook Copilot'            = Get-GraphProp -Object $item -Name 'outlookCopilotLastActivityDate'
-                    'Last activity date of OneNote Copilot'            = Get-GraphProp -Object $item -Name 'oneNoteCopilotLastActivityDate'
-                    'Last activity date of Loop Copilot'               = Get-GraphProp -Object $item -Name 'loopCopilotLastActivityDate'
-                    'Last activity date of Microsoft 365 Copilot'      = Get-GraphProp -Object $item -Name 'microsoft365CopilotLastActivityDate'
-                    'Last activity date of Edge Copilot'               = Get-GraphProp -Object $item -Name 'edgeCopilotLastActivityDate'
-                    'Last activity date of Copilot Agent'              = Get-GraphProp -Object $item -Name 'copilotAgentLastActivityDate'
-                    'Report refresh date'                              = Get-GraphProp -Object $item -Name 'reportRefreshDate'
-                    'Report period'                                    = Get-CopilotReportPeriodValue -Item $item
-                    'Report version'                                   = $ReportVersion
+                    'Username'                                      = Get-GraphProp -Object $item -Name 'userPrincipalName'
+                    'Display name'                                  = Get-GraphProp -Object $item -Name 'displayName'
+                    'Prompts submitted'                             = Get-GraphProp -Object $item -Name 'promptsSubmitted'
+                    'Prompts submitted in Copilot Chat (work)'      = Get-GraphProp -Object $item -Name 'copilotChatWorkPromptsSubmitted'
+                    'Prompts submitted in Copilot Chat (web)'       = Get-GraphProp -Object $item -Name 'copilotChatWebPromptsSubmitted'
+                    'Active days'                                   = Get-GraphProp -Object $item -Name 'activeUsageDays'
+                    'Last activity date (UTC)'                      = Get-GraphProp -Object $item -Name 'lastActivityDate'
+                    'Last activity date of Copilot Chat'            = Get-GraphProp -Object $item -Name 'copilotChatLastActivityDate'
+                    'Last activity date of Copilot Chat (work)'     = Get-GraphProp -Object $item -Name 'copilotChatWorkLastActivityDate'
+                    'Last activity date of Copilot Chat (web)'      = Get-GraphProp -Object $item -Name 'copilotChatWebLastActivityDate'
+                    'Last activity date of Microsoft Teams Copilot' = Get-GraphProp -Object $item -Name 'microsoftTeamsCopilotLastActivityDate'
+                    'Last activity date of Word Copilot'            = Get-GraphProp -Object $item -Name 'wordCopilotLastActivityDate'
+                    'Last activity date of Excel Copilot'           = Get-GraphProp -Object $item -Name 'excelCopilotLastActivityDate'
+                    'Last activity date of PowerPoint Copilot'      = Get-GraphProp -Object $item -Name 'powerPointCopilotLastActivityDate'
+                    'Last activity date of Outlook Copilot'         = Get-GraphProp -Object $item -Name 'outlookCopilotLastActivityDate'
+                    'Last activity date of OneNote Copilot'         = Get-GraphProp -Object $item -Name 'oneNoteCopilotLastActivityDate'
+                    'Last activity date of Loop Copilot'            = Get-GraphProp -Object $item -Name 'loopCopilotLastActivityDate'
+                    'Last activity date of Microsoft 365 Copilot'   = Get-GraphProp -Object $item -Name 'microsoft365CopilotLastActivityDate'
+                    'Last activity date of Edge Copilot'            = Get-GraphProp -Object $item -Name 'edgeCopilotLastActivityDate'
+                    'Last activity date of Copilot Agent'           = Get-GraphProp -Object $item -Name 'copilotAgentLastActivityDate'
+                    'Report refresh date'                           = Get-GraphProp -Object $item -Name 'reportRefreshDate'
+                    'Report period'                                 = Get-CopilotReportPeriodValue -Item $item
+                    'Report version'                                = $ReportVersion
                 })
         }
 
