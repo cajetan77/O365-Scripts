@@ -51,9 +51,7 @@
     .\Licensing.ps1
 #>
 [CmdletBinding()]
-Param(
-    [string]$ExportPath = (Join-Path $env:TEMP 'M365-LicensingReport')
-)
+Param()
 
 $ErrorActionPreference = 'Stop'
 $BatchSize = 10
@@ -629,19 +627,6 @@ function Get-PnPDocumentFolderPath {
     return "Shared Documents/$normalized"
 }
 
-function Get-StableReportFileName {
-    param([Parameter(Mandatory)][string]$FilePath)
-
-    $leaf = Split-Path -Path $FilePath -Leaf
-    switch -Regex ($leaf) {
-        'TenantSummary' { return 'M365-LicensingReport-TenantSummary.csv' }
-        'GroupLicenses' { return 'M365-LicensingReport-GroupLicenses.csv' }
-        '-Users-' { return 'M365-LicensingReport-Users.csv' }
-        'LicenseDetail' { return 'M365-LicensingReport-LicenseDetail.csv' }
-        default { return $leaf }
-    }
-}
-
 function Publish-ReportToSharePoint {
     param(
         [Parameter(Mandatory)]
@@ -661,14 +646,12 @@ function Publish-ReportToSharePoint {
     Connect-PnPOnline -Url $SiteUrl -ManagedIdentity
 
     try {
-        Resolve-PnPFolder -SiteRelativePath $folder | Out-Null
-
         foreach ($filePath in $FilePaths) {
             if (-not (Test-Path -LiteralPath $filePath)) {
                 throw "Report file not found: $filePath"
             }
 
-            $fileName = Get-StableReportFileName -FilePath $filePath
+            $fileName = Split-Path -Path $filePath -Leaf
             Add-PnPFile -Path $filePath -Folder $folder -NewFileName $fileName | Out-Null
             Write-RunbookLog "Uploaded/updated SharePoint file: $folder/$fileName"
         }
@@ -684,16 +667,10 @@ function Publish-ReportToSharePoint {
 
 Connect-MgGraphManagedIdentity
 
-$timestamp = Get-Date -Format 'yyyyMMdd-HHmmss'
-$exportDir = Split-Path -Path $ExportPath -Parent
-if (-not [string]::IsNullOrWhiteSpace($exportDir) -and -not (Test-Path -LiteralPath $exportDir)) {
-    New-Item -ItemType Directory -Path $exportDir -Force | Out-Null
-}
-
-$tenantSummaryPath = "${ExportPath}-TenantSummary-${timestamp}.csv"
-$groupLicensesPath = "${ExportPath}-GroupLicenses-${timestamp}.csv"
-$userSummaryPath = "${ExportPath}-Users-${timestamp}.csv"
-$licenseDetailPath = "${ExportPath}-LicenseDetail-${timestamp}.csv"
+$tenantSummaryPath = Join-Path $env:TEMP 'M365-LicensingReport-TenantSummary.csv'
+$groupLicensesPath = Join-Path $env:TEMP 'M365-LicensingReport-GroupLicenses.csv'
+$userSummaryPath = Join-Path $env:TEMP 'M365-LicensingReport-Users.csv'
+$licenseDetailPath = Join-Path $env:TEMP 'M365-LicensingReport-LicenseDetail.csv'
 
 $groupCache = @{}
 $managerCache = @{}

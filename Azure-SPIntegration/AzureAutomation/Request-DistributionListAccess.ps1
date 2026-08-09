@@ -7,7 +7,7 @@
     2. Task = Add    -> Add-DistributionGroupMember
        Task = Remove -> Remove-DistributionGroupMember
     3. Clear Approved on success
-    4. Save log to Documents\GroupAccessLogs as UserName-Group-Date.txt
+    4. Overwrite log in Documents\GroupAccessLogs as DistributionListAccess.txt
 
 .NOTES
     Variables: SHAREPOINT_SITE_URL, EXCHANGE_ORGANIZATION
@@ -24,10 +24,8 @@ $ErrorActionPreference = 'Stop'
 $WarningPreference = 'Continue'
 
 $log = [System.Collections.Generic.List[string]]::new()
-$stamp = Get-Date -Format 'yyyyMMdd-HHmmss'
-$logUser = 'Batch'
-$logGroup = 'DistributionList'
 $logUploaded = $false
+$logFileName = 'DistributionListAccess.txt'
 
 $siteUrl = Get-AutomationVariable -Name 'SHAREPOINT_SITE_URL' -ErrorAction Stop
 $org = Get-AutomationVariable -Name 'EXCHANGE_ORGANIZATION' -ErrorAction Stop
@@ -39,15 +37,6 @@ function Write-Log([string]$Message) {
     $line = '[{0}] {1}' -f (Get-Date -Format 'yyyy-MM-dd HH:mm:ss'), $Message
     $script:log.Add($line)
     Write-Output $line
-}
-
-function Get-SafeName([string]$Value) {
-    if ([string]::IsNullOrWhiteSpace($Value)) { return 'Unknown' }
-    $t = $Value.Trim()
-    if ($t -match '@') { $t = ($t -split '@')[0] }
-    $t = $t -replace '[\\/:*?"<>|#%&{}@$+|=!'']', '-' -replace '\s+', '-'
-    if ($t.Length -gt 60) { $t = $t.Substring(0, 60) }
-    return $t.Trim('-')
 }
 
 function Get-ErrorText($ErrorRecord) {
@@ -84,14 +73,12 @@ function Save-RunLog {
 
     try {
         Connect-PnPOnline -Url $script:siteUrl -ManagedIdentity
-        $fileName = '{0}-{1}-{2}.txt' -f (Get-SafeName $script:logUser), (Get-SafeName $script:logGroup), $script:stamp
-        $temp = Join-Path $env:TEMP $fileName
+        $temp = Join-Path $env:TEMP $script:logFileName
         ($script:log -join [Environment]::NewLine) | Set-Content -LiteralPath $temp -Encoding UTF8
-        Resolve-PnPFolder -SiteRelativePath $script:folder | Out-Null
-        Add-PnPFile -Path $temp -Folder $script:folder -NewFileName $fileName | Out-Null
+        Add-PnPFile -Path $temp -Folder $script:folder -NewFileName $script:logFileName | Out-Null
         Remove-Item $temp -Force -ErrorAction SilentlyContinue
         $script:logUploaded = $true
-        Write-Log "Log saved: $($script:folder)/$fileName"
+        Write-Log "Log saved: $($script:folder)/$($script:logFileName)"
     }
     catch {
         Write-Output ("[{0}] WARN: could not upload log: {1}" -f (Get-Date -Format 'yyyy-MM-dd HH:mm:ss'), $_.Exception.Message)
@@ -148,11 +135,6 @@ try {
         Write-Log 'Nothing to do'
     }
     else {
-        if ($toProcess.Count -eq 1) {
-            $logUser = $toProcess[0].UserName
-            $logGroup = $toProcess[0].Group
-        }
-
         # --- 2) Add / Remove on distribution lists ---
         Import-Module ExchangeOnlineManagement -ErrorAction Stop
         Write-Log "Connecting to Exchange ($org)"
@@ -250,11 +232,6 @@ try {
             else {
                 Write-Log "Left Approved=Yes for '$($o.Name)' (retry later)"
             }
-        }
-
-        if ($outcomes.Count -eq 1 -and $outcomes[0].Ok) {
-            $logUser = $outcomes[0].Name
-            $logGroup = $outcomes[0].Group
         }
 
         Write-Log 'Uploading log file'

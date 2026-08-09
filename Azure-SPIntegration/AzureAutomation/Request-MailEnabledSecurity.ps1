@@ -7,7 +7,7 @@
     2. Task = Add  -> add User to Distribution List or Mail Enabled (one only)
        Task = Remove -> remove User from that group
     3. Clear Approved on success
-    4. Save log to Documents\GroupAccessLogs as UserName-Group-Date.txt
+    4. Overwrite log in Documents\GroupAccessLogs as MailEnabledSecurity.txt
 
 .NOTES
     Variables: SHAREPOINT_SITE_URL, EXCHANGE_ORGANIZATION
@@ -23,9 +23,7 @@ $ErrorActionPreference = 'Stop'
 $WarningPreference = 'Continue'
 
 $log = [System.Collections.Generic.List[string]]::new()
-$stamp = Get-Date -Format 'yyyyMMdd-HHmmss'
-$logUser = 'Batch'
-$logGroup = 'Approved'
+$logFileName = 'MailEnabledSecurity.txt'
 
 $siteUrl = Get-AutomationVariable -Name 'SHAREPOINT_SITE_URL' -ErrorAction Stop
 $org = Get-AutomationVariable -Name 'EXCHANGE_ORGANIZATION' -ErrorAction Stop
@@ -37,15 +35,6 @@ function Write-Log([string]$Message) {
     $line = '[{0}] {1}' -f (Get-Date -Format 'yyyy-MM-dd HH:mm:ss'), $Message
     $script:log.Add($line)
     Write-Output $line
-}
-
-function Get-SafeName([string]$Value) {
-    if ([string]::IsNullOrWhiteSpace($Value)) { return 'Unknown' }
-    $t = $Value.Trim()
-    if ($t -match '@') { $t = ($t -split '@')[0] }
-    $t = $t -replace '[\\/:*?"<>|#%&{}@$+|=!'']', '-' -replace '\s+', '-'
-    if ($t.Length -gt 60) { $t = $t.Substring(0, 60) }
-    return $t.Trim('-')
 }
 
 function Get-ErrorText($ErrorRecord) {
@@ -119,11 +108,6 @@ try {
         Write-Log 'Nothing to do'
     }
     else {
-        if ($toProcess.Count -eq 1) {
-            $logUser = $toProcess[0].UserName
-            $logGroup = $toProcess[0].Group
-        }
-
         # --- 2) Add / Remove in Exchange ---
         Import-Module ExchangeOnlineManagement -ErrorAction Stop
         Write-Log "Connecting to Exchange ($org)"
@@ -205,13 +189,11 @@ try {
 
 
         Write-Log 'Uploading log file'
-        $fileName = '{0}-{1}-{2}.txt' -f (Get-SafeName $logUser), (Get-SafeName $logGroup), $stamp
-        $temp = Join-Path $env:TEMP $fileName
+        $temp = Join-Path $env:TEMP $logFileName
         ($log -join [Environment]::NewLine) | Set-Content -LiteralPath $temp -Encoding UTF8
-        Resolve-PnPFolder -SiteRelativePath $folder | Out-Null
-        Add-PnPFile -Path $temp -Folder $folder -NewFileName $fileName | Out-Null
+        Add-PnPFile -Path $temp -Folder $folder -NewFileName $logFileName | Out-Null
         Remove-Item $temp -Force -ErrorAction SilentlyContinue
-        Write-Log "Log saved: $folder/$fileName"
+        Write-Log "Log saved: $folder/$logFileName"
     }
 
     $ok = @($outcomes | Where-Object Ok).Count
