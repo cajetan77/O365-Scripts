@@ -32,8 +32,10 @@
 [CmdletBinding()]
 param(
    
-    [string]$WorkspaceName = "Test Workspace 7",
 
+    [string]$DOMAIN = "",
+    [string]$BusinessUnit = "HR",
+    [string]$Project = "Data Analytics",
    
     [string]$AdminUpn = "caje77@keiratheapp.com",
 
@@ -47,6 +49,8 @@ param(
 $ErrorActionPreference = "Stop"
 
 # Sanitize workspace segment for display name / mailNickname
+$WorkspaceName = If ($DOMAIN -eq "") { $BusinessUnit + "_" + $Project } Else { $DOMAIN + "_" + $BusinessUnit + "_" + $Project }
+write-host "WorkspaceName: $WorkspaceName"
 $workspaceSegment = ($WorkspaceName -replace '[^a-zA-Z0-9\-]', '').Trim()
 if ([string]::IsNullOrWhiteSpace($workspaceSegment)) {
     throw "WorkspaceName must contain at least one alphanumeric character."
