@@ -24,8 +24,9 @@
 [CmdletBinding()]
 param(
    
-    [string]$Name = "Test Workspace 7",
-
+    [string]$DOMAIN = "",
+    [string]$BusinessUnit = "HR",
+    [string]$Project = "Data Analytics",
     [string]$Description = "Test Description",
 
     [string[]]$AdminUserUpns = @(),
@@ -37,10 +38,7 @@ param(
     # Matches Create-SecurityGroups.ps1 naming → Power BI workspace roles.
     # Looks up both with and without _Sensitive_ in the display name.
     [string]$NamePrefix = "CAJ_COMp_PowerBIWorkspace",
-    [string]$SecurityGroupWorkspaceName,
     [switch]$SkipSecurityGroups,
-
-    [guid]$CapacityId,
     [switch]$SkipIfExists
 )
 
@@ -65,8 +63,10 @@ Write-Host "Connected." -ForegroundColor Green
 # ---------------------------------------------------------------------------
 # Create workspace
 # ---------------------------------------------------------------------------
-Write-Host "Checking for existing workspace '$Name'..." -ForegroundColor Cyan
-$existing = @(Get-PowerBIWorkspace -Name $Name -ErrorAction SilentlyContinue)
+$WorkspaceName = If ($DOMAIN -eq "") { $BusinessUnit + "_" + $Project } Else { $DOMAIN + "_" + $BusinessUnit + "_" + $Project }
+
+Write-Host "Checking for existing workspace '$WorkspaceName'..." -ForegroundColor Cyan
+$existing = @(Get-PowerBIWorkspace -Name $WorkspaceName -ErrorAction SilentlyContinue)
 if ($existing.Count -gt 0) {
     $workspace = $existing[0]
     Write-Host "Workspace already exists: $($workspace.Name) [$($workspace.Id)]" -ForegroundColor Yellow
@@ -76,8 +76,8 @@ if ($existing.Count -gt 0) {
     }
 }
 else {
-    Write-Host "Creating workspace '$Name'..." -ForegroundColor Yellow
-    $workspace = New-PowerBIGroup -Name $Name
+    Write-Host "Creating workspace '$WorkspaceName'..." -ForegroundColor Yellow
+    $workspace = New-PowerBIGroup -Name $WorkspaceName
     Write-Host "Created: $($workspace.Name) [$($workspace.Id)]" -ForegroundColor Green
 }
 
@@ -119,7 +119,7 @@ foreach ($appId in $AdminAppIds) {
 # Add security groups (Create-SecurityGroups.ps1 naming) as workspace roles
 # ---------------------------------------------------------------------------
 if (-not $SkipSecurityGroups) {
-    $segmentSource = if ($SecurityGroupWorkspaceName) { $SecurityGroupWorkspaceName } else { $Name }
+    $segmentSource = $WorkspaceName
     $workspaceSegment = ($segmentSource -replace '[^a-zA-Z0-9\-]', '').Trim()
     if ([string]::IsNullOrWhiteSpace($workspaceSegment)) {
         Write-Host "Skipping security groups: no alphanumeric segment from workspace name." -ForegroundColor DarkYellow
