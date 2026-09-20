@@ -44,9 +44,15 @@ function Connect_Graph {
 
 Connect_Graph
 
-$groups = Get-MgGroup | Where-Object { $_.DisplayName -like "Caj*" } 
+$groups = Get-MgGroup -All | Where-Object { $_.DisplayName -like "Caj*" } 
 
-$groupsTest = Get-MgGroup | Where-Object { $_.DisplayName -like "Test*" } 
+$groupsTest = Get-MgGroup -All | Where-Object { $_.DisplayName -like "Test*" } 
+
+$getUsers = Get-MgGroupMember -GroupId (Get-MgGroup -Filter "DisplayName eq 'Org Users'").Id -All 
+
+
+
+
 
 $allGroups = @( $groups + $groupsTest )
 Write-Host "Found $($allGroups.Count) groups" -ForegroundColor Green
@@ -57,6 +63,25 @@ catch {
     Write-Host "Error connecting to SharePoint: $_" -ForegroundColor Red
     exit 1
 }
+
+$userCount = 0
+
+foreach ($user in $getUsers) {
+   
+    # Add the users to the Sharepoint Group
+    try {
+        
+        $userCount = $userCount + 1
+        Add-PnPGroupMember -Group "All Users" -LoginName $user.AdditionalProperties.userPrincipalName
+        Write-Host "Added user count $userCount to Sharepoint Group: $($user.AdditionalProperties.userPrincipalName)" -ForegroundColor Green
+    }
+    catch {
+        Write-Host "Error adding user to Sharepoint Group: $_" -ForegroundColor Red
+        continue
+    }
+}
+
+
 $list = Get-PnPList -Identity $ListTitle
 
 $fields = Get-PnPField -List $list | Where-Object { $_.InternalName -eq "Group" }
