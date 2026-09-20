@@ -1,5 +1,5 @@
 Connect-ExchangeOnline
-Connect-MgGraph -Scopes 'User.Read.All' -NoWelcome
+Connect-MgGraph -Scopes 'User.Read.All', 'Group.Read.All' -NoWelcome
 
 $dm = Get-DistributionGroupMember -Identity 'Z_Infra' |
     Where-Object { $_.ExternalDirectoryObjectId } |
@@ -19,3 +19,6 @@ foreach ($id in $dm) {
         Write-Warning "No Graph user for ExternalDirectoryObjectId '$id': $($_.Exception.Message)"
     }
 }
+
+
+Get-MgGroup -Filter "DisplayName eq 'TestMailEnabled'" | Select-Object *

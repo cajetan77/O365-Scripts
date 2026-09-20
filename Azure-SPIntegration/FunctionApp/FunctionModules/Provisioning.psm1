@@ -181,6 +181,29 @@ function Test-AzureHostedEnvironment {
     return -not [string]::IsNullOrWhiteSpace($env:WEBSITE_SITE_NAME)
 }
 
+function Set-SiteNavigation {
+    param(
+        [Parameter(Mandatory)]
+        [string]$SiteUrl
+    )
+    try {
+        Write-ProvisionLog "Setting site navigation for $SiteUrl" -Properties @{ Step = 'Set-SiteNavigation' }
+        $web = Get-PnPWeb -Includes Navigation
+        Get-PnPNavigationNode -Location QuickLaunch | Remove-PnPNavigationNode
+        Add-PnPNavigationNode -Location QuickLaunch -Title 'Pages' -Url '/SitePages'
+        
+        return @{
+            status  = 'Success'
+            message = 'Site navigation set'
+            siteUrl = $SiteUrl
+        }
+    }
+    catch {
+        Write-ProvisionLog "Error setting site navigation for $SiteUrl : $($_.Exception.Message)" -Level Error -Properties @{ Step = 'Set-SiteNavigation' }
+        #throw
+    }
+}
+
 function Get-LoadedCertificateLocations {
     $roots = @('/var/ssl/private', 'C:\appservice\certificates\private')
     $locations = @()

@@ -15,7 +15,7 @@ $subscription = "Azure subscription 1"
 }#>
 
 
-az login 
+<#az login 
 az account set --subscription $subscription
 
 #Save-Module -Name Az.Accounts -RequiredVersion "3.0.1" -Path .\ExternalModules -Repository PSGallery -Force
@@ -32,7 +32,7 @@ az functionapp deployment source config-zip `
     --resource-group $RESOURCE_GROUP `
     --name $FUNCTION_APP_NAME `
     --src ".\function.zip"
-
+#>
 $cloudGovernanceToken = "Psalm87&6"   
 
 $uri = "https://app-intra-poc-linux1.azurewebsites.net/caj/webhook"

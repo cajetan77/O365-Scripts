@@ -29,9 +29,17 @@ dist/
 build/
 bin/
 obj/
+**/publish/
+
+# Deploy packages and compiled app output
+*.zip
+*.dll
+*.exe
+*.pdb
 
 # Modules downloaded locally (if you ever do this)
 Modules/
+Azure-SPIntegration/FunctionApp/ExternalModules/
 
 #Report
 *.csv
