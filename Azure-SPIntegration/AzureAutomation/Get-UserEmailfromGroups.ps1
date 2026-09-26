@@ -1,6 +1,6 @@
 [CmdletBinding()]
 Param(
-    [string[]]$GroupNames = @('Allow Group Creators', 'Org Users'),
+    [string[]]$GroupNames = @('Allow Group Creators', 'Org Users1'),
     [string]$SiteUrl = 'https://caje77sharepoint.sharepoint.com/sites/CajIntra/',
     [string]$ListTitle = 'Test1',
     [string]$ChoiceField = 'Group',
@@ -46,6 +46,11 @@ foreach ($GroupName in $GroupNames) {
 }
 
 Write-Output "Collected $($userEmails.Count) user email(s)"
+
+if ($userEmails.Count -eq 0) {
+    Write-Output "No users found"
+    exit
+}
 
 Import-Module PnP.PowerShell -ErrorAction Stop
 Connect-PnPOnline -Url $SiteUrl -Interactive -ClientId $ClientId
