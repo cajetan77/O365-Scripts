@@ -17,11 +17,11 @@
 [CmdletBinding()]
 Param(
     [string[]]$GroupNames = @('Allow Group Creators1', 'Org Users'),
-    [string]$SiteUrl = 'https://caje77sharepoint.sharepoint.com/sites/CajIntra/',
+    [string]$sharepoint_site_url = 'https://caje77sharepoint.sharepoint.com/sites/CajIntra/',
     [string]$ListTitle = 'Test1',
     [string]$GroupsField = 'Group',
     [string]$UsersField = 'OtherManager',
-    [string]$ClientId = '66a1852a-1f21-46a2-ad58-35fc4c3f1530'
+    [string]$managed_identity = '66a1852a-1f21-46a2-ad58-35fc4c3f1530'
 )
 
 $ErrorActionPreference = 'Stop'
@@ -60,24 +60,14 @@ function Set-ChoiceFieldValues {
     Write-RunbookLog "Replaced '$FieldName' with $($choices.Count) choice(s)."
 }
 
-$siteUrl = Get-AzAutomationVariable -Name 'SiteUrl' -ErrorAction SilentlyContinue
-if (-not $siteUrl) {
-    $siteUrl = 'https://caje77sharepoint.sharepoint.com/sites/CajIntra/'
+if ($env:AUTOMATION_ASSET_ACCOUNTID) {
+    Connect-MgGraph -Identity -ClientId $managed_identity -NoWelcome
 }
-$listTitle = Get-AzAutomationVariable -Name 'ListTitle' -ErrorAction SilentlyContinue
-if (-not $listTitle) {
-    $listTitle = 'Test1'
-}
-$userManagedIdentity = Get-AzAutomationVariable -Name 'UserManagedIdentity' -ErrorAction SilentlyContinue
-if (-not $userManagedIdentity) {
-    $userManagedIdentity = '66a1852a-1f21-46a2-ad58-35fc4c3f1530'
+else {
+    Connect-MgGraph -Scopes 'Group.Read.All', 'User.Read.All' -NoWelcome
 }
 
-Connect-MgGraph -Identity -ClientId $userManagedIdentity -ErrorAction SilentlyContinue | Out-Null
-
-Connect-MgGraph -Scopes 'Group.Read.All', 'User.Read.All' -NoWelcome
-
-# --- 1) Group display names (mail-enabled or security) — same as original Get-Groups ---
+# --- 1) Group display names (mail-enabled or security) - same as original Get-Groups ---
 Write-RunbookLog 'Loading Entra groups...'
 $mailEnabledGroups = @(Get-MgGroup -All | Where-Object { $_.MailEnabled -eq $true })
 $securityGroups = @(Get-MgGroup -All | Where-Object { $_.SecurityEnabled -eq $true })
@@ -88,7 +78,7 @@ $syncedGroupNames = @(
 )
 Write-RunbookLog "Collected $($syncedGroupNames.Count) group name(s)"
 
-# --- 2) Member emails — first matching group in -GroupNames wins; skip the rest ---
+# --- 2) Member emails - first matching group in -GroupNames wins; skip the rest ---
 $userEmails = [System.Collections.Generic.List[string]]::new()
 for ($i = 0; $i -lt $GroupNames.Count; $i++) {
     $name = $GroupNames[$i]
@@ -126,13 +116,17 @@ Write-RunbookLog "Collected $($userEmails.Count) user email(s)"
 
 # --- 3) Update SharePoint choice fields ---
 Import-Module PnP.PowerShell -ErrorAction Stop
-Connect-PnPOnline -Url $siteUrl -ManagedIdentity -UserAssignedManagedIdentityClientId $userManagedIdentity -ErrorAction SilentlyContinue | Out-Null
-Connect-PnPOnline -Url $SiteUrl -Interactive -ClientId $ClientId
+if ($env:AUTOMATION_ASSET_ACCOUNTID) {
+    Connect-PnPOnline -Url $sharepoint_site_url -ManagedIdentity -UserAssignedManagedIdentityClientId $managed_identity
+}
+else {
+    Connect-PnPOnline -Url $sharepoint_site_url -Interactive -ClientId $managed_identity
+}
 
 Set-ChoiceFieldValues -ListTitle $ListTitle -FieldName $GroupsField -Values $syncedGroupNames
 
 if ($userEmails.Count -eq 0) {
-    Write-RunbookLog 'No users found — skipping UsersField update.'
+    Write-RunbookLog 'No users found - skipping UsersField update.'
 }
 else {
     Set-ChoiceFieldValues -ListTitle $ListTitle -FieldName $UsersField -Values @($userEmails)

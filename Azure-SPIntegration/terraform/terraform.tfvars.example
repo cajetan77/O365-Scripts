@@ -1,0 +1,11 @@
+subscription_id = "00000000-0000-0000-0000-000000000000"
+
+resource_group_name     = "SPO-Automation"
+location                = "australiasoutheast"
+automation_account_name = "aa-spo-automation12"
+
+sharepoint_site_url         = "https://caje77sharepoint.sharepoint.com/sites/CajIntra/"
+managed_identity_client_id  = "66a1852a-1f21-46a2-ad58-35fc4c3f1530"
+
+# First occurrence: Sunday 4 Oct 2026, 7:00am NZDT. Must still be in the future when you first apply.
+schedule_start_time = "2026-10-04T07:00:00+13:00"

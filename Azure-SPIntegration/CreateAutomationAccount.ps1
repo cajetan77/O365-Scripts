@@ -83,29 +83,39 @@ else {
 }
 
 Write-Step "Ensure Automation Account '$AutomationAccountName'"
+# az automation account show is slow (automation CLI extension). ARM resource show returns immediately.
 $accountExists = Test-AzResourceExists {
-    az automation account show --name $AutomationAccountName --resource-group $ResourceGroup
+    az resource show `
+        --resource-group $ResourceGroup `
+        --name $AutomationAccountName `
+        --resource-type 'Microsoft.Automation/automationAccounts' `
+        --query id `
+        --output tsv
 }
 
 if (-not $accountExists) {
+    # The automation CLI extension does not accept --assign-identity.
     Invoke-Az automation account create `
         --name $AutomationAccountName `
         --resource-group $ResourceGroup `
         --location $Location `
-        --sku $Sku `
-        --assign-identity
+        --sku $Sku
 }
 else {
     Write-Host 'Automation Account already exists.'
-    Invoke-Az automation account update `
-        --name $AutomationAccountName `
-        --resource-group $ResourceGroup `
-        --identity-type SystemAssigned
 }
 
-$principalId = az automation account show `
-    --name $AutomationAccountName `
+Write-Step 'Ensure system-assigned managed identity'
+Invoke-Az resource update `
     --resource-group $ResourceGroup `
+    --name $AutomationAccountName `
+    --resource-type 'Microsoft.Automation/automationAccounts' `
+    --set identity.type=SystemAssigned
+
+$principalId = az resource show `
+    --resource-group $ResourceGroup `
+    --name $AutomationAccountName `
+    --resource-type 'Microsoft.Automation/automationAccounts' `
     --query 'identity.principalId' `
     --output tsv
 
